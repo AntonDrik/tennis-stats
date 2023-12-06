@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import LoggerService from './common/utils/logger.service'
 import { IEnvVariables } from './config/env'
+import { SeederService } from './database'
 
 
 const logger = new LoggerService('Nest')
@@ -22,15 +23,17 @@ async function bootstrap() {
     
     const reflector = app.get(Reflector)
     const configService = app.get(ConfigService) as ConfigService<IEnvVariables>
+    const seederService = app.get(SeederService)
+    await seederService.seed()
+    
     
     app.setGlobalPrefix('api')
     app.use(cookieParser())
     
     app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector))
     
-    app.useGlobalPipes(
-        new ValidationPipe({ whitelist: true, transform: true })
-    )
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
+    
     
     const port = configService.get('PORT')
     await app.listen(port)

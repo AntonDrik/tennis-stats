@@ -1,0 +1,1 @@
+export { default as TourModule } from './tours.module'
