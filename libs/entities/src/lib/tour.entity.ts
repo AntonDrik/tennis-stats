@@ -13,4 +13,5 @@ export class Tour extends BaseEntity implements ITour {
     
     @Column('varchar', { nullable: false })
     setsCount: number
+    
 }

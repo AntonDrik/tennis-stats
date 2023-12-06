@@ -1,3 +1,3 @@
-export {default as StatsPage} from './stats/stats-page'
-export {default as GameProcessPage} from './game-process/game-process-page'
-export {default as UsersPage} from './users/users-page'
+export {default as StatsPage} from './stats/StatsPage'
+export {default as GameProcessPage} from './game-process/GameProcessPage'
+export {default as UsersPage} from './users/UsersPage'

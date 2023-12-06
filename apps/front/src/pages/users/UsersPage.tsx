@@ -1,11 +1,11 @@
 import { Alert, Box, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { IUser } from '@tennis-stats/types'
-import { useGetAllUsers } from '../../core/api'
+import { useUsersQuery } from '../../core/api'
 
 
 export default function UsersPage() {
     
-    const { data: usersList, error } = useGetAllUsers()
+    const { data: usersList, error } = useUsersQuery()
     
     const getFullName = (user: IUser) => {
         return `${user.firstName} ${user.lastName}`

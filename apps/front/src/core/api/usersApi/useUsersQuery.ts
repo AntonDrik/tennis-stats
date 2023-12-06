@@ -4,11 +4,11 @@ import { useQuery } from 'react-query'
 import axiosFetcher from '../client/axios-fetcher'
 
 
-function useGetAllUsers() {
+function useUsersQuery() {
     return useQuery<IUser[], AxiosError>(
-        ['get-all-users'],
+        ['get-users'],
         () => axiosFetcher.get<IUser[]>('/users')
     )
 }
 
-export default useGetAllUsers
+export default useUsersQuery
