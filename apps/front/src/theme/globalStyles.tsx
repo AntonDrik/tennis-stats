@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function GlobalStyles() {
     const theme = useTheme()
-    
+
     return (
         <GlobalThemeStyles styles={{
             '*': {
@@ -55,7 +55,7 @@ export default function GlobalStyles() {
                     color: theme.palette.text.disabled
                 }
             },
-            
+
             img: { display: 'block', maxWidth: '100%' },
             '.blur-up': {
                 WebkitFilter: 'blur(5px)',
