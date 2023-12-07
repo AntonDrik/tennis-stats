@@ -22,8 +22,7 @@ function CreateTourModal() {
     })
     
     const submit = (form: CreateTourDto) => {
-        console.log(form)
-        // mutate(form)
+        mutate(form)
     }
     
     const handleAutocompleteChange = (activeUsers: IUser[]) => {
@@ -50,7 +49,7 @@ function CreateTourModal() {
                 <FormProvider {...form}>
                     <form onSubmit={form.handleSubmit(submit)}>
                         
-                        <Stack spacing={3} direction={'row'} sx={{ mt: 2 }}>
+                        <Stack spacing={3} direction={'column'} sx={{ mt: 2 }}>
                             
                             <PlayersAutocomplete
                                 onChange={handleAutocompleteChange}

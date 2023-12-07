@@ -15,14 +15,14 @@ const menu: IMenuSection[] = [
     {
         items: [
             {
-                title: 'Пользователи',
-                link: '/users',
-                icon: <GroupIcon htmlColor={'#374150'}/>
-            },
-            {
                 title: 'Статистика',
                 link: '/stats',
                 icon: <QueryStatsIcon htmlColor={'#374150'}/>
+            },
+            {
+                title: 'Пользователи',
+                link: '/users',
+                icon: <GroupIcon htmlColor={'#374150'}/>
             },
             {
                 title: 'Игровой процесс',

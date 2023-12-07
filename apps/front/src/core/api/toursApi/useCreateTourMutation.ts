@@ -6,7 +6,7 @@ import axiosFetcher from '../client/axios-fetcher'
 function useCreateTourMutation() {
     return useMutation(
         ['create-tour'],
-        () => axiosFetcher.post<CreateTourDto>('/tours')
+        (dto: CreateTourDto) => axiosFetcher.post<CreateTourDto>('/tours', dto)
     )
 }
 

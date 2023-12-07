@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import styled from 'styled-components'
+import theme from '../../../../../../../theme/theme'
 
 
 interface IWrapperProps {
@@ -17,13 +18,13 @@ const Wrapper = styled(Box)<IWrapperProps>(
         borderRadius: '0.25rem',
         width: '100%',
         cursor: 'pointer',
-        
-        '&:hover': {
-            backgroundColor: '#d1d5db'
-        }
     },
     ({ $isSelected }) => ({
-        backgroundColor: $isSelected ? '#d1d5db' : 'inherit'
+        backgroundColor: $isSelected ? theme.palette.primary.main : 'inherit',
+        
+        '&:hover': {
+            backgroundColor: theme.palette.primary[$isSelected ? 'main' : 'light']
+        }
     })
 )
 

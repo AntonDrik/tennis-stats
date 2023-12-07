@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react'
 import { QueryClientProvider } from 'react-query'
-// import { ReactQueryDevtools } from 'react-query/devtools'
 
 import { queryClient } from './core/api'
 import AppRoutes from './routes/routes'
@@ -17,8 +16,6 @@ export default function App(): ReactElement {
                 <GlobalStyles/>
                 <AppRoutes/>
                 <ModalContainer/>
-                
-                {/*<ReactQueryDevtools initialIsOpen={true}/>*/}
             </QueryClientProvider>
         </ThemeConfig>
     )
