@@ -1,24 +1,52 @@
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { CreateTourDto } from '@tennis-stats/dto'
+import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
-import { Repository } from 'typeorm'
+import { DataSource } from 'typeorm'
+import { HasUnfinishedTourException } from '../../common/exceptions'
+import { GameSetsService } from '../game-sets'
+import ToursRepository from './tours.repository'
 
 
 @Injectable()
-export class ToursService {
+class ToursService {
     
     constructor(
-        @InjectRepository(Tour)
-        public repository: Repository<Tour>
+        private repository: ToursRepository,
+        private dataSource: DataSource,
+        private gameSetsService: GameSetsService
     ) {}
     
-    public getAllTours() {
-        return this.repository.find()
+    public getTours(query: GetToursQuery) {
+        return this.repository.getToursByQuery(query)
     }
     
-    public createTour(dto: CreateTourDto) {
-        console.log(dto)
+    public getActiveTour(): Promise<Tour | null> {
+        return this.repository.getActiveTour()
+    }
+    
+    public async createTour(dto: CreateTourDto): Promise<Tour> {
+        const activeTour = await this.getActiveTour()
+        
+        if (activeTour) {
+            throw new HasUnfinishedTourException()
+        }
+        
+        const gameSets = await this.gameSetsService.getGameSetsEntities(dto)
+        const tourEntity = this.repository.getTourEntity(dto, gameSets)
+        
+        await this.dataSource.transaction(async (manager) => {
+            await manager.save(gameSets)
+            await manager.save(tourEntity)
+        })
+        
+        return tourEntity
+    }
+    
+    public cancelTour() {
+    
     }
     
 }
+
+
+export default ToursService

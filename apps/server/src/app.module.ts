@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { EnvConfigModule } from './config/env'
+import { GameSetsModule } from './core/game-sets'
+import { PlayersModule } from './core/players'
 import { SeederModule, SqliteProviderModule } from './database'
 import { UsersModule } from './core/users'
 import { TourModule } from './core/tours'
@@ -14,6 +16,8 @@ import { TourModule } from './core/tours'
         SeederModule,
         UsersModule,
         TourModule,
+        GameSetsModule,
+        PlayersModule,
         
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'front'),

@@ -1,22 +1,14 @@
 import styled from 'styled-components'
 
-
-interface IContentProps {
-    $sidebarWidth: number
-}
-
-const Content = styled.main<IContentProps>(
+const Content = styled.main(
     {
         padding: 18,
         height: '100vh',
         display: 'flex',
         flexFlow: 'column',
-        transition: '.3s'
-    },
-    ({$sidebarWidth}) => ({
-        width: `calc(100% - ${$sidebarWidth}px)`,
-        marginLeft: $sidebarWidth,
-    })
+        width: '100%',
+        marginTop: 55
+    }
 )
 
 export default {

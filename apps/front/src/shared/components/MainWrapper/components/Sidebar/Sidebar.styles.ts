@@ -3,17 +3,22 @@ import styled from 'styled-components'
 
 
 interface IMenuWrapperProps {
-    $width: number
+    $isOpen: boolean
 }
 
 const MenuWrapper = styled(Box)<IMenuWrapperProps>(
     {
-        paddingLeft: '0.5rem',
-        paddingRight: '0.5rem',
-        transition: '.3s'
+        transition: '.3s',
+        position: 'absolute',
+        marginTop: '55px',
+        height: '100%',
+        backgroundColor: '#E1F6FD',
+        zIndex: 999
     },
-    ({ $width }) => ({
-        width: `${$width}px`
+    ({ $isOpen }) => ({
+        left: $isOpen ? 0 : -200,
+        paddingLeft: $isOpen ? '0.5rem' : 0,
+        paddingRight: $isOpen ? '0.5rem' : 0,
     })
 )
 

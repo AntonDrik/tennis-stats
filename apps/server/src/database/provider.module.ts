@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { join } from 'path'
+import path  from 'path'
 import { EnvConfigModule } from '../config/env'
 
 
@@ -14,7 +14,7 @@ import { EnvConfigModule } from '../config/env'
             useFactory: () => {
                 return {
                     type: 'sqlite',
-                    database: `${join(__dirname)}/assets/DB.sqlite`,
+                    database: `${path.resolve()}/apps/server/src/assets/DB.sqlite`,
                     autoLoadEntities: true,
                     logging: false,
                     timezone: 'Z',

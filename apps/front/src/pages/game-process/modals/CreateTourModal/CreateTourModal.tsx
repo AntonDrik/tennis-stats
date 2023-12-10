@@ -28,7 +28,7 @@ function CreateTourModal() {
     const handleAutocompleteChange = (activeUsers: IUser[]) => {
         const usersIdsList = activeUsers.map((user) => user.id)
         
-        form.setValue('playersIds', usersIdsList, { shouldDirty: true })
+        form.setValue('usersIds', usersIdsList, { shouldDirty: true })
     }
     
     useEffect(() => {

@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { IGameSet } from '@tennis-stats/types'
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne, OneToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm'
+import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
 
 import { Player } from './player.entity'
 import { Tour } from './tour.entity'
@@ -11,18 +18,20 @@ export class GameSet extends BaseEntity implements IGameSet {
     @PrimaryGeneratedColumn()
     id: number
     
-    @ManyToOne(() => Tour, { eager: true })
+    @ManyToOne(() => Tour)
     tour: Tour
     
-    @ManyToOne(() => Player, { eager: true })
+    @OneToOne(() => Player, { eager: true, cascade: true })
+    @JoinColumn()
     player1: Player
     
-    @ManyToOne(() => Player, { eager: true })
+    @OneToOne(() => Player, { eager: true, cascade: true })
+    @JoinColumn()
     player2: Player
-    
-    @ManyToOne(() => Player, { eager: true })
-    winner: Player
     
     @Column('datetime', { nullable: true })
     time: Date
+    
+    @Column('varchar', { default: EGameSetStatus.PENDING })
+    status: EGameSetStatus
 }

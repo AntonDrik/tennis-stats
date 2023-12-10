@@ -8,7 +8,11 @@ const Wrapper = styled(Box)({
     alignItems: 'center',
     width: '100%',
     marginTop: '0.75rem',
-    borderTop: '1px solid rgb(209 213 219)'
+    borderBottom: '1px solid #A9DAED',
+    
+    '&:last-child': {
+        borderBottom: 'none'
+    }
 })
 
 export default {

@@ -2,15 +2,19 @@ import { IPlayer } from './player'
 import { ITour } from './tour'
 
 
+enum EGameSetStatus {
+    PENDING = 'PENDING',
+    IN_PROCESS = 'IN_PROCESS',
+    FINISHED = 'FINISHED'
+}
 
 interface IGameSet {
     id: number
     tour: ITour
     player1: IPlayer
     player2: IPlayer
-    // Стоит отказаться от этой переменной. Можно её вычислять динамически на основе player1 - player2
-    winner: IPlayer
     time: Date
+    status: EGameSetStatus
 }
 
-export { IGameSet }
+export { IGameSet, EGameSetStatus }

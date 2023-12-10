@@ -1,16 +1,22 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
-import { CreateTourDto } from '@tennis-stats/dto'
-import { ToursService } from './tours.service'
+import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
+import { Tour } from '@tennis-stats/entities'
+import ToursService from './tours.service'
 
 
 @Controller('tours')
-export class ToursController {
+class ToursController {
     
     constructor(private tourService: ToursService) {}
     
     @Get()
-    getAllTours() {
-        return this.tourService.getAllTours()
+    getTours(@Query() query: GetToursQuery): Promise<Tour[]> {
+        return this.tourService.getTours(query)
+    }
+    
+    @Get('/active')
+    getActiveTour(): Promise<Tour | null> {
+        return this.tourService.getActiveTour()
     }
     
     @Post()
@@ -19,3 +25,5 @@ export class ToursController {
     }
     
 }
+
+export default ToursController

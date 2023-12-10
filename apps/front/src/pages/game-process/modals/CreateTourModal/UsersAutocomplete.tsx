@@ -46,7 +46,7 @@ function PlayersAutocomplete({ onChange }: IProps) {
                     id={''}
                     sx={{ minWidth: 200 }}
                     label="Игроки"
-                    {...getTextFieldError(form.errors, 'playersIds')}
+                    {...getTextFieldError(form.errors, 'usersIds')}
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
