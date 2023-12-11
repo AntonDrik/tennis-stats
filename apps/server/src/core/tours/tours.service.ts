@@ -3,7 +3,7 @@ import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
 import { DataSource } from 'typeorm'
 import { HasUnfinishedTourException } from '../../common/exceptions'
-import { GameSetsService } from '../game-sets'
+import { MatchesService } from '../matches'
 import ToursRepository from './tours.repository'
 
 
@@ -13,7 +13,7 @@ class ToursService {
     constructor(
         private repository: ToursRepository,
         private dataSource: DataSource,
-        private gameSetsService: GameSetsService
+        private matchesService: MatchesService
     ) {}
     
     public getTours(query: GetToursQuery) {
@@ -31,11 +31,11 @@ class ToursService {
             throw new HasUnfinishedTourException()
         }
         
-        const gameSets = await this.gameSetsService.getGameSetsEntities(dto)
-        const tourEntity = this.repository.getTourEntity(dto, gameSets)
+        const matches = await this.matchesService.getMatchesEntities(dto)
+        const tourEntity = this.repository.getTourEntity(dto, matches)
         
         await this.dataSource.transaction(async (manager) => {
-            await manager.save(gameSets)
+            // await manager.save(gameSets)
             await manager.save(tourEntity)
         })
         

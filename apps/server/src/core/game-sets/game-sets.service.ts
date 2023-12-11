@@ -1,26 +1,23 @@
 import { Injectable } from '@nestjs/common'
-import { CreateTourDto } from '@tennis-stats/dto'
+import { IdDto } from '@tennis-stats/dto'
 import { GameSet } from '@tennis-stats/entities'
-import { uniqueCombinations } from '@tennis-stats/helpers'
-import { UserNotFoundException } from '../../common/exceptions'
+import { EGameSetStatus } from '@tennis-stats/types'
+import { GameSetNotFoundException, UserNotFoundException } from '../../common/exceptions'
 import { UsersRepository } from '../users'
+import GameSetsRepository from './game-sets.repository'
 
 
 @Injectable()
 class GameSetsService {
     
     constructor(
+        private repository: GameSetsRepository,
         private usersRepository: UsersRepository
     ) {}
     
-    public getGameSetsEntities(dto: CreateTourDto): Promise<GameSet[]> {
-        const allCombinationsIds = uniqueCombinations(dto.usersIds)
+    public getGameSetsEntities(usersIds: number[], setsCount: number): Promise<GameSet[]> {
         
-        const multipliedCombinations = allCombinationsIds.map((combination) => {
-            return Array.from({ length: dto.setsCount }, () => combination)
-        }).flat()
-        
-        const promises = multipliedCombinations.map(async (usersIds) => {
+        const promises = Array.from({ length: setsCount }, async () => {
             const player1Entity = await this.usersRepository.getPlayerEntity(usersIds[0])
             const player2Entity = await this.usersRepository.getPlayerEntity(usersIds[1])
             
@@ -37,6 +34,30 @@ class GameSetsService {
         })
         
         return Promise.all(promises)
+    }
+    
+    public async startGameSet(dto: IdDto): Promise<GameSet> {
+        const gameSet = await this.repository.findOneBy({ id: dto.id })
+        
+        if (!gameSet) {
+            throw new GameSetNotFoundException()
+        }
+        
+        gameSet.status = EGameSetStatus.IN_PROCESS
+        gameSet.startDate = new Date()
+        await gameSet.save()
+        
+        return gameSet
+    }
+    
+    public async finishGameSet(dto: IdDto) {
+        const gameSet = await this.repository.findOneBy({ id: dto.id })
+        
+        if (!gameSet) {
+            throw new GameSetNotFoundException()
+        }
+        
+        gameSet.status = EGameSetStatus.FINISHED
     }
     
 }

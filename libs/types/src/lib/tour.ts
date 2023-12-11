@@ -1,4 +1,4 @@
-import { IGameSet } from './game-set'
+import { IMatch } from './match'
 
 
 enum ETourStatus {
@@ -12,7 +12,7 @@ interface ITour {
     date: Date
     setsCount: number
     status: ETourStatus
-    gameSets: IGameSet[]
+    matches: IMatch[]
 }
 
 export { ITour, ETourStatus }

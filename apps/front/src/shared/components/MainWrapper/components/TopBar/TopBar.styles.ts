@@ -9,9 +9,9 @@ const Wrapper = styled(Stack)({
     left: 0,
     right: 0,
     height: '55px',
-    backgroundColor: '#E1F6FD',
+    backgroundColor: '#F7F9F8',
     zIndex: 999,
-    borderBottom: '1px solid #A9DAED'
+    borderBottom: '1px solid #D7DAD9'
 })
 
 const BurgerButton = styled(Button)({

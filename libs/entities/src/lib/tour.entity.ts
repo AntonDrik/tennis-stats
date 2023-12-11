@@ -1,6 +1,6 @@
 import { ETourStatus, ITour } from '@tennis-stats/types'
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { GameSet } from './game-set.entity'
+import { Match } from './match.entity'
 
 
 @Entity()
@@ -18,7 +18,7 @@ export class Tour extends BaseEntity implements ITour {
     @Column('varchar', { nullable: false })
     status: ETourStatus
     
-    @OneToMany(() => GameSet, gameSet => gameSet.tour, { eager: true })
-    gameSets: GameSet[]
+    @OneToMany(() => Match, match => match.tour, { eager: true, cascade: true })
+    matches: Match[]
     
 }

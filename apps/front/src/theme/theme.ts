@@ -2,6 +2,7 @@ import { createTheme } from '@mui/material'
 import overrides from './overrides'
 import palette from './palette'
 import typography from './typography'
+import { responsiveFontSizes } from '@mui/material/styles'
 
 
 const theme = createTheme({
@@ -14,8 +15,8 @@ const theme = createTheme({
     },
     // @ts-ignore
     status: {
-        danger: "#e53e3e",
+        danger: '#e53e3e',
     },
 })
 
-export default theme
+export default responsiveFontSizes(theme)

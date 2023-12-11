@@ -1,7 +1,9 @@
+import React from 'react'
 import CasinoIcon from '@mui/icons-material/Casino'
 import GroupIcon from '@mui/icons-material/Group'
 import LogoutIcon from '@mui/icons-material/Logout'
 import QueryStatsIcon from '@mui/icons-material/QueryStats'
+import Divider from '@mui/material/Divider'
 import { useAtomValue } from 'jotai'
 
 import { MenuSection } from './components'
@@ -46,14 +48,20 @@ function SideBar() {
     const sidebar = useAtomValue(sidebarAtom)
     
     return (
-        
         <Styled.MenuWrapper $isOpen={sidebar.isOpen}>
             {
-                menu.map((section) => (
-                    <MenuSection
-                        key={Math.random()}
-                        items={section.items}
-                    />
+                menu.map((section, index) => (
+                    <React.Fragment key={Math.random()}>
+                        {
+                            index === menu.length - 1 &&
+                            <Divider sx={{ mt: 1 }}/>
+                        }
+                        
+                        <MenuSection
+                            key={Math.random()}
+                            items={section.items}
+                        />
+                    </React.Fragment>
                 ))
             }
         </Styled.MenuWrapper>

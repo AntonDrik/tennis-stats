@@ -7,12 +7,6 @@ const Wrapper = styled(Box)({
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
-    marginTop: '0.75rem',
-    borderBottom: '1px solid #A9DAED',
-    
-    '&:last-child': {
-        borderBottom: 'none'
-    }
 })
 
 export default {

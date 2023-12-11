@@ -1,15 +1,15 @@
 import { Box, Button } from '@mui/material'
 import { ETourStatus } from '@tennis-stats/types'
-import { useGetTours } from '../../core/api'
+import { useGetToursQuery } from '../../core/api'
 import { Page, Spinner, useModal } from '../../shared/components'
-import MatchTable from './components/MatchTable/MatchTable'
+import MatchList from './components/MatchList/MatchList'
 import TourControlPanel from './components/TourControlPanel/TourControlPanel'
 import { default as CreateTourModal } from './modals/CreateTourModal/CreateTourModal'
 
 
 export default function GameProcessPage() {
     
-    const { data, isLoading } = useGetTours({ status: ETourStatus.ACTIVE })
+    const { data, isLoading } = useGetToursQuery({ status: ETourStatus.ACTIVE })
     
     const modal = useModal()
     
@@ -31,17 +31,21 @@ export default function GameProcessPage() {
                     <TourControlPanel activeTour={activeTour}/>
                 }
                 
-                <Button
-                    variant={'contained'}
-                    fullWidth
-                    disabled={isDisabledButton}
-                    onClick={handleClick}
-                >Новая игра</Button>
+                {
+                    !activeTour &&
+                    <Button
+                        variant={'contained'}
+                        sx={{mb: 3}}
+                        fullWidth
+                        disabled={isDisabledButton}
+                        onClick={handleClick}
+                    >Новая игра</Button>
+                }
             </Box>
             
             {
                 activeTour &&
-                <MatchTable activeTour={activeTour}/>
+                <MatchList activeTour={activeTour}/>
             }
         
         </Page>

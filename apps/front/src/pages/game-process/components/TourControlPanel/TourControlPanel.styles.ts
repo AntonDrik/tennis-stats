@@ -7,10 +7,10 @@ const Wrapper = styled(Stack)({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: "#F1F0EF",
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(3)
 })
 
 const ButtonWrapper = styled(Button)({

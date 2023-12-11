@@ -6,7 +6,7 @@ import { Button, DialogContent, DialogTitle, Stack, TextField } from '@mui/mater
 import { CreateTourDto } from '@tennis-stats/dto'
 import { IUser } from '@tennis-stats/types'
 
-import { Spinner } from '../../../../shared/components'
+import { Spinner, useModal } from '../../../../shared/components'
 import useCreateTourMutation from '../../../../core/api/toursApi/useCreateTourMutation'
 import { getTextFieldError } from '../../../../utils'
 import PlayersAutocomplete from './UsersAutocomplete'
@@ -14,7 +14,8 @@ import PlayersAutocomplete from './UsersAutocomplete'
 
 function CreateTourModal() {
     
-    const { mutate, isLoading } = useCreateTourMutation()
+    const { isLoading, mutateAsync } = useCreateTourMutation()
+    const modal = useModal()
     
     const form = useForm<CreateTourDto>({
         mode: 'onChange',
@@ -22,7 +23,9 @@ function CreateTourModal() {
     })
     
     const submit = (form: CreateTourDto) => {
-        mutate(form)
+        mutateAsync(form).then(() => {
+            modal.close()
+        })
     }
     
     const handleAutocompleteChange = (activeUsers: IUser[]) => {

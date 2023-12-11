@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
-import { GameSet, Tour } from '@tennis-stats/entities'
+import { Match, Tour } from '@tennis-stats/entities'
 import { ETourStatus } from '@tennis-stats/types'
 import { DataSource, Repository } from 'typeorm'
 
@@ -14,7 +14,12 @@ class ToursRepository extends Repository<Tour> {
     
     public getToursByQuery(query: GetToursQuery): Promise<Tour[]> {
         const builder = this.createQueryBuilder('tour')
-            .leftJoinAndSelect('tour.gameSets', 'gameSets')
+            .leftJoinAndSelect('tour.matches', 'matches')
+            .leftJoinAndSelect('matches.player1', 'matchPlayer1')
+            .leftJoinAndSelect('matches.player2', 'matchPlayer2')
+            .leftJoinAndSelect('matchPlayer1.user', 'matchPlayerUser1')
+            .leftJoinAndSelect('matchPlayer2.user', 'matchPlayerUser2')
+            .leftJoinAndSelect('matches.gameSets', 'gameSets')
             .leftJoinAndSelect('gameSets.player1', 'player1')
             .leftJoinAndSelect('gameSets.player2', 'player2')
             .leftJoinAndSelect('player1.user', 'user1')
@@ -33,11 +38,11 @@ class ToursRepository extends Repository<Tour> {
         })
     }
     
-    public getTourEntity(dto: CreateTourDto, gameSets: GameSet[]): Tour {
+    public getTourEntity(dto: CreateTourDto, matchEntities: Match[]): Tour {
         const tour = new Tour()
         
         tour.date = new Date()
-        tour.gameSets = gameSets
+        tour.matches = matchEntities
         tour.setsCount = dto.setsCount
         tour.status = ETourStatus.ACTIVE
         

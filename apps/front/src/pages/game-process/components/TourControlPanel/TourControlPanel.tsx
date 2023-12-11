@@ -4,7 +4,6 @@ import { ETourStatus, ITour } from '@tennis-stats/types'
 import format from 'date-fns/format'
 import ruLocale from 'date-fns/locale/ru'
 import parseISO from 'date-fns/parseISO'
-import { useMemo } from 'react'
 import Styled from './TourControlPanel.styles'
 
 
@@ -20,32 +19,17 @@ function TourControlPanel({ activeTour }: IProps) {
         return format(parsedDate, 'dd MMM yyyy HH:mm', { locale: ruLocale })
     }
     
-    const status = useMemo(() => {
+    const getStatusChip = () => {
         switch (activeTour.status) {
             case ETourStatus.ACTIVE:
             default:
-                return {
-                    caption: 'Активный',
-                    color: '#D5EFFF',
-                    borderColor: '#8EC8F6',
-                    textColor: '#0D74CE'
-                }
+                return <Chip label={'Активный'} color={'info'}/>
             case ETourStatus.CANCELED:
-                return {
-                    caption: 'Отменен',
-                    color: '#FFDCD3',
-                    borderColor: '#F5A898',
-                    textColor: '#D13415'
-                }
+                return <Chip label={'Отменен'} color={'error'}/>
             case ETourStatus.FINISHED:
-                return {
-                    caption: 'Завершен',
-                    color: '#D6F1DF',
-                    borderColor: '#8ECEAA',
-                    textColor: '#218358'
-                }
+                return <Chip label={'Завершен'} color={'success'}/>
         }
-    }, [activeTour.status])
+    }
     
     return (
         <Styled.Wrapper direction={'row'}>
@@ -53,16 +37,9 @@ function TourControlPanel({ activeTour }: IProps) {
             <Stack direction={'column'}>
                 
                 <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <Typography variant={'h4'}>Тур: {activeTour.id}</Typography>
+                    <Typography variant={'h3'}>Тур: {activeTour.id}</Typography>
                     
-                    <Chip
-                        label={status.caption}
-                        sx={{
-                            backgroundColor: status.color,
-                            color: status.textColor,
-                            border: `1px solid ${status.borderColor}`
-                        }}
-                    />
+                    {getStatusChip()}
                 </Stack>
                 
                 
@@ -70,7 +47,7 @@ function TourControlPanel({ activeTour }: IProps) {
                     variant={'subtitle2'}
                     sx={{ opacity: 0.7, mt: 0.5 }}
                 >
-                    {formattedDate()}
+                    Начало тура: {formattedDate()}
                 </Typography>
             </Stack>
             
@@ -79,7 +56,7 @@ function TourControlPanel({ activeTour }: IProps) {
                     <CancelIcon sx={{ color: '#E5484D' }}/>
                 </IconButton>
             </Stack>
-            
+        
         </Styled.Wrapper>
     )
     

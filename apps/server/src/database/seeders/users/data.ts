@@ -1,7 +1,7 @@
 import { IUser } from '@tennis-stats/types'
 
 
-export type TSeedUser = Omit<IUser, 'id'>
+export type TSeedUser = Omit<IUser, 'id' | 'fullName' | 'shortFullName'>
 
 export const users: TSeedUser[] = [
     {

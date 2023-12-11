@@ -1,5 +1,5 @@
-import { IPlayer } from './player'
-import { ITour } from './tour'
+import { IMatch } from './match'
+import { IPlayer, TScoreCaption } from './player'
 
 
 enum EGameSetStatus {
@@ -10,11 +10,14 @@ enum EGameSetStatus {
 
 interface IGameSet {
     id: number
-    tour: ITour
+    match: IMatch
     player1: IPlayer
     player2: IPlayer
-    time: Date
+    startDate: Date | null
+    endDate: Date
     status: EGameSetStatus
+    setScore: TScoreCaption
+    duration: string
 }
 
 export { IGameSet, EGameSetStatus }

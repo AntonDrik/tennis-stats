@@ -1,5 +1,5 @@
 import { IUser } from '@tennis-stats/types'
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { AfterLoad, BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 
 @Entity()
@@ -16,4 +16,13 @@ export class User extends BaseEntity implements IUser {
     
     @Column('varchar', { nullable: false })
     age: number
+    
+    fullName: string
+    shortFullName: string
+    
+    @AfterLoad()
+    getFullName(): void {
+        this.fullName = `${this.firstName} ${this.lastName}`
+        this.shortFullName = `${this.firstName} ${this.lastName.substring(0, 1)}.`
+    }
 }

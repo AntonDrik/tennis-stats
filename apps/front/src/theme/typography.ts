@@ -1,6 +1,5 @@
 import { TypographyOptions } from '@mui/material/styles/createTypography'
 
-
 export function pxToRem(value: number) {
     return `${value / 16}rem`
 }
@@ -36,64 +35,48 @@ const typography: TypographyOptions = {
         fontSize: pxToRem(16)
     },
     body2: {
-        lineHeight: 22 / 14,
         fontSize: pxToRem(14)
     },
     h1: {
         fontWeight: 500,
-        lineHeight: '56px',
         fontSize: pxToRem(48),
-        textTransform: 'uppercase',
-        ...responsiveFontSizes({ xs: 36, sm: 40, md: 44, lg: 48 })
+        textTransform: 'uppercase'
     },
     h2: {
         fontWeight: 500,
-        lineHeight: 64 / 48,
-        fontSize: pxToRem(32),
-        ...responsiveFontSizes({ xs: 32, sm: 36, md: 40, lg: 44 })
+        fontSize: pxToRem(32)
     },
     h3: {
         fontWeight: 500,
-        lineHeight: '42px',
-        fontSize: pxToRem(32),
-        ...responsiveFontSizes({ xs: 30, sm: 30, md: 30, lg: 32 })
+        fontSize: pxToRem(32)
     },
     h4: {
         fontWeight: 500,
-        lineHeight: 1.5,
-        fontSize: pxToRem(24),
-        ...responsiveFontSizes({ xs: 18, sm: 18, md: 20, lg: 24 })
+        fontSize: pxToRem(24)
     },
     h5: {
         fontWeight: 500,
-        lineHeight: 1.5,
-        fontSize: pxToRem(18),
-        ...responsiveFontSizes({ xs: 17, sm: 19, md: 20, lg: 20 })
+        // lineHeight: 1.5,
+        fontSize: pxToRem(18)
     },
     h6: {
         fontWeight: 500,
-        lineHeight: '18px',
         fontSize: pxToRem(18),
-        textTransform: 'uppercase',
-        ...responsiveFontSizes({ xs: 14, sm: 14, md: 16, lg: 18 })
+        textTransform: 'uppercase'
     },
     subtitle1: {
         fontWeight: 600,
-        lineHeight: 1.5,
         fontSize: pxToRem(16)
     },
     subtitle2: {
         fontWeight: 600,
-        lineHeight: 22 / 14,
         fontSize: pxToRem(14)
     },
     caption: {
-        lineHeight: 1.5,
         fontSize: pxToRem(12)
     },
     overline: {
         fontWeight: 700,
-        lineHeight: 1.5,
         fontSize: pxToRem(12),
         letterSpacing: 1.1,
         textTransform: 'uppercase'

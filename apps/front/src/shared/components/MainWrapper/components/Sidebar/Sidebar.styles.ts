@@ -12,7 +12,7 @@ const MenuWrapper = styled(Box)<IMenuWrapperProps>(
         position: 'absolute',
         marginTop: '55px',
         height: '100%',
-        backgroundColor: '#E1F6FD',
+        backgroundColor: '#F7F9F8',
         zIndex: 999
     },
     ({ $isOpen }) => ({

@@ -1,4 +1,5 @@
 import {
+    AfterLoad,
     BaseEntity,
     Column,
     Entity,
@@ -6,10 +7,11 @@ import {
     ManyToOne, OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm'
-import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
+import { EGameSetStatus, IGameSet, TScoreCaption } from '@tennis-stats/types'
+import { Match } from './match.entity'
+import intervalToDuration from 'date-fns/intervalToDuration'
 
 import { Player } from './player.entity'
-import { Tour } from './tour.entity'
 
 
 @Entity()
@@ -18,8 +20,8 @@ export class GameSet extends BaseEntity implements IGameSet {
     @PrimaryGeneratedColumn()
     id: number
     
-    @ManyToOne(() => Tour)
-    tour: Tour
+    @ManyToOne(() => Match)
+    match: Match
     
     @OneToOne(() => Player, { eager: true, cascade: true })
     @JoinColumn()
@@ -30,8 +32,29 @@ export class GameSet extends BaseEntity implements IGameSet {
     player2: Player
     
     @Column('datetime', { nullable: true })
-    time: Date
+    startDate: Date
+    
+    @Column('datetime', { nullable: true })
+    endDate: Date
     
     @Column('varchar', { default: EGameSetStatus.PENDING })
     status: EGameSetStatus
+    
+    setScore: TScoreCaption
+    duration: string
+    
+    @AfterLoad()
+    loadVariables() {
+        this.setScore = `${this.player1?.score} | ${this.player2?.score}`
+        
+        if (this.startDate && this.endDate) {
+            const duration = intervalToDuration({ start: this.startDate, end: this.endDate })
+            // @ts-ignore
+            const seconds = duration.seconds < 10 ? `0${duration.seconds}` : duration.seconds
+            
+            this.duration = `${duration.minutes}:${seconds}`
+        }
+        
+    }
+    
 }
