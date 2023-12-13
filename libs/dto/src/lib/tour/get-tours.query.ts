@@ -1,8 +1,14 @@
 import { ETourStatus } from '@tennis-stats/types'
-import { IsEnum, IsOptional } from 'class-validator'
+import { Transform } from 'class-transformer'
+import { IsEnum, IsNumber, IsOptional } from 'class-validator'
 
 
 class GetToursQuery {
+    
+    @IsOptional()
+    @IsNumber()
+    @Transform(({value}) => Number(value))
+    id?: number | string
     
     @IsOptional()
     @IsEnum(ETourStatus)

@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios'
-import axiosClient from './axios-client'
+import axiosClient from './client'
 
 
 interface IFetcher {
@@ -14,19 +14,23 @@ interface IFetcher {
 
 const axiosFetcher: IFetcher = {
     get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        return axiosClient.get<T>(url, config).then((response) => response.data)
+        return axiosClient.get<T>(url, config)
+            .then((response) => response.data)
     },
     
     post<T, T1>(url: string, data?: T1, config?: AxiosRequestConfig): Promise<T> {
-        return axiosClient.post<T>(url, data, config).then((response) => response.data)
+        return axiosClient.post<T>(url, data, config)
+            .then((response) => response.data)
     },
     
     put<T, T1>(url: string, data?: T1, config?: AxiosRequestConfig): Promise<T> {
-        return axiosClient.put<T>(url, data, config).then((response) => response.data)
+        return axiosClient.put<T>(url, data, config)
+            .then((response) => response.data)
     },
     
     delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        return axiosClient.delete<T>(url, config).then((response) => response.data)
+        return axiosClient.delete<T>(url, config)
+            .then((response) => response.data)
     }
 }
 

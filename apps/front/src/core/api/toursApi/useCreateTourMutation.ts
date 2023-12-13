@@ -1,6 +1,6 @@
 import { CreateTourDto } from '@tennis-stats/dto'
 import { useMutation, useQueryClient } from 'react-query'
-import axiosFetcher from '../client/axios-fetcher'
+import axiosFetcher from '../axios/fetcher'
 
 
 function useCreateTourMutation() {

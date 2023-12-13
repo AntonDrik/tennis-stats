@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
+import theme from '../../../../theme/theme'
 import { styled } from 'styled-components'
-import theme from '../../../../../../theme/theme'
 
 const Wrapper = styled(Stack)({
     borderRadius: theme.shape.borderRadius,

@@ -2,54 +2,38 @@ import { Typography } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableHead from '@mui/material/TableHead'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
-import { useModal } from '../../../../../../shared/components'
-import GameModalContainer from '../../../../modals/GameModal/GameModalContainer'
 
 import Styled from './GameSetsTable.styles'
 
 
 interface IProps {
     gameSetList: IGameSet[]
+    onRowClick?: (gameSet: IGameSet, setIndex: number) => void
 }
 
-
-function GameSetsTable({ gameSetList }: IProps) {
-    
-    const modal = useModal()
-    
-    const activeGameSet = gameSetList.find((gameSet) => {
-        return gameSet.status === EGameSetStatus.IN_PROCESS
-    })
+function GameSetsTable({ gameSetList, onRowClick }: IProps) {
     
     const getStatusChip = (status: EGameSetStatus) => {
         switch (status) {
+            case EGameSetStatus.READY_TO_START:
+                return <Chip label={'Готов к старту'} color={'info'} size={'small'}/>
+            
+            case EGameSetStatus.IN_PROCESS:
+                return <Chip label={'Идёт игра'} color={'info'} size={'small'}/>
+            
+            case EGameSetStatus.FINISHED:
+                return <Chip label={'Завершен'} color={'success'} size={'small'}/>
+            
+            case EGameSetStatus.CANCELED:
+                return <Chip label={'Отменён'} color={'error'} size={'small'}/>
+            
             case EGameSetStatus.PENDING:
             default:
                 return <Chip label={'В ожидании'} size={'small'}/>
-            case EGameSetStatus.IN_PROCESS:
-                return <Chip label={'Идёт игра'} color={'info'} size={'small'}/>
-            case EGameSetStatus.FINISHED:
-                return <Chip label={'Завершен'} color={'success'} size={'small'}/>
         }
-    }
-    
-    const handleRowClick = (gameSet: IGameSet, setIndex: number) => {
-        if (gameSet.status === EGameSetStatus.FINISHED) {
-            return
-        }
-        
-        if (activeGameSet && activeGameSet.id !== gameSet.id) {
-            return
-        }
-        
-        modal.open(
-            <GameModalContainer gameSet={gameSet} setIndex={setIndex}/>,
-            { maxWidth: 'xl', fullWidth: true }
-        )
     }
     
     return (
@@ -61,7 +45,7 @@ function GameSetsTable({ gameSetList }: IProps) {
                             <Styled.TableRow
                                 key={set.id}
                                 status={set.status}
-                                onClick={() => handleRowClick(set, index + 1)}
+                                onClick={() => onRowClick?.(set, index + 1)}
                             >
                                 <TableCell align="left">
                                     <Typography variant={'overline'}>{index + 1} Сет</Typography>
@@ -77,6 +61,5 @@ function GameSetsTable({ gameSetList }: IProps) {
     )
     
 }
-
 
 export default GameSetsTable

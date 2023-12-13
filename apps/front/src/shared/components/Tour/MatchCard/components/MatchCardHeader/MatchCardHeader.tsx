@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import { IMatch } from '@tennis-stats/types'
-import Styled from '../MatchCard/MatchCard.styles'
+import Styled from './MatchCardHeader.styles'
 
 
 interface IProps {

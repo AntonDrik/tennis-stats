@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { GameSet } from '@tennis-stats/entities'
+import { GameSet, Tour } from '@tennis-stats/entities'
 import { EGameSetStatus } from '@tennis-stats/types'
-import { DataSource, Repository } from 'typeorm'
+import { DataSource, EntityManager, Repository } from 'typeorm'
+import settle from '../../common/utils/settle'
 
 
 @Injectable()
@@ -15,6 +16,28 @@ class GameSetsRepository extends Repository<GameSet> {
         return this.findOneBy({
             status: EGameSetStatus.IN_PROCESS
         })
+    }
+    
+    public findAllByTour(tour: Tour): Promise<GameSet[]> {
+        return this.findBy({
+            match: {
+                tour: { id: tour.id }
+            }
+        })
+    }
+    
+    public async cancelAllByTour(tour: Tour, transactionManager: EntityManager) {
+        const gameSetsList = await this.findAllByTour(tour)
+    
+        const promise = gameSetsList.map(async (gameSet) => {
+            await transactionManager.update(
+                GameSet,
+                { id: gameSet.id },
+                { status: EGameSetStatus.CANCELED }
+            )
+        })
+        
+        return settle(promise)
     }
     
 }

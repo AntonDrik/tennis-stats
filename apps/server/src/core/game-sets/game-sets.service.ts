@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { IdDto } from '@tennis-stats/dto'
-import { GameSet } from '@tennis-stats/entities'
+import { GameSet, Tour } from '@tennis-stats/entities'
 import { EGameSetStatus } from '@tennis-stats/types'
 import { GameSetNotFoundException, UserNotFoundException } from '../../common/exceptions'
 import { UsersRepository } from '../users'

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Match, Tour } from '@tennis-stats/entities'
 import { ETourStatus } from '@tennis-stats/types'
-import { DataSource, Repository } from 'typeorm'
+import { DataSource, EntityManager, Repository } from 'typeorm'
 
 
 @Injectable()
@@ -24,6 +24,10 @@ class ToursRepository extends Repository<Tour> {
             .leftJoinAndSelect('gameSets.player2', 'player2')
             .leftJoinAndSelect('player1.user', 'user1')
             .leftJoinAndSelect('player2.user', 'user2')
+        
+        if (Number.isFinite(query.id)) {
+            builder.where('tour.id = :id', { id: query.id })
+        }
         
         if (query.status) {
             builder.where('tour.status = :status', { status: query.status })
@@ -49,6 +53,13 @@ class ToursRepository extends Repository<Tour> {
         return tour
     }
     
+    public cancelTour(tour: Tour, transactionManager: EntityManager) {
+        return transactionManager.update(
+            Tour,
+            { id: tour.id },
+            { status: ETourStatus.CANCELED }
+        )
+    }
     
 }
 

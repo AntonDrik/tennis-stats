@@ -1,13 +1,12 @@
 import { Box, Button } from '@mui/material'
 import { ETourStatus } from '@tennis-stats/types'
 import { useGetToursQuery } from '../../core/api'
-import { Page, Spinner, useModal } from '../../shared/components'
+import { Page, Spinner, TourInfoPanel, useModal } from '../../shared/components'
 import MatchList from './components/MatchList/MatchList'
-import TourControlPanel from './components/TourControlPanel/TourControlPanel'
 import { default as CreateTourModal } from './modals/CreateTourModal/CreateTourModal'
 
 
-export default function GameProcessPage() {
+function GameProcessPage() {
     
     const { data, isLoading } = useGetToursQuery({ status: ETourStatus.ACTIVE })
     
@@ -16,7 +15,7 @@ export default function GameProcessPage() {
     const activeTour = data?.[0]
     const isDisabledButton = Boolean(activeTour) || isLoading
     
-    const handleClick = () => {
+    const handleNewTourClick = () => {
         modal.open(<CreateTourModal/>, { maxWidth: 'lg' })
     }
     
@@ -28,7 +27,7 @@ export default function GameProcessPage() {
             <Box>
                 {
                     activeTour &&
-                    <TourControlPanel activeTour={activeTour}/>
+                    <TourInfoPanel tour={activeTour}/>
                 }
                 
                 {
@@ -38,14 +37,14 @@ export default function GameProcessPage() {
                         sx={{mb: 3}}
                         fullWidth
                         disabled={isDisabledButton}
-                        onClick={handleClick}
+                        onClick={handleNewTourClick}
                     >Новая игра</Button>
                 }
             </Box>
             
             {
                 activeTour &&
-                <MatchList activeTour={activeTour}/>
+                <MatchList tour={activeTour}/>
             }
         
         </Page>
@@ -53,3 +52,5 @@ export default function GameProcessPage() {
     )
     
 }
+
+export default GameProcessPage

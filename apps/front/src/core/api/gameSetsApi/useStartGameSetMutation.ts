@@ -1,7 +1,7 @@
 import { IdDto } from '@tennis-stats/dto'
 import { GameSet } from '@tennis-stats/entities'
 import { useMutation, useQueryClient } from 'react-query'
-import axiosFetcher from '../client/axios-fetcher'
+import axiosFetcher from '../axios/fetcher'
 
 
 function useStartGameSetMutation() {

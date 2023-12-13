@@ -1,7 +1,7 @@
 import { IGameSet } from '@tennis-stats/types'
 import { useQuery } from 'react-query'
 
-import axiosFetcher from '../client/axios-fetcher'
+import axiosFetcher from '../axios/fetcher'
 
 
 function useGetActiveGameSetQuery() {

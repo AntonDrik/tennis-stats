@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
-import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
+import { CreateTourDto, GetToursQuery, IdDto } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
 import ToursService from './tours.service'
 
@@ -22,6 +22,11 @@ class ToursController {
     @Post()
     createTour(@Body() dto: CreateTourDto) {
         return this.tourService.createTour(dto)
+    }
+    
+    @Post('/cancel')
+    cancelTour(@Body() dto: IdDto) {
+        return this.tourService.cancelTour(dto)
     }
     
 }

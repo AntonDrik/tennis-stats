@@ -1,7 +1,7 @@
 import { IUser } from '@tennis-stats/types'
 import { AxiosError } from 'axios'
 import { useQuery } from 'react-query'
-import axiosFetcher from '../client/axios-fetcher'
+import axiosFetcher from '../axios/fetcher'
 
 
 function useUsersQuery() {

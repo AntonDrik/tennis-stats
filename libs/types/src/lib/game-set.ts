@@ -4,8 +4,10 @@ import { IPlayer, TScoreCaption } from './player'
 
 enum EGameSetStatus {
     PENDING = 'PENDING',
+    READY_TO_START = 'READY_TO_START',
     IN_PROCESS = 'IN_PROCESS',
-    FINISHED = 'FINISHED'
+    FINISHED = 'FINISHED',
+    CANCELED = 'CANCELED'
 }
 
 interface IGameSet {

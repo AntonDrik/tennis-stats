@@ -10,7 +10,8 @@ const Wrapper = styled(Stack)({
     backgroundColor: "#F1F0EF",
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
+    position: 'relative'
 })
 
 const ButtonWrapper = styled(Button)({

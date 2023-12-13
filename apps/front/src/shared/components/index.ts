@@ -1,7 +1,8 @@
 export { default as MainWrapper } from './MainWrapper/Wrapper'
 export { default as Spinner } from './Spinner/Spinner'
-export { default as Page } from './Page/page'
-export { default as VerticalNumberInput } from './Inputs/VerticalNumberInput/VerticalNumberInput'
+export { default as Toaster } from './Toaster/Toaster'
+export { default as Page } from './Page/Page'
 
-export { default as ModalContainer } from './Modal/Modal'
-export { default as useModal } from './Modal/hook/useModal'
+export * from './Tour'
+export * from './Inputs'
+export * from './Modal'

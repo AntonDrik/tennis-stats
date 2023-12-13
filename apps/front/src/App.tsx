@@ -3,7 +3,7 @@ import { QueryClientProvider } from 'react-query'
 
 import { queryClient } from './core/api'
 import AppRoutes from './routes/routes'
-import { ModalContainer } from './shared/components'
+import { ModalContainer, Toaster } from './shared/components'
 import GlobalStyles from './theme/globalStyles'
 import ThemeConfig from './theme/themeConfig'
 
@@ -16,6 +16,7 @@ export default function App(): ReactElement {
                 <GlobalStyles/>
                 <AppRoutes/>
                 <ModalContainer/>
+                <Toaster/>
             </QueryClientProvider>
         </ThemeConfig>
     )

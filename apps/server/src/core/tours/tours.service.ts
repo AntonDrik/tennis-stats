@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
+import { CreateTourDto, GetToursQuery, IdDto } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
 import { DataSource } from 'typeorm'
-import { HasUnfinishedTourException } from '../../common/exceptions'
+import {
+    HasUnfinishedTourException,
+    TourNotFoundException,
+    UnableCancelTourException
+} from '../../common/exceptions'
+import { GameSetsRepository } from '../game-sets'
 import { MatchesService } from '../matches'
 import ToursRepository from './tours.repository'
 
@@ -12,6 +17,7 @@ class ToursService {
     
     constructor(
         private repository: ToursRepository,
+        private gameSetsRepository: GameSetsRepository,
         private dataSource: DataSource,
         private matchesService: MatchesService
     ) {}
@@ -31,19 +37,31 @@ class ToursService {
             throw new HasUnfinishedTourException()
         }
         
-        const matches = await this.matchesService.getMatchesEntities(dto)
-        const tourEntity = this.repository.getTourEntity(dto, matches)
+        const matchesEntities = await this.matchesService.getMatchesEntities(dto)
+        const tourEntity = this.repository.getTourEntity(dto, matchesEntities)
         
         await this.dataSource.transaction(async (manager) => {
-            // await manager.save(gameSets)
             await manager.save(tourEntity)
         })
         
         return tourEntity
     }
     
-    public cancelTour() {
-    
+    public async cancelTour(dto: IdDto): Promise<Tour> {
+        const tour = await this.repository.findOneBy({ id: dto.id })
+        
+        if (!tour) {
+            throw new TourNotFoundException()
+        }
+        
+        await this.dataSource.transaction(async (manager) => {
+            await this.gameSetsRepository.cancelAllByTour(tour, manager)
+            await this.repository.cancelTour(tour, manager)
+        }).catch((err: Error) => {
+            throw new UnableCancelTourException(err.message)
+        })
+        
+        return tour
     }
     
 }

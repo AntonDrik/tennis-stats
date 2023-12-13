@@ -1,21 +1,35 @@
 import { Stack } from '@mui/material'
-import { ITour } from '@tennis-stats/types'
-import MatchCard from './components/MatchCard/MatchCard'
+import { EGameSetStatus, IGameSet, ITour } from '@tennis-stats/types'
+import { MatchCard, useModal } from '../../../../shared/components'
+import GameModalContainer from '../../modals/GameModal/GameModalContainer'
 
 
 interface IProps {
-    activeTour: ITour
+    tour: ITour
 }
 
-function MatchList({ activeTour }: IProps) {
+function MatchList({ tour }: IProps) {
+    const modal = useModal()
+    
+    const handleRowClick = (gameSet: IGameSet, setIndex: number) => {
+        if (gameSet.status !== EGameSetStatus.READY_TO_START) {
+            return
+        }
+        
+        modal.open(
+            <GameModalContainer gameSet={gameSet} setIndex={setIndex}/>,
+            { maxWidth: 'xl', fullWidth: true }
+        )
+    }
 
     return (
         <Stack spacing={2}>
             {
-                activeTour.matches.map((match) => (
+                tour.matches.map((match) => (
                     <MatchCard
                         key={match.id}
                         match={match}
+                        onRowClick={handleRowClick}
                     />
                 ))
             }
