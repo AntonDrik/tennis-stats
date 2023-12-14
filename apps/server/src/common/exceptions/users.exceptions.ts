@@ -6,3 +6,9 @@ export class UserNotFoundException extends HttpException {
         super(`Пользователь не найден`, HttpStatus.NOT_FOUND, options)
     }
 }
+
+export class UsersNotFoundException extends HttpException {
+    constructor(options?: HttpExceptionOptions) {
+        super(`Нет ни одного пользователя`, HttpStatus.NOT_FOUND, options)
+    }
+}

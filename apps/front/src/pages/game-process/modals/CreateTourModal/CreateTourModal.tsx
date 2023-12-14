@@ -9,7 +9,7 @@ import { IUser } from '@tennis-stats/types'
 import { Spinner, useModal } from '../../../../shared/components'
 import useCreateTourMutation from '../../../../core/api/toursApi/useCreateTourMutation'
 import { getTextFieldError } from '../../../../utils'
-import PlayersAutocomplete from './UsersAutocomplete'
+import UsersAutocomplete from './components/UsersAutocomplete/UsersAutocomplete'
 
 
 function CreateTourModal() {
@@ -54,7 +54,7 @@ function CreateTourModal() {
                         
                         <Stack spacing={3} direction={'column'} sx={{ mt: 2 }}>
                             
-                            <PlayersAutocomplete
+                            <UsersAutocomplete
                                 onChange={handleAutocompleteChange}
                             />
                             

@@ -5,4 +5,4 @@ export { default as Page } from './Page/Page'
 
 export * from './Tour'
 export * from './Inputs'
-export * from './Modal'
+export * from './Modals/core'

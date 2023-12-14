@@ -1,10 +1,12 @@
-import React from 'react'
 import CasinoIcon from '@mui/icons-material/Casino'
 import GroupIcon from '@mui/icons-material/Group'
 import LogoutIcon from '@mui/icons-material/Logout'
 import QueryStatsIcon from '@mui/icons-material/QueryStats'
+import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import Divider from '@mui/material/Divider'
 import { useAtomValue } from 'jotai'
+import React from 'react'
+import { EAppRoutes } from '../../../../../routes/routes.constant'
 
 import { MenuSection } from './components'
 import { sidebarAtom } from './Sidebar.state'
@@ -17,17 +19,22 @@ const menu: IMenuSection[] = [
         items: [
             {
                 title: 'Статистика',
-                link: '/stats',
+                link: EAppRoutes.STATS,
                 icon: <QueryStatsIcon htmlColor={'#374150'}/>
             },
             {
                 title: 'Пользователи',
-                link: '/users',
+                link: EAppRoutes.USERS,
                 icon: <GroupIcon htmlColor={'#374150'}/>
             },
             {
                 title: 'Игровой процесс',
-                link: '/game-process',
+                link: EAppRoutes.GAME_PROCESS,
+                icon: <SportsTennisIcon htmlColor={'#374150'}/>
+            },
+            {
+                title: 'Генератор очередности',
+                link: EAppRoutes.SEQUENCE_GENERATOR,
                 icon: <CasinoIcon htmlColor={'#374150'}/>
             }
         ]

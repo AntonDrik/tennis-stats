@@ -16,7 +16,7 @@ function GameProcessPage() {
     const isDisabledButton = Boolean(activeTour) || isLoading
     
     const handleNewTourClick = () => {
-        modal.open(<CreateTourModal/>, { maxWidth: 'lg' })
+        modal.open(<CreateTourModal/>, { maxWidth: 'lg', fullWidth: true })
     }
     
     return (
@@ -34,7 +34,7 @@ function GameProcessPage() {
                     !activeTour &&
                     <Button
                         variant={'contained'}
-                        sx={{mb: 3}}
+                        sx={{ mb: 3 }}
                         fullWidth
                         disabled={isDisabledButton}
                         onClick={handleNewTourClick}
@@ -48,7 +48,6 @@ function GameProcessPage() {
             }
         
         </Page>
-    
     )
     
 }

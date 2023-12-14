@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom'
-import { StatsPage, GameProcessPage, UsersPage, TourPage } from '../pages'
+import { StatsPage, GameProcessPage, UsersPage, TourPage, SequenceGeneratorPage } from '../pages'
 import MainRoute from './MainRoute'
 import { EAppRoutes } from './routes.constant'
 
@@ -15,10 +15,14 @@ const routes = createBrowserRouter(
             {/*В дальнейшем эти роуты будут с авторизацией*/}
             <Route element={<MainRoute/>}>
                 <Route path={EAppRoutes.USERS} element={<UsersPage/>}/>
+                
                 <Route path={EAppRoutes.STATS} element={<StatsPage/>}/>
+                
                 <Route path={EAppRoutes.GAME_PROCESS} element={<GameProcessPage/>}/>
                 
                 <Route path={EAppRoutes.TOUR} element={<TourPage/>}/>
+                
+                <Route path={EAppRoutes.SEQUENCE_GENERATOR} element={<SequenceGeneratorPage/>}/>
             </Route>
         
         </Route>

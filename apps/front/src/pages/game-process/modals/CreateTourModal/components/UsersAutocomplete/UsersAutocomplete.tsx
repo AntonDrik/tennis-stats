@@ -3,17 +3,17 @@ import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
 import { CreateTourDto } from '@tennis-stats/dto'
 import { IUser } from '@tennis-stats/types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormState } from 'react-hook-form'
-import { useUsersQuery } from '../../../../core/api'
-import { getTextFieldError } from '../../../../utils'
+import { useUsersQuery } from '../../../../../../core/api'
+import { getTextFieldError } from '../../../../../../utils'
 
 
 interface IProps {
     onChange?: (users: IUser[]) => void
 }
 
-function PlayersAutocomplete({ onChange }: IProps) {
+function UsersAutocomplete({ onChange }: IProps) {
     
     const { data: allUsers, isLoading } = useUsersQuery()
     
@@ -29,6 +29,14 @@ function PlayersAutocomplete({ onChange }: IProps) {
         setSelectedUsers(value)
         onChange?.(value)
     }
+    
+    useEffect(() => {
+        if (!allUsers?.length) {
+            return
+        }
+        
+        setSelectedUsers(allUsers)
+    }, [allUsers])
     
     return (
         <Autocomplete
@@ -63,4 +71,4 @@ function PlayersAutocomplete({ onChange }: IProps) {
     
 }
 
-export default PlayersAutocomplete
+export default UsersAutocomplete
