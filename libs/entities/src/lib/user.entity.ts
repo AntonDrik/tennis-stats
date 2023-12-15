@@ -23,6 +23,6 @@ export class User extends BaseEntity implements IUser {
     @AfterLoad()
     getFullName(): void {
         this.fullName = `${this.firstName} ${this.lastName}`
-        this.shortFullName = `${this.firstName} ${this.lastName.substring(0, 1)}.`
+        this.shortFullName = `${this.lastName} ${this.firstName.substring(0, 1)}.`
     }
 }

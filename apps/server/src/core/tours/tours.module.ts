@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Tour } from '@tennis-stats/entities'
-import { GameSetsModule } from '../game-sets'
-import { MatchesModule } from '../matches'
+import { GameSetModule } from '../game-set'
+import { MatchModule } from '../match'
+import { MatchOrderModule } from '../match-order'
 import ToursRepository from './tours.repository'
 import ToursService from './tours.service'
 import ToursController from './tours.controller'
@@ -11,8 +12,9 @@ import ToursController from './tours.controller'
 @Module({
     imports: [
         TypeOrmModule.forFeature([Tour]),
-        MatchesModule,
-        GameSetsModule
+        MatchModule,
+        MatchOrderModule,
+        GameSetModule
     ],
     controllers: [ToursController],
     providers: [ToursService, ToursRepository],

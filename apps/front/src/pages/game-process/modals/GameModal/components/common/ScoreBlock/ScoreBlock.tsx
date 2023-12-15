@@ -1,7 +1,7 @@
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import { useState } from 'react'
-import { VerticalNumberInput } from '../../../../../../shared/components'
+import { VerticalNumberInput } from '../../../../../../../shared/components'
 
 
 interface IProps {

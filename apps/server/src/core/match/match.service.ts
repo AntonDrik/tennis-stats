@@ -3,19 +3,19 @@ import { CreateTourDto } from '@tennis-stats/dto'
 import { Match } from '@tennis-stats/entities'
 import { uniqueCombinations } from '@tennis-stats/helpers'
 import { UserNotFoundException } from '../../common/exceptions'
-import { GameSetsService } from '../game-sets'
+import { GameSetService } from '../game-set'
 import { UsersRepository } from '../users'
 
 
 @Injectable()
-class MatchesService {
+class MatchService {
     
     constructor(
         private usersRepository: UsersRepository,
-        private gameSetsService: GameSetsService
+        private gameSetService: GameSetService
     ) {}
     
-    public async getMatchesEntities(dto: CreateTourDto): Promise<Match[]> {
+    public async getMatchesForTour(dto: CreateTourDto): Promise<Match[]> {
         const allCombinationsIds = uniqueCombinations(dto.usersIds)
         
         const promises = allCombinationsIds.map(async (usersIds) => {
@@ -26,7 +26,7 @@ class MatchesService {
                 throw new UserNotFoundException()
             }
             
-            const gameSets = await this.gameSetsService.getGameSetsEntities(usersIds, dto.setsCount)
+            const gameSets = await this.gameSetService.createEntities(usersIds, dto.setsCount)
             
             const match = new Match()
             match.player1 = player1Entity
@@ -42,4 +42,4 @@ class MatchesService {
 }
 
 
-export default MatchesService
+export default MatchService

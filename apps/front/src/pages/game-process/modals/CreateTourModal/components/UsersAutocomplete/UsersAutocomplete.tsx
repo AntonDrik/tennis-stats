@@ -36,6 +36,7 @@ function UsersAutocomplete({ onChange }: IProps) {
         }
         
         setSelectedUsers(allUsers)
+        onChange?.(allUsers)
     }, [allUsers])
     
     return (

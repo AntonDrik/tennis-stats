@@ -1,3 +1,5 @@
 export {default as CreateTourDto} from './lib/tour/create-tour.dto'
 export {default as GetToursQuery} from './lib/tour/get-tours.query'
 export {default as IdDto} from './lib/common/id.dto'
+export {default as IdListDto} from './lib/common/id-list.dto'
+export {default as FinishGameSetDto} from './lib/game-set/finish-game-set.dto'

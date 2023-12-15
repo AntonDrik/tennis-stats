@@ -3,7 +3,7 @@ import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
 import { useAtom } from 'jotai'
 import * as React from 'react'
 import { useEffect } from 'react'
-import CloseGameModal from './components/CloseGameModal/CloseGameModal'
+import FinishGameModal from './components/FinishGameModal/FinishGameModal'
 import InitialModal from './components/InitialModal/InitialModal'
 import InProcessGameModal from './components/InProcessGameModal/InProcessGameModal'
 import { gameModalAtom } from './GameModalContainer.state'
@@ -42,10 +42,11 @@ function GameModalContainer({ gameSet, setIndex }: IProps) {
                 </Typography>
             </DialogTitle>
             
-            {state === EGameModalType.INITIAL && <InitialModal gameSetId={gameSet.id}/>}
-            {state === EGameModalType.IN_PROCESS && <InProcessGameModal/>}
-            {state === EGameModalType.CLOSE_GAME && <CloseGameModal/>}
-        
+            {state === EGameModalType.INITIAL && <InitialModal gameSet={gameSet}/>}
+            
+            {state === EGameModalType.IN_PROCESS && <InProcessGameModal gameSet={gameSet}/>}
+            
+            {state === EGameModalType.FINISH_GAME && <FinishGameModal gameSet={gameSet}/>}
         </>
     )
     

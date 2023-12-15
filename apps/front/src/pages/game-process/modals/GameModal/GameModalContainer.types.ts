@@ -1,5 +1,5 @@
 export enum EGameModalType {
     INITIAL,
-    CLOSE_GAME,
+    FINISH_GAME,
     IN_PROCESS
 }

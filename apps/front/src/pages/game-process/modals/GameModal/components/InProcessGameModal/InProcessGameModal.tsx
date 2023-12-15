@@ -1,47 +1,47 @@
-import Button from '@mui/material/Button'
 import DialogContent from '@mui/material/DialogContent'
 import Typography from '@mui/material/Typography'
-import { useEffect, useMemo, useState } from 'react'
-import { useGetActiveGameSetQuery } from '../../../../../../core/api'
-import { Spinner } from '../../../../../../shared/components'
+import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
+import { useEffect, useState } from 'react'
+import { useFinishGameSetMutation } from '../../../../../../core/api'
 import { useTimer } from '../../../../../../shared/hooks'
-import ScoreBlock from '../ScoreBlock/ScoreBlock'
+import FinishButton from '../common/FinishButton/FinishButton'
+import ScoreBlock from '../common/ScoreBlock/ScoreBlock'
 
+interface IProps {
+    gameSet: IGameSet
+}
 
-function InProcessGameModal() {
+function InProcessGameModal({gameSet}: IProps) {
     
-    const { data, isLoading } = useGetActiveGameSetQuery()
+    const finishGameSet = useFinishGameSetMutation()
     
     const timer = useTimer()
     
     const [score, setScore] = useState<[number, number]>([0, 0])
     
-    const isValidScore = useMemo(() => {
-        if (score[0] < 11 && score[1] < 11) {
-            return false
-        }
-        
-        return score[0] !== score[1]
-    }, [score])
-    
-    const handleCloseGame = () => {
-        timer.stop()
-    }
-    
-    useEffect(() => {
-        if (!data?.startDate) {
+    const handleFinishGame = () => {
+        if (!gameSet) {
             return
         }
         
-        timer.start(String(data.startDate))
-    }, [data])
+        finishGameSet.mutateAsync({ id: gameSet.id, status: EGameSetStatus.FINISHED })
+            .then(() => {
+                timer.stop()
+            })
+    }
+    
+    useEffect(() => {
+        if (!gameSet.startDate) {
+            return
+        }
+        
+        timer.start(String(gameSet.startDate))
+    }, [gameSet])
     
     return (
         <DialogContent>
-            {isLoading && <Spinner/>}
-            
             {
-                data?.startDate &&
+                gameSet.startDate &&
                 <Typography
                     align={'center'}
                     variant={'subtitle1'}
@@ -51,14 +51,11 @@ function InProcessGameModal() {
             
             <ScoreBlock onChange={setScore}/>
             
-            <Button
-                variant={'contained'}
-                fullWidth
-                sx={{ mt: 2 }}
-                disabled={!isValidScore}
-                onClick={handleCloseGame}
-            >Завершить игру</Button>
-            
+            <FinishButton
+                score={score}
+                onClick={handleFinishGame}
+            />
+        
         </DialogContent>
     )
     

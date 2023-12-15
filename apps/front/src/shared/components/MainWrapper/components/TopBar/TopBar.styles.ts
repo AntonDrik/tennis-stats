@@ -5,7 +5,7 @@ import theme from '../../../../../theme/theme'
 
 
 const Wrapper = styled(Stack)({
-    position: 'absolute',
+    position: 'fixed',
     left: 0,
     right: 0,
     height: '55px',

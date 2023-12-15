@@ -11,7 +11,7 @@ class ToursController {
     
     @Get()
     getTours(@Query() query: GetToursQuery): Promise<Tour[]> {
-        return this.tourService.getTours(query)
+        return this.tourService.getManyTours(query)
     }
     
     @Get('/active')
@@ -20,12 +20,17 @@ class ToursController {
     }
     
     @Post()
-    createTour(@Body() dto: CreateTourDto) {
+    createTour(@Body() dto: CreateTourDto): Promise<Tour> {
         return this.tourService.createTour(dto)
     }
     
+    @Post('/finish')
+    finishTour(@Body() dto: IdDto): Promise<Tour | null> {
+        return this.tourService.finishTour(dto)
+    }
+    
     @Post('/cancel')
-    cancelTour(@Body() dto: IdDto) {
+    cancelTour(@Body() dto: IdDto): Promise<Tour> {
         return this.tourService.cancelTour(dto)
     }
     

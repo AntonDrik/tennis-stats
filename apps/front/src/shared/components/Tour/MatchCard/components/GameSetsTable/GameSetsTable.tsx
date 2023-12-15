@@ -1,20 +1,17 @@
-import { Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import Chip from '@mui/material/Chip'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
-
 import Styled from './GameSetsTable.styles'
 
 
 interface IProps {
     gameSetList: IGameSet[]
     onRowClick?: (gameSet: IGameSet, setIndex: number) => void
+    onCancelClick?: (gameSet: IGameSet, setIndex: number) => void
 }
 
-function GameSetsTable({ gameSetList, onRowClick }: IProps) {
+function GameSetsTable({ gameSetList, onRowClick, onCancelClick }: IProps) {
     
     const getStatusChip = (status: EGameSetStatus) => {
         switch (status) {
@@ -36,28 +33,45 @@ function GameSetsTable({ gameSetList, onRowClick }: IProps) {
         }
     }
     
+    const isShowCancelButton = (set: IGameSet) => {
+        return onCancelClick && set.status === EGameSetStatus.READY_TO_START
+    }
+    
+    
     return (
-        <TableContainer>
-            <Table size={'small'}>
-                <TableBody>
-                    {
-                        gameSetList.map((set, index) => (
-                            <Styled.TableRow
-                                key={set.id}
-                                status={set.status}
-                                onClick={() => onRowClick?.(set, index + 1)}
-                            >
-                                <TableCell align="left">
-                                    <Typography variant={'overline'}>{index + 1} Сет</Typography>
-                                </TableCell>
-                                <TableCell align="left">{getStatusChip(set.status)}</TableCell>
-                                <TableCell align="left">{set.setScore}</TableCell>
-                            </Styled.TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Box>
+            {
+                gameSetList.map((set, index) => (
+                    <Styled.Row
+                        direction={'row'}
+                        status={set.status}
+                        onClick={() => onRowClick?.(set, index + 1)}
+                    >
+                        <Box width={'80px'}>
+                            <Typography variant={'overline'}>{index + 1} Сет</Typography>
+                        </Box>
+                        
+                        <Box width={'160px'}>{getStatusChip(set.status)}</Box>
+                        
+                        <Box width={'70px'}>{set.setScore}</Box>
+                        
+                        <Box width={'30px'}>
+                            {
+                                isShowCancelButton(set) &&
+                                <IconButton
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onCancelClick?.(set, index + 1)
+                                    }}
+                                >
+                                    <HighlightOffIcon/>
+                                </IconButton>
+                            }
+                        </Box>
+                    </Styled.Row>
+                ))
+            }
+        </Box>
     )
     
 }

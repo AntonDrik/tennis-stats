@@ -1,4 +1,4 @@
-import MuiTableRow from '@mui/material/TableRow'
+import { Stack } from '@mui/material'
 import { EGameSetStatus } from '@tennis-stats/types'
 import { styled } from 'styled-components'
 
@@ -7,10 +7,18 @@ interface IRowProps {
     status: EGameSetStatus
 }
 
-const TableRow = styled(MuiTableRow)<IRowProps>(
+const Row = styled(Stack)<IRowProps>(
     {
-        '&:last-child td, &:last-child th': {
-            border: 0
+        
+        alignItems: 'center',
+        borderBottom: '1px solid #D9D9D9',
+        paddingLeft: '16px',
+        paddingRight: '16px',
+        paddingTop: '8px',
+        paddingBottom: '8px',
+        
+        '&:last-child': {
+            borderBottom: 0
         }
     },
     ({ status }) => ({
@@ -22,5 +30,5 @@ const TableRow = styled(MuiTableRow)<IRowProps>(
 )
 
 export default {
-    TableRow
+    Row
 }

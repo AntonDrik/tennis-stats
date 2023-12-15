@@ -3,6 +3,7 @@ import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Match, Tour } from '@tennis-stats/entities'
 import { ETourStatus } from '@tennis-stats/types'
 import { DataSource, EntityManager, Repository } from 'typeorm'
+import { TourNotFoundException } from '../../common/exceptions'
 
 
 @Injectable()
@@ -10,6 +11,16 @@ class ToursRepository extends Repository<Tour> {
     
     constructor(dataSource: DataSource) {
         super(Tour, dataSource.createEntityManager())
+    }
+    
+    public async findById(id: number): Promise<Tour> {
+        const tour = await this.findOneBy({ id })
+        
+        if (!tour) {
+            throw new TourNotFoundException()
+        }
+        
+        return tour as Tour
     }
     
     public getToursByQuery(query: GetToursQuery): Promise<Tour[]> {
@@ -42,7 +53,7 @@ class ToursRepository extends Repository<Tour> {
         })
     }
     
-    public getTourEntity(dto: CreateTourDto, matchEntities: Match[]): Tour {
+    public createEntity(dto: CreateTourDto, matchEntities: Match[]): Tour {
         const tour = new Tour()
         
         tour.date = new Date()

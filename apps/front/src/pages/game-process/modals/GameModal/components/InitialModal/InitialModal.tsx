@@ -9,23 +9,23 @@ import { EGameModalType } from '../../GameModalContainer.types'
 
 
 interface IProps {
-    gameSetId: number
+    gameSet: IGameSet
 }
 
-function InitialModal({ gameSetId }: IProps) {
+function InitialModal({ gameSet }: IProps) {
     
     const changeGameModal = useSetAtom(gameModalAtom)
     
     const { mutateAsync, isLoading } = useStartGameSetMutation()
     
     const handleStartGame = () => {
-        mutateAsync({ id: gameSetId }).then(() => {
+        mutateAsync({ id: gameSet.id }).then(() => {
             changeGameModal(EGameModalType.IN_PROCESS)
         })
     }
     
     const handleCloseGame = () => {
-        changeGameModal(EGameModalType.CLOSE_GAME)
+        changeGameModal(EGameModalType.FINISH_GAME)
     }
     
     return (

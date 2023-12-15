@@ -6,14 +6,16 @@ import queryString from 'query-string'
 import axiosFetcher from '../axios/fetcher'
 
 
-function useGetToursQuery(query: GetToursQuery) {
-    
+export function fetchToursFn(query: GetToursQuery) {
     const params = queryString.stringify(query, { arrayFormat: 'index' })
     
-    return useQuery(
-        ['get-tours', params],
-        () => axiosFetcher.get<ITour[]>(`/tours?${params}`)
-    )
+    return axiosFetcher.get<ITour[]>(`/tours?${params}`, { skipToastError: false })
 }
 
-export default useGetToursQuery
+export function useGetToursQuery(query: GetToursQuery) {
+    
+    return useQuery(
+        ['get-tours', query],
+        () => fetchToursFn(query)
+    )
+}

@@ -4,7 +4,7 @@ import { DataSource, Repository } from 'typeorm'
 
 
 @Injectable()
-class MatchesRepository extends Repository<Match> {
+class MatchRepository extends Repository<Match> {
     
     constructor(dataSource: DataSource) {
         super(Match, dataSource.createEntityManager())
@@ -12,4 +12,4 @@ class MatchesRepository extends Repository<Match> {
     
 }
 
-export default MatchesRepository
+export default MatchRepository

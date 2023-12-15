@@ -5,7 +5,7 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats'
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import Divider from '@mui/material/Divider'
 import { useAtomValue } from 'jotai'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { EAppRoutes } from '../../../../../routes/routes.constant'
 
 import { MenuSection } from './components'
@@ -53,6 +53,10 @@ const menu: IMenuSection[] = [
 function SideBar() {
     
     const sidebar = useAtomValue(sidebarAtom)
+    
+    useEffect(() => {
+        document.body.style.overflow = sidebar.isOpen ? 'hidden' : 'auto'
+    }, [sidebar.isOpen])
     
     return (
         <Styled.MenuWrapper $isOpen={sidebar.isOpen}>

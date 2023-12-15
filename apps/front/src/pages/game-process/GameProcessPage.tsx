@@ -24,23 +24,21 @@ function GameProcessPage() {
             
             {isLoading && <Spinner page/>}
             
-            <Box>
-                {
-                    activeTour &&
-                    <TourInfoPanel tour={activeTour}/>
-                }
-                
-                {
-                    !activeTour &&
-                    <Button
-                        variant={'contained'}
-                        sx={{ mb: 3 }}
-                        fullWidth
-                        disabled={isDisabledButton}
-                        onClick={handleNewTourClick}
-                    >Новая игра</Button>
-                }
-            </Box>
+            {
+                activeTour &&
+                <TourInfoPanel tour={activeTour}/>
+            }
+            
+            {
+                !activeTour &&
+                <Button
+                    variant={'contained'}
+                    sx={{ mb: 3 }}
+                    fullWidth
+                    disabled={isDisabledButton}
+                    onClick={handleNewTourClick}
+                >Новая игра</Button>
+            }
             
             {
                 activeTour &&
