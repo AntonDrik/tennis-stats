@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useGetToursQuery } from '../../core/api'
 import { EAppRoutes } from '../../routes/routes.constant'
-import { MatchCard, Page, Spinner, TourInfoPanel } from '../../shared/components'
+import { GameSetsList, MatchCard, MatchCardHeader, Page, Spinner, TourInfoPanel } from '../../shared/components'
 
 
 type IRouteParams = {
@@ -44,10 +44,13 @@ function TourPage() {
                 <Stack spacing={3}>
                     {
                         tour.matches.map((match) => (
-                            <MatchCard
-                                key={match.id}
-                                match={match}
-                            />
+                            <MatchCard key={match.id}>
+                                <MatchCardHeader match={match}/>
+                                
+                                <GameSetsList
+                                    gameSetList={match.gameSets}
+                                />
+                            </MatchCard>
                         ))
                     }
                 </Stack>

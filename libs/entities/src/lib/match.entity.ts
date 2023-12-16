@@ -1,4 +1,4 @@
-import { IMatch, TScoreCaption } from '@tennis-stats/types'
+import { IMatch, TScore, TScoreCaption } from '@tennis-stats/types'
 import {
     AfterLoad,
     BaseEntity,
@@ -38,7 +38,19 @@ export class Match extends BaseEntity implements IMatch {
     
     @AfterLoad()
     loadVariables() {
-        this.matchScore = `${this.player1?.score} | ${this.player2?.score}`
+        const scoreArr = (this.gameSets ?? []).reduce((acc, curr) => {
+            if (curr.player1?.score > curr.player2?.score) {
+                return [acc[0] + 1, acc[1]]
+            }
+            
+            if (curr.player2?.score > curr.player1?.score) {
+                return [acc[0], acc[1] + 1]
+            }
+            
+            return acc
+        }, [0, 0])
+        
+        this.matchScore = `${scoreArr[0] as TScore} | ${scoreArr[1] as TScore}`
     }
     
 }

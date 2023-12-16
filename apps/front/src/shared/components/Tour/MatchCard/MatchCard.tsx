@@ -1,26 +1,16 @@
-import { IGameSet, IMatch } from '@tennis-stats/types'
-import GameSetsTable from './components/GameSetsTable/GameSetsTable'
-import MatchCardHeader from './components/MatchCardHeader/MatchCardHeader'
+import { JSX } from 'react'
 import Styled from './MatchCard.styles'
 
 
 interface IProps {
-    match: IMatch
-    onRowClick?: (gameSet: IGameSet, setIndex: number) => void
-    onCancelClick?: (gameSet: IGameSet, setIndex: number) => void
+    children: JSX.Element | JSX.Element[]
 }
 
-function MatchCard({ match, onRowClick, onCancelClick }: IProps) {
+function MatchCard({ children }: IProps) {
     
     return (
         <Styled.Wrapper>
-            <MatchCardHeader match={match}/>
-            
-            <GameSetsTable
-                gameSetList={match.gameSets}
-                onRowClick={onRowClick}
-                onCancelClick={onCancelClick}
-            />
+            {children}
         </Styled.Wrapper>
     )
     

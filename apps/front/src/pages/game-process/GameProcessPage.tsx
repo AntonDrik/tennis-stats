@@ -1,8 +1,16 @@
-import { Box, Button } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import { ETourStatus } from '@tennis-stats/types'
 import { useGetToursQuery } from '../../core/api'
-import { Page, Spinner, TourInfoPanel, useModal } from '../../shared/components'
-import MatchList from './components/MatchList/MatchList'
+import {
+    GameSetsList,
+    MatchCard,
+    MatchCardHeader,
+    Page,
+    Spinner,
+    TourInfoPanel,
+    useModal
+} from '../../shared/components'
+import GameSetMenu from './components/GameSetMenu/GameSetMenu'
 import { default as CreateTourModal } from './modals/CreateTourModal/CreateTourModal'
 
 
@@ -19,9 +27,22 @@ function GameProcessPage() {
         modal.open(<CreateTourModal/>, { maxWidth: 'lg', fullWidth: true })
     }
     
+    if (!activeTour && !isLoading) {
+        return (
+            <Page title={'Игровой процесс'}>
+                <Button
+                    variant={'contained'}
+                    sx={{ mb: 3 }}
+                    fullWidth
+                    disabled={isDisabledButton}
+                    onClick={handleNewTourClick}
+                >Новая игра</Button>
+            </Page>
+        )
+    }
+    
     return (
         <Page title={'Игровой процесс'}>
-            
             {isLoading && <Spinner page/>}
             
             {
@@ -30,21 +51,27 @@ function GameProcessPage() {
             }
             
             {
-                !activeTour &&
-                <Button
-                    variant={'contained'}
-                    sx={{ mb: 3 }}
-                    fullWidth
-                    disabled={isDisabledButton}
-                    onClick={handleNewTourClick}
-                >Новая игра</Button>
-            }
-            
-            {
                 activeTour &&
-                <MatchList tour={activeTour}/>
+                <Stack spacing={2}>
+                    {
+                        activeTour.matches.map((match) => (
+                            <MatchCard key={match.id}>
+                                <MatchCardHeader match={match}/>
+                                
+                                <GameSetsList
+                                    gameSetList={match.gameSets}
+                                    renderMenuCell={(gameSet) => (
+                                        <GameSetMenu
+                                            tour={activeTour}
+                                            gameSet={gameSet}
+                                        />
+                                    )}
+                                />
+                            </MatchCard>
+                        ))
+                    }
+                </Stack>
             }
-        
         </Page>
     )
     

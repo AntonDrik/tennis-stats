@@ -18,9 +18,10 @@ class GameSetRepository extends Repository<GameSet> {
         })
     }
     
-    public createEntity(player1: Player, player2: Player): GameSet {
+    public createEntity(number: number, player1: Player, player2: Player): GameSet {
         const gameSet = new GameSet()
         
+        gameSet.number = number
         gameSet.player1 = player1
         gameSet.player2 = player2
         

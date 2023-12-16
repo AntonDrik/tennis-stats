@@ -13,7 +13,7 @@ function useStartGameSetMutation() {
         (dto: IdDto) => axiosFetcher.post<GameSet>('/game-sets/start', dto),
         {
             onSuccess: () => {
-                void queryClient.invalidateQueries({queryKey: 'get-active-game-set'})
+                void queryClient.invalidateQueries({queryKey: 'get-tours'})
             }
         }
     )

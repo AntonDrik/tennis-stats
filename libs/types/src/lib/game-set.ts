@@ -13,12 +13,13 @@ enum EGameSetStatus {
 interface IGameSet {
     id: number
     match: IMatch
+    // Номер сета
+    number: number
     player1: IPlayer
     player2: IPlayer
     startDate: Date | null
     endDate: Date
     status: EGameSetStatus
-    setScore: TScoreCaption
     duration: string
 }
 

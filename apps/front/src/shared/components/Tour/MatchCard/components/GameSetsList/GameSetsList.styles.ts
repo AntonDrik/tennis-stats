@@ -9,7 +9,6 @@ interface IRowProps {
 
 const Row = styled(Stack)<IRowProps>(
     {
-        
         alignItems: 'center',
         borderBottom: '1px solid #D9D9D9',
         paddingLeft: '16px',
@@ -22,10 +21,7 @@ const Row = styled(Stack)<IRowProps>(
         }
     },
     ({ status }) => ({
-        backgroundColor:
-            status === EGameSetStatus.IN_PROCESS ? '#F1FAFD'
-            : status === EGameSetStatus.FINISHED ? '#F5FBF5'
-                : 'inherit'
+        backgroundColor: status === EGameSetStatus.IN_PROCESS ? '#F1FAFD' : 'inherit'
     })
 )
 

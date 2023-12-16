@@ -1,34 +1,22 @@
 import DialogContent from '@mui/material/DialogContent'
 import Typography from '@mui/material/Typography'
-import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
+import { IGameSet, TScore } from '@tennis-stats/types'
 import { useEffect, useState } from 'react'
-import { useFinishGameSetMutation } from '../../../../../../core/api'
 import { useTimer } from '../../../../../../shared/hooks'
 import FinishButton from '../common/FinishButton/FinishButton'
 import ScoreBlock from '../common/ScoreBlock/ScoreBlock'
+
 
 interface IProps {
     gameSet: IGameSet
 }
 
-function InProcessGameModal({gameSet}: IProps) {
-    
-    const finishGameSet = useFinishGameSetMutation()
+function InProcessGameModal({ gameSet }: IProps) {
     
     const timer = useTimer()
     
-    const [score, setScore] = useState<[number, number]>([0, 0])
+    const [score, setScore] = useState<[TScore, TScore]>([0, 0])
     
-    const handleFinishGame = () => {
-        if (!gameSet) {
-            return
-        }
-        
-        finishGameSet.mutateAsync({ id: gameSet.id, status: EGameSetStatus.FINISHED })
-            .then(() => {
-                timer.stop()
-            })
-    }
     
     useEffect(() => {
         if (!gameSet.startDate) {
@@ -53,9 +41,9 @@ function InProcessGameModal({gameSet}: IProps) {
             
             <FinishButton
                 score={score}
-                onClick={handleFinishGame}
+                gameSetId={gameSet.id}
+                onSuccess={() => timer.stop()}
             />
-        
         </DialogContent>
     )
     

@@ -7,7 +7,7 @@ import {
     ManyToOne, OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm'
-import { EGameSetStatus, IGameSet, TScoreCaption } from '@tennis-stats/types'
+import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
 import { Match } from './match.entity'
 import intervalToDuration from 'date-fns/intervalToDuration'
 
@@ -22,6 +22,9 @@ export class GameSet extends BaseEntity implements IGameSet {
     
     @ManyToOne(() => Match)
     match: Match
+    
+    @Column('int', { nullable: false })
+    number: number
     
     @OneToOne(() => Player, { eager: true, cascade: true })
     @JoinColumn()
@@ -40,13 +43,10 @@ export class GameSet extends BaseEntity implements IGameSet {
     @Column('varchar', { default: EGameSetStatus.PENDING })
     status: EGameSetStatus
     
-    setScore: TScoreCaption
     duration: string
     
     @AfterLoad()
     loadVariables() {
-        this.setScore = `${this.player1?.score} | ${this.player2?.score}`
-        
         if (this.startDate && this.endDate) {
             const duration = intervalToDuration({ start: this.startDate, end: this.endDate })
             // @ts-ignore
@@ -54,7 +54,6 @@ export class GameSet extends BaseEntity implements IGameSet {
             
             this.duration = `${duration.minutes}:${seconds}`
         }
-        
     }
     
 }

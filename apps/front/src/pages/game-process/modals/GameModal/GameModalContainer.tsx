@@ -1,40 +1,25 @@
 import { DialogTitle, Typography } from '@mui/material'
-import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
-import { useAtom } from 'jotai'
+import { IGameSet } from '@tennis-stats/types'
 import * as React from 'react'
-import { useEffect } from 'react'
+
 import FinishGameModal from './components/FinishGameModal/FinishGameModal'
-import InitialModal from './components/InitialModal/InitialModal'
 import InProcessGameModal from './components/InProcessGameModal/InProcessGameModal'
-import { gameModalAtom } from './GameModalContainer.state'
-import { EGameModalType } from './GameModalContainer.types'
 
 
 interface IProps {
     gameSet: IGameSet
-    setIndex: number
+    type: 'finish_game' | 'in_process'
 }
 
-function GameModalContainer({ gameSet, setIndex }: IProps) {
-    
-    const [state, setState] = useAtom(gameModalAtom)
+function GameModalContainer({ gameSet, type }: IProps) {
     
     const { player1, player2 } = gameSet
-    
-    useEffect(() => {
-        if (gameSet.status === EGameSetStatus.IN_PROCESS) {
-            setState(EGameModalType.IN_PROCESS)
-            return
-        }
-        
-        setState(EGameModalType.INITIAL)
-    }, [])
     
     return (
         <>
             <DialogTitle align={'center'} sx={{ mb: 2 }}>
                 <Typography variant={'subtitle1'}>
-                    {setIndex} Сет
+                    {gameSet.number} Сет
                 </Typography>
                 
                 <Typography variant={'h5'} fontWeight={600}>
@@ -42,11 +27,15 @@ function GameModalContainer({ gameSet, setIndex }: IProps) {
                 </Typography>
             </DialogTitle>
             
-            {state === EGameModalType.INITIAL && <InitialModal gameSet={gameSet}/>}
+            {
+                type === 'in_process' &&
+                <InProcessGameModal gameSet={gameSet}/>
+            }
             
-            {state === EGameModalType.IN_PROCESS && <InProcessGameModal gameSet={gameSet}/>}
-            
-            {state === EGameModalType.FINISH_GAME && <FinishGameModal gameSet={gameSet}/>}
+            {
+                type === 'finish_game' &&
+                <FinishGameModal gameSet={gameSet}/>
+            }
         </>
     )
     
