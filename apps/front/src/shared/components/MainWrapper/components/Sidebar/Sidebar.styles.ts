@@ -10,7 +10,7 @@ const MenuWrapper = styled(Box)<IMenuWrapperProps>(
     {
         transition: '.3s',
         position: 'absolute',
-        marginTop: '55px',
+        // marginTop: '110px',
         height: '100%',
         backgroundColor: '#F7F9F8',
         zIndex: 999

@@ -6,3 +6,5 @@ export { default as Page } from './Page/Page'
 export * from './Tour'
 export * from './Inputs'
 export * from './Modals/core'
+
+export * from './MainWrapper/components/TopBar/components/BackButton/BackButton.state'

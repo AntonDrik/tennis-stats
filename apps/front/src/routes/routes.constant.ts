@@ -1,7 +1,11 @@
-export enum EAppRoutes {
-    USERS = '/users',
-    TOUR = '/tour/:id',
-    STATS = '/stats',
-    GAME_PROCESS = '/game-process',
-    SEQUENCE_GENERATOR = '/sequence-generator'
+const appRoutes = {
+    USERS: '/users',
+    TOURS_LIST: '/tours',
+    TOUR_BY_ID: (id?: number) => id ? `/tours/${id}` : '/tours/:id',
+    STATS: '/stats',
+    MATCH_ORDER: '/match-order'
+}
+
+export {
+    appRoutes
 }

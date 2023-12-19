@@ -1,5 +1,5 @@
 import { IMatch } from './match'
-import { IPlayer, TScoreCaption } from './player'
+import { IPlayer } from './player'
 
 
 enum EGameSetStatus {
@@ -20,7 +20,9 @@ interface IGameSet {
     startDate: Date | null
     endDate: Date
     status: EGameSetStatus
+    
     duration: string
+    isFinished: boolean
 }
 
 export { IGameSet, EGameSetStatus }

@@ -18,23 +18,23 @@ class MatchOrderService {
         private usersRepository: UsersRepository,
     ) {}
     
-    public async getCurrent(): Promise<MatchOrder[]> {
+    public async getCurrentOrder(): Promise<MatchOrder[]> {
         return await this.repository.find()
     }
     
     /**
-     * Создаёт новую последовательности матчей для всех пользователей и записывает в БД
+     * Создаёт новую последовательность матчей для всех пользователей и записывает её в БД
      */
-    public async createForAllUsers() {
+    public async createOrderForAllUsers() {
         const allUsers = await this.usersRepository.find()
         
         if (!allUsers.length) {
             throw new UsersNotFoundException()
         }
         
-        const generatedOrder = this.generateOrder(allUsers)
+        const randomOrder = this.generateRandomOrder(allUsers)
         
-        const entities = generatedOrder.map((users, index) => {
+        const entities = randomOrder.map((users, index) => {
             return this.repository.getEntity(users, index + 1)
         })
         
@@ -47,24 +47,24 @@ class MatchOrderService {
     /**
      * Генерирует последовательность матчей для списка пользователей
      */
-    public async generateForUsers(usersIds: number[]): Promise<IMatchOrder[]> {
+    public async generateOrderForUsers(usersIds: number[]): Promise<IMatchOrder[]> {
         const usersList = await this.usersRepository.getUsersByIds(usersIds)
         
-        const generatedOrder = this.generateOrder(usersList)
+        const randomOrder = this.generateRandomOrder(usersList)
         
-        return generatedOrder.map((users, index) => {
+        return randomOrder.map((users, index) => {
             return this.repository.getEntity(users, index + 1)
         })
     }
     
     /**
-     * Сортирует переданные матчи на основе текущей последовательности
+     * Сортирует переданные матчи на основе последовательности из БД
      */
     public async applyOrder(entitiesList: Match[]) {
-        let currentOrder = await this.getCurrent()
+        let currentOrder = await this.getCurrentOrder()
         
         if (!currentOrder.length) {
-            currentOrder = await this.createForAllUsers()
+            currentOrder = await this.createOrderForAllUsers()
         }
         
         return this.sortByReferenceOrder(entitiesList, currentOrder)
@@ -81,7 +81,7 @@ class MatchOrderService {
         })
     }
     
-    private generateOrder(users: User[]): User[][] {
+    private generateRandomOrder(users: User[]): User[][] {
         const combinedUsers = uniqueCombinations(users)
         
         return shuffleArray(combinedUsers)

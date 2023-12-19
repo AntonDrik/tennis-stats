@@ -11,7 +11,14 @@ const Wrapper = styled(Stack)({
     height: '55px',
     backgroundColor: '#F7F9F8',
     zIndex: 999,
-    borderBottom: '1px solid #D7DAD9'
+    borderBottom: '1px solid #D7DAD9',
+    
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    
+    padding: theme.spacing(1)
 })
 
 const BurgerButton = styled(Button)({
@@ -23,12 +30,7 @@ const BurgerButton = styled(Button)({
     }
 })
 
-const ButtonWrapper = styled(Stack)({
-    padding: '0.5rem'
-})
-
 export default {
     Wrapper,
-    ButtonWrapper,
     BurgerButton
 }

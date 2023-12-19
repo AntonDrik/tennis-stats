@@ -7,12 +7,10 @@ const CLOSED_SIDEBAR_WIDTH = 0
 const sidebarAtom = atom({ isOpen: false, width: CLOSED_SIDEBAR_WIDTH })
 const changeSidebarAtom = atom(
     null,
-    (get, set) => {
-        const isOpen = get(sidebarAtom).isOpen
-        
+    (get, set, isOpenValue: boolean) => {
         set(sidebarAtom, {
-            isOpen: !isOpen,
-            width: !isOpen ? OPENED_SIDEBAR_WIDTH : CLOSED_SIDEBAR_WIDTH
+            isOpen: isOpenValue,
+            width: isOpenValue ? OPENED_SIDEBAR_WIDTH : CLOSED_SIDEBAR_WIDTH
         })
     })
 

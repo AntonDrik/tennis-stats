@@ -73,7 +73,10 @@ const overrides: Components = {
     MuiChip: {
         styleOverrides: {
             root: {
-                borderRadius: 10
+                borderRadius: 10,
+            },
+            label: {
+              lineHeight: 1
             },
             colorSuccess: {
                 backgroundColor: '#D6F1DF',

@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
-import { FinishGameSetDto, IdDto } from '@tennis-stats/dto'
+import { Body, Controller, Get, Post, Put } from '@nestjs/common'
+import { FinishGameSetDto, GameSetScoreDto, IdDto } from '@tennis-stats/dto'
+import { GameSet } from '@tennis-stats/entities'
+import { IdParam } from '../../common/decorators'
 import GameSetRepository from './game-set.repository'
 import { GameSetService } from './index'
 
@@ -12,19 +14,29 @@ class GameSetController {
         private service: GameSetService
     ) {}
     
+    @Get('/:id')
+    getGameSet(@IdParam() id: number): Promise<GameSet> {
+        return this.service.getGameSet(id)
+    }
+    
     @Get('/active')
-    getActiveGameSet() {
+    getActiveGameSet(): Promise<GameSet | null> {
         return this.repository.findActiveGameSet()
     }
     
     @Post('/start')
-    startGameSet(@Body() dto: IdDto) {
+    startGameSet(@Body() dto: IdDto): Promise<GameSet> {
         return this.service.startGameSet(dto)
     }
     
     @Post('/finish')
-    finishGameSet(@Body() dto: FinishGameSetDto) {
+    finishGameSet(@Body() dto: FinishGameSetDto): Promise<void> {
         return this.service.finishGameSet(dto)
+    }
+    
+    @Put('/update-score')
+    updateScore(@Body() dto: GameSetScoreDto): Promise<GameSet> {
+        return this.service.updateScore(dto)
     }
     
 }

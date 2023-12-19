@@ -21,7 +21,6 @@ function useTimer() {
     
     const stop = () => {
         clearInterval(intervalID.current)
-        
     }
     
     const increment = (startDate: string) => {

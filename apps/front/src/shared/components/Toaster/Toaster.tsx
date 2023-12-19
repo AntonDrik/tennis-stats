@@ -8,9 +8,9 @@ import Box from '@mui/material/Box'
 function Toaster() {
     return (
         <HotToaster
-            position={'top-right'}
+            position={'bottom-center'}
             toastOptions={{
-                duration: 7000,
+                duration: 5000,
                 style: {
                     maxWidth: '600px'
                 }

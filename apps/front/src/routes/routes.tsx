@@ -1,28 +1,27 @@
 import React, { ReactElement } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom'
-import { StatsPage, GameProcessPage, UsersPage, TourPage, SequenceGeneratorPage } from '../pages'
+import { StatsPage, UsersPage, TourPage, ToursPage, MatchOrderPage } from '../pages'
 import MainRoute from './MainRoute'
-import { EAppRoutes } from './routes.constant'
+import { appRoutes } from './routes.constant'
 
 
 const routes = createBrowserRouter(
     createRoutesFromElements(
         <Route path={'/'}>
             
-            <Route index element={<Navigate to={EAppRoutes.GAME_PROCESS}/>}/>
-            <Route path="*" element={<Navigate to={EAppRoutes.GAME_PROCESS}/>}/>
+            <Route index element={<Navigate to={appRoutes.TOURS_LIST}/>}/>
+            <Route path="*" element={<Navigate to={appRoutes.TOURS_LIST}/>}/>
             
             {/*В дальнейшем эти роуты будут с авторизацией*/}
             <Route element={<MainRoute/>}>
-                <Route path={EAppRoutes.USERS} element={<UsersPage/>}/>
+                <Route path={appRoutes.USERS} element={<UsersPage/>}/>
                 
-                <Route path={EAppRoutes.STATS} element={<StatsPage/>}/>
+                <Route path={appRoutes.STATS} element={<StatsPage/>}/>
                 
-                <Route path={EAppRoutes.GAME_PROCESS} element={<GameProcessPage/>}/>
+                <Route path={appRoutes.TOURS_LIST} element={<ToursPage/>}/>
+                <Route path={appRoutes.TOUR_BY_ID()} element={<TourPage/>}/>
                 
-                <Route path={EAppRoutes.TOUR} element={<TourPage/>}/>
-                
-                <Route path={EAppRoutes.SEQUENCE_GENERATOR} element={<SequenceGeneratorPage/>}/>
+                <Route path={appRoutes.MATCH_ORDER} element={<MatchOrderPage/>}/>
             </Route>
         
         </Route>

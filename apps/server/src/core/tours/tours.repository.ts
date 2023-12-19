@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Match, Tour } from '@tennis-stats/entities'
-import { ETourStatus } from '@tennis-stats/types'
-import { DataSource, EntityManager, Repository } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import { TourNotFoundException } from '../../common/exceptions'
 
 
@@ -23,7 +22,17 @@ class ToursRepository extends Repository<Tour> {
         return tour as Tour
     }
     
+    public async findLast(): Promise<Tour | null> {
+        const toursList = await this.find({
+            order: { id: 'DESC' },
+            take: 1
+        })
+        
+        return toursList?.[0]
+    }
+    
     public getToursByQuery(query: GetToursQuery): Promise<Tour[]> {
+        
         const builder = this.createQueryBuilder('tour')
             .leftJoinAndSelect('tour.matches', 'matches')
             .leftJoinAndSelect('matches.player1', 'matchPlayer1')
@@ -40,17 +49,11 @@ class ToursRepository extends Repository<Tour> {
             builder.where('tour.id = :id', { id: query.id })
         }
         
-        if (query.status) {
-            builder.where('tour.status = :status', { status: query.status })
+        if (query.sortByDate) {
+            builder.orderBy('tour.date', 'DESC')
         }
         
         return builder.getMany()
-    }
-    
-    public getActiveTour() {
-        return this.findOneBy({
-            status: ETourStatus.ACTIVE
-        })
     }
     
     public createEntity(dto: CreateTourDto, matchEntities: Match[]): Tour {
@@ -59,17 +62,8 @@ class ToursRepository extends Repository<Tour> {
         tour.date = new Date()
         tour.matches = matchEntities
         tour.setsCount = dto.setsCount
-        tour.status = ETourStatus.ACTIVE
         
         return tour
-    }
-    
-    public cancelTour(tour: Tour, transactionManager: EntityManager) {
-        return transactionManager.update(
-            Tour,
-            { id: tour.id },
-            { status: ETourStatus.CANCELED }
-        )
     }
     
 }

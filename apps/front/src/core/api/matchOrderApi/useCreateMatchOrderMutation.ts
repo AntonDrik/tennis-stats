@@ -8,7 +8,7 @@ function useCreateMatchOrderMutation() {
     const queryClient = useQueryClient()
     
     return useMutation(
-        ['generate-match-order'],
+        ['create-match-order'],
         (d) => axiosFetcher.post<IMatchOrder[]>('/matches-order/create'),
         {
             onSuccess: () => {

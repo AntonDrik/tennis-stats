@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { FinishGameSetDto, IdDto } from '@tennis-stats/dto'
+import { FinishGameSetDto, GameSetScoreDto, IdDto } from '@tennis-stats/dto'
 import { GameSet, Player } from '@tennis-stats/entities'
 import { EGameSetStatus } from '@tennis-stats/types'
 import { DataSource } from 'typeorm'
-import { GameSetNotFoundException, UserNotFoundException } from '../../common/exceptions'
+import { GameSetFinishedException, GameSetNotFoundException, UserNotFoundException } from '../../common/exceptions'
 import { UsersRepository } from '../users'
 import GameSetRepository from './game-set.repository'
 
@@ -16,6 +16,16 @@ class GameSetService {
         private usersRepository: UsersRepository,
         private dataSource: DataSource,
     ) {}
+    
+    public async getGameSet(id: number): Promise<GameSet> {
+        const gameSet = await this.repository.findOneBy({ id })
+        
+        if (!gameSet) {
+            throw new GameSetNotFoundException()
+        }
+        
+        return gameSet
+    }
     
     public createEntities(usersIds: number[], setsCount: number): Promise<GameSet[]> {
         const promises = Array.from({ length: setsCount }, async (_, i) => {
@@ -72,6 +82,21 @@ class GameSetService {
                 status: EGameSetStatus.READY_TO_START
             })
         })
+    }
+    
+    public async updateScore(dto: GameSetScoreDto): Promise<GameSet> {
+        const gameSet = await this.getGameSet(dto.id)
+        
+        if (gameSet.isFinished) {
+            throw new GameSetFinishedException()
+        }
+        
+        gameSet.player1.score = dto.player1Score
+        gameSet.player2.score = dto.player2Score
+        
+        await gameSet.save()
+        
+        return gameSet
     }
     
 }

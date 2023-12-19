@@ -39,11 +39,11 @@ export class Match extends BaseEntity implements IMatch {
     @AfterLoad()
     loadVariables() {
         const scoreArr = (this.gameSets ?? []).reduce((acc, curr) => {
-            if (curr.player1?.score > curr.player2?.score) {
+            if (curr.player1?.isWinner) {
                 return [acc[0] + 1, acc[1]]
             }
             
-            if (curr.player2?.score > curr.player1?.score) {
+            if (curr.player2?.isWinner) {
                 return [acc[0], acc[1] + 1]
             }
             

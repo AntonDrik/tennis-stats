@@ -1,5 +1,5 @@
 import { IdDto } from '@tennis-stats/dto'
-import { GameSet } from '@tennis-stats/entities'
+import { IGameSet } from '@tennis-stats/types'
 import { useMutation, useQueryClient } from 'react-query'
 import axiosFetcher from '../axios/fetcher'
 
@@ -10,7 +10,7 @@ function useStartGameSetMutation() {
     
     return useMutation(
         ['start-game-tour'],
-        (dto: IdDto) => axiosFetcher.post<GameSet>('/game-sets/start', dto),
+        (dto: IdDto) => axiosFetcher.post<IGameSet>('/game-sets/start', dto),
         {
             onSuccess: () => {
                 void queryClient.invalidateQueries({queryKey: 'get-tours'})

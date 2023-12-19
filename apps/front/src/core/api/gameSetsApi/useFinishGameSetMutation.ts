@@ -15,7 +15,7 @@ function useFinishGameSetMutation() {
         },
         {
             onSuccess: () => {
-                void queryClient.invalidateQueries({ queryKey: 'get-tours' })
+                void queryClient.invalidateQueries({ queryKey: 'get-tour' })
             }
         }
     )

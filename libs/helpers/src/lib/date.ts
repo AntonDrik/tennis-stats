@@ -2,6 +2,7 @@ import formatFn from 'date-fns/format'
 import ruLocale from 'date-fns/locale/ru'
 import parseISO from 'date-fns/parseISO'
 
+
 const clientTimezone = 'Europe/Minsk'
 const dbDateFormat = 'yyyy-MM-dd HH:mm:ss'
 
@@ -12,8 +13,17 @@ function parseISOWithFormat(date: string | Date, format: string) {
     return formatFn(parsedDate, format, { locale: ruLocale })
 }
 
+function secondsWithTwoDigits(seconds: number | undefined): string {
+    if (seconds === undefined) {
+        return '00'
+    }
+    
+    return seconds < 10 ? `0${seconds}` : String(seconds)
+}
+
 export {
     clientTimezone,
     dbDateFormat,
+    secondsWithTwoDigits,
     parseISOWithFormat
 }

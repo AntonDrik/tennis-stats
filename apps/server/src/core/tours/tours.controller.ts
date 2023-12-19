@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery, IdDto } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
+import { IdParam } from '../../common/decorators'
 import ToursService from './tours.service'
 
 
@@ -10,13 +11,13 @@ class ToursController {
     constructor(private tourService: ToursService) {}
     
     @Get()
-    getTours(@Query() query: GetToursQuery): Promise<Tour[]> {
-        return this.tourService.getManyTours(query)
+    getToursList(@Query() query: GetToursQuery): Promise<Tour[]> {
+        return this.tourService.getToursList(query)
     }
     
-    @Get('/active')
-    getActiveTour(): Promise<Tour | null> {
-        return this.tourService.getActiveTour()
+    @Get('/:id')
+    getTour(@IdParam() id: number) {
+        return this.tourService.getTour(id)
     }
     
     @Post()
@@ -24,14 +25,16 @@ class ToursController {
         return this.tourService.createTour(dto)
     }
     
-    @Post('/finish')
-    finishTour(@Body() dto: IdDto): Promise<Tour | null> {
-        return this.tourService.finishTour(dto)
-    }
-    
     @Post('/cancel')
     cancelTour(@Body() dto: IdDto): Promise<Tour> {
         return this.tourService.cancelTour(dto)
+    }
+    
+    @Delete()
+    deleteTour(@Body() dto: IdDto) {
+        console.log(dto)
+        
+        throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED)
     }
     
 }

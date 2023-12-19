@@ -17,7 +17,7 @@ function MenuItem({ title, link, icon }: IMenuItem) {
     
     const handleClick = () => {
         navigate(link)
-        toggleSidebar()
+        toggleSidebar(false)
     }
     
     return (

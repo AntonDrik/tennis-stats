@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 import { parseISOWithFormat } from '@tennis-stats/helpers'
-import { ETourStatus, ITour } from '@tennis-stats/types'
+import { ITour } from '@tennis-stats/types'
 import { useIsMutating } from 'react-query'
 import Spinner from '../../Spinner/Spinner'
 import ButtonsBlock from './components/ButtonsBlock/ButtonsBlock'
@@ -16,12 +16,10 @@ function TourInfoPanel({ tour }: IProps) {
     
     const isCanceling = useIsMutating('cancel-tour')
     
-    const isActiveTour = tour.status === ETourStatus.ACTIVE
-    
     const dateCaption = () => {
         const formattedDate = parseISOWithFormat(tour.date, 'dd MMM yyyy HH:mm')
         
-        if (isActiveTour) {
+        if (tour.isActive) {
             return `Начало тура: ${formattedDate}`
         }
         
@@ -45,7 +43,7 @@ function TourInfoPanel({ tour }: IProps) {
             </Stack>
             
             {
-                isActiveTour &&
+                tour.isActive &&
                 <ButtonsBlock tour={tour}/>
             }
         

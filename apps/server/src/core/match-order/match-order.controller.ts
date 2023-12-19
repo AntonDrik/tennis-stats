@@ -10,17 +10,17 @@ class MatchOrderController {
     
     @Get()
     getCurrentOrder() {
-        return this.service.getCurrent()
+        return this.service.getCurrentOrder()
     }
     
     @Post('/create')
     createNewOrder() {
-        return this.service.createForAllUsers()
+        return this.service.createOrderForAllUsers()
     }
     
     @Post('/generate')
     generate(@Body() dto: IdListDto) {
-        return this.service.generateForUsers(dto.id)
+        return this.service.generateOrderForUsers(dto.id)
     }
     
 }

@@ -20,6 +20,8 @@ function ModalContainer(): JSX.Element {
             disableEnforceFocus
             open={Boolean(state.component)}
             onClose={handleClose}
+            fullWidth={true}
+            maxWidth={'xl'}
             {...state.props}
         >
             {state.component}

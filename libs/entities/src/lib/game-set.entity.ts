@@ -1,15 +1,17 @@
+import { secondsWithTwoDigits } from '@tennis-stats/helpers'
+import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
+import intervalToDuration from 'date-fns/intervalToDuration'
 import {
     AfterLoad,
     BaseEntity,
     Column,
     Entity,
     JoinColumn,
-    ManyToOne, OneToOne,
+    ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm'
-import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
 import { Match } from './match.entity'
-import intervalToDuration from 'date-fns/intervalToDuration'
 
 import { Player } from './player.entity'
 
@@ -45,15 +47,18 @@ export class GameSet extends BaseEntity implements IGameSet {
     
     duration: string
     
+    isFinished: boolean
+    
     @AfterLoad()
     loadVariables() {
         if (this.startDate && this.endDate) {
             const duration = intervalToDuration({ start: this.startDate, end: this.endDate })
-            // @ts-ignore
-            const seconds = duration.seconds < 10 ? `0${duration.seconds}` : duration.seconds
+            const seconds = secondsWithTwoDigits(duration.seconds)
             
             this.duration = `${duration.minutes}:${seconds}`
         }
+        
+        this.isFinished = [EGameSetStatus.FINISHED, EGameSetStatus.CANCELED].includes(this.status)
     }
     
 }
