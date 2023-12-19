@@ -2,6 +2,7 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import { TScore } from '@tennis-stats/types'
 import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 import { VerticalNumberInput } from '../../../../../shared/components'
 import { scoreBlockAtom } from './ScoreBlock.state'
 
@@ -14,6 +15,9 @@ interface IProps {
 function ScoreBlock({ onChange }: IProps) {
     
     const [score, setScore] = useAtom(scoreBlockAtom)
+    
+    const [value1, setValue1] = useState<TScore>(0)
+    const [value2, setValue2] = useState<TScore>(0)
     
     const handleChangeInput = (type: 'player1' | 'player2', value: number | undefined) => {
         if (!Number.isFinite(value)) {
@@ -33,10 +37,15 @@ function ScoreBlock({ onChange }: IProps) {
         }
     }
     
+    useEffect(() => {
+        setValue1(score[0])
+        setValue2(score[1])
+    }, [score])
+    
     return (
         <Stack direction={'row'} justifyContent={'center'}>
             <VerticalNumberInput
-                value={score[0]}
+                value={value1}
                 min={0}
                 max={20}
                 onChange={(e, value) => {
@@ -55,7 +64,7 @@ function ScoreBlock({ onChange }: IProps) {
             />
             
             <VerticalNumberInput
-                value={score[1]}
+                value={value2}
                 min={0}
                 max={20}
                 onChange={(e, value) => {

@@ -4,6 +4,7 @@ import ms from 'ms'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGetTourQuery } from '../../core/api'
+import { backButtonAtom } from '../../layouts/MainLayout'
 import { appRoutes } from '../../routes/routes.constant'
 import {
     GameSetsList,
@@ -11,8 +12,7 @@ import {
     MatchCardHeader,
     Page,
     Spinner,
-    TourInfoPanel,
-    backButtonAtom
+    TourInfoPanel
 } from '../../shared/components'
 import GameSetMenu from './components/GameSetMenu/GameSetMenu'
 
@@ -24,6 +24,7 @@ type IRouteParams = {
 function TourPage() {
     
     const params = useParams<IRouteParams>()
+    
     const { data: tour, isLoading } = useGetTourQuery(params?.id ?? 0, {
         refetchInterval: ms('5s')
     })
@@ -69,7 +70,6 @@ function TourPage() {
                     }
                 </Stack>
             }
-        
         </Page>
     )
     

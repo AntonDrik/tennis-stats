@@ -16,14 +16,14 @@ function ModalHeader({ gameSet }: IProps) {
             </Typography>
             
             <Stack direction={'row'} width={'100%'}>
-                <Box width={'50%'}>
-                    <Typography variant={'h5'} fontWeight={600}>
+                <Box width={'50%'} px={1}>
+                    <Typography variant={'h5'} fontWeight={600} align={'center'}>
                         {gameSet?.player1.user.shortFullName}
                     </Typography>
                 </Box>
                 
-                <Box width={'50%'}>
-                    <Typography variant={'h5'} fontWeight={600}>
+                <Box width={'50%'} px={1}>
+                    <Typography variant={'h5'} fontWeight={600} align={'center'}>
                         {gameSet?.player2.user.shortFullName}
                     </Typography>
                 </Box>

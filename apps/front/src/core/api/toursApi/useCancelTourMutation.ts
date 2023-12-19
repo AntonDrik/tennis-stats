@@ -13,7 +13,8 @@ function useCancelTourMutation() {
         (dto: IdDto) => axiosFetcher.post<ITour, IdDto>('/tours/cancel', dto),
         {
             onSuccess: () => {
-                void queryClient.invalidateQueries({ queryKey: ['get-tours'] })
+                void queryClient.invalidateQueries({ queryKey: 'get-tours' })
+                void queryClient.invalidateQueries({ queryKey: 'get-tour' })
             }
         }
     )

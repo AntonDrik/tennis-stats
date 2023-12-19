@@ -6,7 +6,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt'
 import Divider from '@mui/material/Divider'
 import { useSetAtom, useAtomValue } from 'jotai'
 import React, { useEffect } from 'react'
-import { appRoutes } from '../../../../../routes/routes.constant'
+import { appRoutes } from '../../../../routes/routes.constant'
 
 import { MenuSection } from './components'
 import { changeSidebarAtom, sidebarAtom } from './Sidebar.state'

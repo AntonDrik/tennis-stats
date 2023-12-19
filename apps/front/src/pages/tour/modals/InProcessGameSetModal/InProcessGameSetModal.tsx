@@ -18,18 +18,16 @@ interface IProps {
 
 function InProcessGameSetModal({ gameSetId }: IProps) {
     
+    const updateScore = useUpdateGameSetScoreMutation()
     const { data: gameSet } = useGetGameSetQuery(gameSetId, {
+        refetchOnMount: true,
         refetchInterval: ms('5s')
     })
     
-    const updateScore = useUpdateGameSetScoreMutation()
-    
-    const setScore = useSetAtom(scoreBlockAtom)
     const modal = useModal()
+    const setScore = useSetAtom(scoreBlockAtom)
     
     const handleScoreChange = (score: [TScore, TScore]) => {
-        setScore(score)
-        
         updateScore.mutate({
             id: gameSetId,
             player1Score: score[0],

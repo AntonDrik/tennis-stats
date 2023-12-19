@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import styled from 'styled-components'
-import theme from '../../../../../theme/theme'
+import theme from '../../../../theme/theme'
 
 
 const Wrapper = styled(Stack)({

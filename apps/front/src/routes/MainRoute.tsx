@@ -1,13 +1,13 @@
 import { Outlet } from 'react-router-dom'
-import { MainWrapper } from '../shared/components'
+import MainLayout from '../layouts/MainLayout/MainLayout'
 
 
 function MainRoute() {
     
     return (
-        <MainWrapper>
+        <MainLayout>
             <Outlet/>
-        </MainWrapper>
+        </MainLayout>
     )
 }
 

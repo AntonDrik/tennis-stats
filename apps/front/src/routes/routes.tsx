@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom'
-import { StatsPage, UsersPage, TourPage, ToursPage, MatchOrderPage } from '../pages'
+import { StatsPage, UsersPage, TourPage, ToursPage, MatchOrderPage, AuthPage } from '../pages'
+import AuthRoute from './AuthRoute'
 import MainRoute from './MainRoute'
 import { appRoutes } from './routes.constant'
 
@@ -11,6 +12,10 @@ const routes = createBrowserRouter(
             
             <Route index element={<Navigate to={appRoutes.TOURS_LIST}/>}/>
             <Route path="*" element={<Navigate to={appRoutes.TOURS_LIST}/>}/>
+            
+            <Route element={<AuthRoute/>}>
+                <Route path={appRoutes.LOGIN} element={<AuthPage/>}/>
+            </Route>
             
             {/*В дальнейшем эти роуты будут с авторизацией*/}
             <Route element={<MainRoute/>}>

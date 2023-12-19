@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const Content = styled.main(
     {
         padding: 18,
-        height: '100vh',
+        height: 'calc(100vh - 55px)',
         display: 'flex',
         flexFlow: 'column',
         width: '100%',

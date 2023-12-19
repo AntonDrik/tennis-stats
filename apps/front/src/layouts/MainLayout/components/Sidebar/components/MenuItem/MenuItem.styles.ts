@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import styled from 'styled-components'
-import theme from '../../../../../../../theme/theme'
+import theme from '../../../../../../theme/theme'
 
 
 interface IWrapperProps {

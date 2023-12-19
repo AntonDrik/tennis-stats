@@ -6,7 +6,7 @@ import { TQueryOptions } from '../types'
 
 function useGetGameSetQuery(id: string | number, options?: TQueryOptions<IGameSet>) {
     return useQuery(
-        ['get-gameSet'],
+        ['get-gameSet', `get-gameSet-${id}`],
         () => axiosFetcher.get<IGameSet>(`/game-sets/${id}`),
         options
     )
