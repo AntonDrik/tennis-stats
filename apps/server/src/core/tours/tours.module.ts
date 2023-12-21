@@ -18,6 +18,7 @@ import ToursController from './tours.controller'
     ],
     controllers: [ToursController],
     providers: [ToursService, ToursRepository],
+    exports: [ToursRepository]
 })
 class ToursModule {}
 

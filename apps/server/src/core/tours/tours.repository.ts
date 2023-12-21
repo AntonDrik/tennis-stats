@@ -66,6 +66,10 @@ class ToursRepository extends Repository<Tour> {
         return tour
     }
     
+    public executeQuery<T>(query: string): Promise<T[]> {
+        return this.query(query)
+    }
+    
 }
 
 export default ToursRepository
