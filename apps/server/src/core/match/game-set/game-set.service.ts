@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { FinishGameSetDto, GameSetScoreDto, IdDto } from '@tennis-stats/dto'
-import { GameSet, Player } from '@tennis-stats/entities'
+import { FinishGameSetDto, GameSetScoreDto } from '@tennis-stats/dto'
+import { GameSet, Player, Tour } from '@tennis-stats/entities'
 import { EGameSetStatus } from '@tennis-stats/types'
-import { DataSource } from 'typeorm'
-import { GameSetFinishedException, GameSetNotFoundException, UserNotFoundException } from '../../common/exceptions'
-import { UsersRepository } from '../users'
+import { DataSource, EntityManager, In, Not } from 'typeorm'
+import { GameSetFinishedException, GameSetNotFoundException, UserNotFoundException } from '../../../common/exceptions'
+import settle from '../../../common/utils/settle'
+import { UsersRepository } from '../../users'
 import GameSetRepository from './game-set.repository'
 
 
@@ -36,14 +37,22 @@ class GameSetService {
                 throw new UserNotFoundException()
             }
             
-            return this.repository.createEntity(i + 1, player1Entity, player2Entity)
+            const number = i + 1
+            const isLast = number === setsCount
+            
+            return this.repository.createEntity(
+                player1Entity,
+                player2Entity,
+                number,
+                isLast
+            )
         })
         
         return Promise.all(promises)
     }
     
-    public async startGameSet(dto: IdDto): Promise<GameSet> {
-        const gameSet = await this.repository.findOneBy({ id: dto.id })
+    public async startGameSet(id: number): Promise<GameSet> {
+        const gameSet = await this.repository.findOneBy({ id })
         
         if (!gameSet) {
             throw new GameSetNotFoundException()
@@ -56,15 +65,9 @@ class GameSetService {
         return gameSet
     }
     
-    public async finishGameSet(dto: FinishGameSetDto) {
-        const gameSet = await this.repository.findOneBy({ id: dto.id })
-        
-        if (!gameSet) {
-            throw new GameSetNotFoundException()
-        }
-        
+    public async finishGameSet(gameSet: GameSet, dto: FinishGameSetDto) {
         await this.dataSource.transaction(async (manager) => {
-            await manager.update(GameSet, { id: dto.id }, {
+            await manager.update(GameSet, { id: gameSet.id }, {
                 status: dto.status
             })
             
@@ -78,14 +81,33 @@ class GameSetService {
                 isWinner: dto.player2Score > dto.player1Score
             })
             
-            await manager.update(GameSet, { id: dto.id + 1 }, {
+            await manager.update(GameSet, { id: gameSet.id + 1 }, {
                 status: EGameSetStatus.READY_TO_START
             })
         })
     }
     
-    public async updateScore(dto: GameSetScoreDto): Promise<GameSet> {
-        const gameSet = await this.getGameSet(dto.id)
+    public async cancelAllUnfinished(tour: Tour, transactionManager: EntityManager) {
+        const unfinishedGameSetsList = await this.repository.findBy({
+            status: Not(In([EGameSetStatus.CANCELED, EGameSetStatus.FINISHED])),
+            match: {
+                tour: { id: tour.id }
+            }
+        })
+        
+        const promise = unfinishedGameSetsList.map(async (gameSet) => {
+            await transactionManager.update(
+                GameSet,
+                { id: gameSet.id },
+                { status: EGameSetStatus.CANCELED }
+            )
+        })
+        
+        return settle(promise)
+    }
+    
+    public async updateScore(setId: number, dto: GameSetScoreDto): Promise<GameSet> {
+        const gameSet = await this.getGameSet(setId)
         
         if (gameSet.isFinished) {
             throw new GameSetFinishedException()

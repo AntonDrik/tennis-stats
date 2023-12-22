@@ -9,5 +9,6 @@ interface IBackButton {
 const backButtonAtom = atom<IBackButton | null>(null)
 
 export {
+    IBackButton,
     backButtonAtom
 }

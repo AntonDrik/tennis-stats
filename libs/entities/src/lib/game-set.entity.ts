@@ -45,8 +45,10 @@ export class GameSet extends BaseEntity implements IGameSet {
     @Column('varchar', { default: EGameSetStatus.PENDING })
     status: EGameSetStatus
     
-    duration: string
+    @Column('boolean', { default: false })
+    isLastInMatch: boolean
     
+    duration: string
     isFinished: boolean
     
     @AfterLoad()

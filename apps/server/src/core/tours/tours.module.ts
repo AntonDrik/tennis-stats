@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Tour } from '@tennis-stats/entities'
-import { GameSetModule } from '../game-set'
 import { MatchModule } from '../match'
 import { MatchOrderModule } from '../match-order'
 import ToursRepository from './tours.repository'
@@ -13,8 +12,7 @@ import ToursController from './tours.controller'
     imports: [
         TypeOrmModule.forFeature([Tour]),
         MatchModule,
-        MatchOrderModule,
-        GameSetModule
+        MatchOrderModule
     ],
     controllers: [ToursController],
     providers: [ToursService, ToursRepository],

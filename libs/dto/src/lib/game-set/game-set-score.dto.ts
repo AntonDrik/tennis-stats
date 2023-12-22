@@ -1,9 +1,7 @@
 import { TScore } from '@tennis-stats/types'
 import { IsNumber, Max, Min } from 'class-validator'
-import { IdDto } from '../../index'
 
-
-class GameSetScoreDto extends IdDto {
+class GameSetScoreDto {
     
     @IsNumber()
     @Min(0)

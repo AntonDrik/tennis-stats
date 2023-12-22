@@ -1,33 +1,25 @@
 import Button from '@mui/material/Button'
 import { EGameSetStatus } from '@tennis-stats/types'
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 import { useFinishGameSetMutation } from '../../../../../core/api'
-import { scoreBlockAtom } from '../ScoreBlock/ScoreBlock.state'
+import { tourPageState } from '../../../TourPage.state'
+import { isValidScoreAtom, scoreBlockAtom } from '../ScoreBlock/ScoreBlock.state'
 
 
 interface IProps {
-    gameSetId: number
     onSuccess: () => void
 }
 
-function FinishButton({ gameSetId, onSuccess }: IProps) {
-    
-    const finishGameSet = useFinishGameSetMutation()
+function FinishButton({ onSuccess }: IProps) {
     
     const score = useAtomValue(scoreBlockAtom)
+    const isValidScore = useAtomValue(isValidScoreAtom)
+    const { selectedGameSet, selectedMatch } = useAtomValue(tourPageState)
     
-    const isValidScore = useMemo(() => {
-        if (score[0] < 11 && score[1] < 11) {
-            return false
-        }
-        
-        return score[0] !== score[1]
-    }, [score])
+    const finishGameSet = useFinishGameSetMutation(selectedMatch?.id, selectedGameSet?.id)
     
     const handleFinishClick = () => {
         finishGameSet.mutateAsync({
-            id: gameSetId,
             player1Score: score[0],
             player2Score: score[1],
             status: EGameSetStatus.FINISHED

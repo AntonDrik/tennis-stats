@@ -20,6 +20,7 @@ interface IGameSet {
     startDate: Date | null
     endDate: Date
     status: EGameSetStatus
+    isLastInMatch: boolean
     
     duration: string
     isFinished: boolean

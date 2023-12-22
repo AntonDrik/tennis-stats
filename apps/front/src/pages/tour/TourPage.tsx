@@ -1,10 +1,8 @@
 import Stack from '@mui/material/Stack'
-import { useSetAtom } from 'jotai'
 import ms from 'ms'
-import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGetTourQuery } from '../../core/api'
-import { backButtonAtom } from '../../layouts/MainLayout'
+import { useBackButton } from '../../layouts/MainLayout'
 import { appRoutes } from '../../routes/routes.constant'
 import {
     GameSetsList,
@@ -29,18 +27,10 @@ function TourPage() {
         refetchInterval: ms('5s')
     })
     
-    const setBackButton = useSetAtom(backButtonAtom)
-    
-    useEffect(() => {
-        setBackButton({
-            title: 'К списку туров',
-            link: appRoutes.TOURS_LIST
-        })
-        
-        return () => {
-            setBackButton(null)
-        }
-    }, [])
+    useBackButton({
+        title: 'К списку туров',
+        link: appRoutes.TOURS_LIST
+    })
     
     return (
         <Page title={tour ? `${tour.id} Тур` : 'Тур'}>
@@ -62,7 +52,10 @@ function TourPage() {
                                 <GameSetsList
                                     gameSetList={match.gameSets}
                                     renderMenuCell={(gameSet) => (
-                                        <GameSetMenu gameSet={gameSet}/>
+                                        <GameSetMenu
+                                            match={match}
+                                            gameSet={gameSet}
+                                        />
                                     )}
                                 />
                             </MatchCard>

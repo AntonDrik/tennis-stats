@@ -3,19 +3,22 @@ import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import { EGameSetStatus } from '@tennis-stats/types'
+import { useAtomValue } from 'jotai'
 
 import { useFinishGameSetMutation } from '../../../../../../core/api'
 import { useDeleteConfirmModal } from '../../../../../../shared/components/Modals'
+import { tourPageState } from '../../../../TourPage.state'
 
 
 interface IProps {
-    gameSetId: number
     onClick: () => void
 }
 
-function CancelSetMenuItem({ gameSetId, onClick }: IProps) {
+function CancelSetMenuItem({ onClick }: IProps) {
     
-    const finishGameSet = useFinishGameSetMutation()
+    const { selectedMatch, selectedGameSet } = useAtomValue(tourPageState)
+    
+    const finishGameSet = useFinishGameSetMutation(selectedMatch?.id, selectedGameSet?.id)
     
     const cancelConfirm = useDeleteConfirmModal({
         title: 'Вы действительно хотите отменить игру?',
@@ -28,7 +31,6 @@ function CancelSetMenuItem({ gameSetId, onClick }: IProps) {
         
         cancelConfirm(() => {
             void finishGameSet.mutateAsync({
-                id: gameSetId,
                 player1Score: 0,
                 player2Score: 0,
                 status: EGameSetStatus.CANCELED

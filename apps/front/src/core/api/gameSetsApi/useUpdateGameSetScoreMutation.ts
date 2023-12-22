@@ -4,11 +4,14 @@ import { useMutation } from 'react-query'
 import axiosFetcher from '../axios/fetcher'
 
 
-function useUpdateGameSetScoreMutation() {
+function useUpdateGameSetScoreMutation(matchId?: number, setId?: number) {
     return useMutation(
-        ['update-gameSet-score'],
+        ['update-game-set-score'],
         (dto: GameSetScoreDto) => {
-            return axiosFetcher.put<IGameSet, GameSetScoreDto>(`/game-sets/update-score`, dto)
+            return axiosFetcher.put<IGameSet, GameSetScoreDto>(
+                `/match/${matchId}/game-set/${setId}/update-score`,
+                dto
+            )
         }
     )
 }

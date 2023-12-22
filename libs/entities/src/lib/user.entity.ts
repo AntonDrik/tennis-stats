@@ -17,6 +17,9 @@ export class User extends BaseEntity implements IUser {
     @Column('varchar', { nullable: false })
     age: number
     
+    @Column('int', { default: 100 })
+    rating: number
+    
     fullName: string
     shortFullName: string
     

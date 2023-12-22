@@ -1,13 +1,12 @@
 import { Box, Stack, Typography } from '@mui/material'
-import { IGameSet } from '@tennis-stats/types'
+import { useAtomValue } from 'jotai'
 import * as React from 'react'
+import { tourPageState } from '../../../TourPage.state'
 
 
-interface IProps {
-    gameSet: IGameSet
-}
-
-function ModalHeader({ gameSet }: IProps) {
+function ModalHeader() {
+    
+    const { selectedGameSet: gameSet } = useAtomValue(tourPageState)
     
     return (
         <Stack justifyContent={'center'} alignItems={'center'} px={3} py={2}>

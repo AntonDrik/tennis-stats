@@ -4,14 +4,17 @@ import { useMutation, useQueryClient } from 'react-query'
 import axiosFetcher from '../axios/fetcher'
 
 
-function useFinishGameSetMutation() {
+function useFinishGameSetMutation(matchId?: number, gameSetId?: number) {
     
     const queryClient = useQueryClient()
     
     return useMutation(
         ['finish-game-set'],
         (dto: FinishGameSetDto) => {
-            return axiosFetcher.post<IGameSet, FinishGameSetDto>('/game-sets/finish', dto)
+            return axiosFetcher.post<IGameSet, FinishGameSetDto>(
+                `/match/${matchId}/game-set/${gameSetId}/finish`,
+                dto
+            )
         },
         {
             onSuccess: () => {

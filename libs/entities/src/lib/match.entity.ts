@@ -36,6 +36,8 @@ export class Match extends BaseEntity implements IMatch {
     
     matchScore: TScoreCaption
     
+    sc: [TScore, TScore]
+    
     @AfterLoad()
     loadVariables() {
         const scoreArr = (this.gameSets ?? []).reduce((acc, curr) => {
@@ -51,6 +53,7 @@ export class Match extends BaseEntity implements IMatch {
         }, [0, 0])
         
         this.matchScore = `${scoreArr[0] as TScore} | ${scoreArr[1] as TScore}`
+        this.sc = scoreArr as any
     }
     
 }

@@ -37,8 +37,8 @@ function ToursTable({ toursList }: IProps) {
                 <Styled.TableWrapper size="small" stickyHeader>
                     <TableHead>
                         <TableRow>
-                            <Styled.HeaderCell>Дата</Styled.HeaderCell>
-                            <Styled.HeaderCell>№ Тура</Styled.HeaderCell>
+                            <Styled.HeaderCell align={'center'}>№ Тура</Styled.HeaderCell>
+                            <Styled.HeaderCell align={'center'}>Дата</Styled.HeaderCell>
                             <Styled.HeaderCell align={'center'}>Статус</Styled.HeaderCell>
                         </TableRow>
                     </TableHead>
@@ -53,11 +53,11 @@ function ToursTable({ toursList }: IProps) {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     onClick={() => handleRowClick(tour)}
                                 >
+                                    <TableCell align={'center'} width={10}>{tour.id}</TableCell>
+                                    
                                     <TableCell>
                                         {parseISOWithFormat(tour.date, 'dd MMM yyyy HH:mm')}
                                     </TableCell>
-                                    
-                                    <TableCell align={'center'}>{tour.id}</TableCell>
                                     
                                     <TableCell align={'center'}>
                                         <TourStatusChip tour={tour}/>

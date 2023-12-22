@@ -1,18 +1,23 @@
 import { Injectable } from '@nestjs/common'
-import { CreateTourDto } from '@tennis-stats/dto'
+import { CreateTourDto, FinishGameSetDto } from '@tennis-stats/dto'
 import { Match } from '@tennis-stats/entities'
 import { uniqueCombinations } from '@tennis-stats/helpers'
-import { UserNotFoundException } from '../../common/exceptions'
-import { GameSetService } from '../game-set'
+import { GameSetNotFoundException, MatchNotFoundException, UserNotFoundException } from '../../common/exceptions'
+import { RatingService } from '../rating'
+import { GameSetRepository, GameSetService } from './game-set'
 import { UsersRepository } from '../users'
+import MatchRepository from './match.repository'
 
 
 @Injectable()
 class MatchService {
     
     constructor(
+        private matchRepository: MatchRepository,
         private usersRepository: UsersRepository,
-        private gameSetService: GameSetService
+        private gameSetRepository: GameSetRepository,
+        private gameSetService: GameSetService,
+        private ratingService: RatingService
     ) {}
     
     public async getMatchesForTour(dto: CreateTourDto): Promise<Match[]> {
@@ -37,6 +42,27 @@ class MatchService {
         })
         
         return Promise.all(promises)
+    }
+    
+    public async finishGameSetOrMatch(matchId: number, setId: number, dto: FinishGameSetDto) {
+        const gameSet = await this.gameSetRepository.findOneBy({ id: setId })
+        
+        if (!gameSet) {
+            throw new GameSetNotFoundException()
+        }
+        
+        await this.gameSetService.finishGameSet(gameSet, dto)
+    
+        
+        const match = await this.matchRepository.findOneBy({ id: matchId })
+        
+        if (!match) {
+            throw new MatchNotFoundException()
+        }
+        
+        if (gameSet.isLastInMatch) {
+            await this.ratingService.updateRating(match)
+        }
     }
     
 }

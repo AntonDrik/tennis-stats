@@ -4,10 +4,10 @@ import axiosFetcher from '../axios/fetcher'
 import { TQueryOptions } from '../types'
 
 
-function useGetGameSetQuery(id: string | number, options?: TQueryOptions<IGameSet>) {
+function useGetGameSetQuery(matchId?: number, setId?: number, options?: TQueryOptions<IGameSet>) {
     return useQuery(
-        ['get-gameSet', `get-gameSet-${id}`],
-        () => axiosFetcher.get<IGameSet>(`/game-sets/${id}`),
+        ['get-gameSet', `get-gameSet-${matchId}-${setId}`],
+        () => axiosFetcher.get<IGameSet>(`/match/${matchId}/game-set/${setId}`),
         options
     )
 }

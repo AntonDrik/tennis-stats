@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common'
-import { GetUsersTotalScoreDto } from '@tennis-stats/dto'
+import { GetUsersTotalScoreQuery, GetUsersScoreDiffQuery } from '@tennis-stats/dto'
 import StatisticsService from './statistics.service'
 
 
@@ -11,10 +11,14 @@ class StatisticsController {
     ) {}
     
     @Get('/total-score')
-    getStatistics(@Query() dto: GetUsersTotalScoreDto) {
-        return this.service.getStatistics(dto)
+    getUsersTotalScore(@Query() dto: GetUsersTotalScoreQuery) {
+        return this.service.getUsersTotalScore(dto)
     }
     
+    @Get('/score-diff')
+    getUsersScoreDiff(@Query() dto: GetUsersScoreDiffQuery) {
+        return this.service.getUsersScoreDiff(dto)
+    }
     
 }
 
