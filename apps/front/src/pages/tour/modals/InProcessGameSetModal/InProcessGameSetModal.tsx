@@ -3,8 +3,9 @@ import { TScore } from '@tennis-stats/types'
 import { useAtomValue } from 'jotai'
 import ms from 'ms'
 import * as React from 'react'
+import { useIsMutating } from 'react-query'
 import { useUpdateGameSetScoreMutation } from '../../../../core/api'
-import { useModal } from '../../../../shared/components'
+import { Spinner, useModal } from '../../../../shared/components'
 import { tourPageState } from '../../TourPage.state'
 import FinishButton from '../common/FinishButton/FinishButton'
 import ModalHeader from '../common/Header/Header'
@@ -15,6 +16,8 @@ function InProcessGameSetModal() {
     
     const { selectedMatch, selectedGameSet } = useAtomValue(tourPageState)
     const updateScore = useUpdateGameSetScoreMutation(selectedMatch?.id, selectedGameSet?.id)
+    
+    const isMutating = useIsMutating(['finish-game-set'])
     
     const modal = useModal()
     
@@ -27,6 +30,8 @@ function InProcessGameSetModal() {
     
     return (
         <>
+            {isMutating > 0 && <Spinner/>}
+            
             <ModalHeader/>
             
             <DialogContent>

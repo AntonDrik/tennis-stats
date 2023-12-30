@@ -1,5 +1,5 @@
 import { secondsWithTwoDigits } from '@tennis-stats/helpers'
-import { EGameSetStatus, IGameSet } from '@tennis-stats/types'
+import { EGameSetStatus, IGameSet, TScoreCaption } from '@tennis-stats/types'
 import intervalToDuration from 'date-fns/intervalToDuration'
 import {
     AfterLoad,
@@ -50,6 +50,7 @@ export class GameSet extends BaseEntity implements IGameSet {
     
     duration: string
     isFinished: boolean
+    scoreCaption: TScoreCaption
     
     @AfterLoad()
     loadVariables() {
@@ -61,6 +62,8 @@ export class GameSet extends BaseEntity implements IGameSet {
         }
         
         this.isFinished = [EGameSetStatus.FINISHED, EGameSetStatus.CANCELED].includes(this.status)
+        
+        this.scoreCaption = `${this.player1.score} | ${this.player2.score}`
     }
     
 }

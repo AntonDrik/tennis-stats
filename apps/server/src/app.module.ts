@@ -6,12 +6,12 @@ import { SeederModule, SqliteProviderModule } from './database'
 import { EnvConfigModule } from './config/env'
 import { MatchOrderModule } from './core/match-order'
 import { StatisticsModule } from './core/statistics'
+import { RatingHistoryModule } from './core/rating-history'
 import { PlayersModule } from './core/players'
 import { UsersModule } from './core/users'
-import { MatchModule } from './core/match'
+import { MatchModule } from './core/tours/modules/match'
 import { TourModule } from './core/tours'
 import { AuthModule } from './core/auth'
-import { RatingModule } from './core/rating'
 
 
 @Module({
@@ -26,7 +26,7 @@ import { RatingModule } from './core/rating'
         MatchOrderModule,
         AuthModule,
         StatisticsModule,
-        RatingModule,
+        RatingHistoryModule,
         
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'front'),

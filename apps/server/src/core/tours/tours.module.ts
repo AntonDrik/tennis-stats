@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Tour } from '@tennis-stats/entities'
-import { MatchModule } from '../match'
+import { MatchModule } from './modules/match'
 import { MatchOrderModule } from '../match-order'
 import ToursRepository from './tours.repository'
 import ToursService from './tours.service'

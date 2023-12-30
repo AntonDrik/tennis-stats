@@ -35,10 +35,8 @@ class ToursRepository extends Repository<Tour> {
         
         const builder = this.createQueryBuilder('tour')
             .leftJoinAndSelect('tour.matches', 'matches')
-            .leftJoinAndSelect('matches.player1', 'matchPlayer1')
-            .leftJoinAndSelect('matches.player2', 'matchPlayer2')
-            .leftJoinAndSelect('matchPlayer1.user', 'matchPlayerUser1')
-            .leftJoinAndSelect('matchPlayer2.user', 'matchPlayerUser2')
+            .leftJoinAndSelect('matches.user1', 'matchUser1')
+            .leftJoinAndSelect('matches.user2', 'matchUser2')
             .leftJoinAndSelect('matches.gameSets', 'gameSets')
             .leftJoinAndSelect('gameSets.player1', 'player1')
             .leftJoinAndSelect('gameSets.player2', 'player2')

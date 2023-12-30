@@ -1,32 +1,39 @@
-import { Stack } from '@mui/material'
-import { useAtomValue } from 'jotai'
-import { useUsersTotalScoreQuery } from '../../core/api'
+import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { useState, SyntheticEvent } from 'react'
 import { Page } from '../../shared/components'
-import DatePicker from './components/DatePicker/DatePicker'
-import { dateRangeAtom } from './components/DatePicker/DatePicker.state'
-import TotalScoreCard from './components/TotalScoreCard/TotalScoreCard'
+import GeneralStatisticsTab from './tabs/general-statistics/GeneralStatisticsTab'
+import PairStatisticTab from './tabs/pair-statistics/PairStatisticTab'
 
 
-export default function StatisticsPage() {
+function StatisticsPage() {
     
-    const dateRange = useAtomValue(dateRangeAtom)
+    const [value, setValue] = useState(1)
     
-    const { data } = useUsersTotalScoreQuery(dateRange)
+    function handleTabChange(event: SyntheticEvent, newTabIndex: number) {
+        setValue(newTabIndex)
+    }
     
     return (
         <Page title={'Статистика'}>
-            <Stack mb={3} mt={1}>
-                <DatePicker/>
-            </Stack>
+            <Typography variant={'h3'} textAlign={'center'} mb={1}>
+                Статистика
+            </Typography>
             
-            <Stack spacing={2} height={'100%'} overflow={'auto'}>
-                {
-                    (data ?? []).map((item) => (
-                        <TotalScoreCard data={item}/>
-                    ))
-                }
-            </Stack>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={2}>
+                <Tabs
+                    value={value}
+                    variant="fullWidth"
+                    onChange={handleTabChange}
+                >
+                    <Tab label="Общая" value={1}/>
+                    <Tab label="Парная" value={2}/>
+                </Tabs>
+            </Box>
+            
+            {value === 1 && <GeneralStatisticsTab/>}
+            {value === 2 && <PairStatisticTab/>}
         </Page>
     )
-    
 }
+
+export default StatisticsPage

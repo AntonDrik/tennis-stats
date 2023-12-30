@@ -1,17 +1,15 @@
-import { IMatch, TScore, TScoreCaption } from '@tennis-stats/types'
+import { IMatch, IMatchScore } from '@tennis-stats/types'
 import {
     AfterLoad,
     BaseEntity,
     Entity,
-    JoinColumn,
     ManyToOne,
     OneToMany,
-    OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { GameSet } from './game-set.entity'
-import { Player } from './player.entity'
 import { Tour } from './tour.entity'
+import { User } from './user.entity'
 
 
 @Entity()
@@ -23,37 +21,49 @@ export class Match extends BaseEntity implements IMatch {
     @ManyToOne(() => Tour)
     tour: Tour
     
-    @OneToOne(() => Player, { eager: true, cascade: true })
-    @JoinColumn()
-    player1: Player
+    @ManyToOne(() => User, { eager: true })
+    user1: User
     
-    @OneToOne(() => Player, { eager: true, cascade: true })
-    @JoinColumn()
-    player2: Player
+    @ManyToOne(() => User, { eager: true })
+    user2: User
     
     @OneToMany(() => GameSet, gameSet => gameSet.match, { eager: true, cascade: true })
     gameSets: GameSet[]
     
-    matchScore: TScoreCaption
-    
-    sc: [TScore, TScore]
+    totalScore: IMatchScore = {
+        user1: 0,
+        user2: 0
+    }
     
     @AfterLoad()
     loadVariables() {
-        const scoreArr = (this.gameSets ?? []).reduce((acc, curr) => {
-            if (curr.player1?.isWinner) {
-                return [acc[0] + 1, acc[1]]
+        (this.gameSets ?? []).forEach((item) => {
+            if (item.player1?.isWinner) {
+                this.totalScore.user1 += 1
             }
             
-            if (curr.player2?.isWinner) {
-                return [acc[0], acc[1] + 1]
+            if (item.player2?.isWinner) {
+                this.totalScore.user2 += 1
             }
-            
-            return acc
-        }, [0, 0])
+        })
+    }
+    
+    public getWinnerLooser() {
+        if (this.totalScore.user1 > this.totalScore.user2) {
+            return {
+                winner: this.user1,
+                looser: this.user2
+            }
+        }
         
-        this.matchScore = `${scoreArr[0] as TScore} | ${scoreArr[1] as TScore}`
-        this.sc = scoreArr as any
+        if (this.totalScore.user2 > this.totalScore.user1) {
+            return {
+                winner: this.user2,
+                looser: this.user1
+            }
+        }
+        
+        return null
     }
     
 }

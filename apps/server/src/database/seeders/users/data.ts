@@ -7,16 +7,19 @@ export const users: TSeedUser[] = [
     {
         firstName: 'Антон',
         lastName: 'Дрик',
-        age: 27
+        age: 27,
+        color: '#C9E8CA'
     },
     {
         firstName: 'Антон',
         lastName: 'Коновалов',
-        age: 27
+        age: 27,
+        color: '#DADCFF'
     },
     {
         firstName: 'Сева',
         lastName: 'Семенчуков',
-        age: 26
+        age: 26,
+        color: '#FBE577'
     }
 ]

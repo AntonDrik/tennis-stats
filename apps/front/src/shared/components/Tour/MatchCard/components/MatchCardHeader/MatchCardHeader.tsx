@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography'
 import { IMatch } from '@tennis-stats/types'
+import { useEffect } from 'react'
 import Styled from './MatchCardHeader.styles'
 
 
@@ -9,16 +10,16 @@ interface IProps {
 
 function MatchCardHeader({ match }: IProps) {
     
-    const {player1, player2, matchScore} = match
+    const { user1, user2, totalScore } = match
     
     return (
         <Styled.Header>
             <Typography variant={'subtitle1'}>
-                {player1.user.shortFullName} - {player2.user.shortFullName}
+                {user1.shortFullName} - {user2.shortFullName}
             </Typography>
             
-            <Typography variant={'body1'} sx={{opacity: 0.7}}>
-                Счет матча: {matchScore}
+            <Typography variant={'body1'} sx={{ opacity: 0.7 }}>
+                Счет матча: {totalScore?.user1} - {totalScore?.user2}
             </Typography>
         </Styled.Header>
     )

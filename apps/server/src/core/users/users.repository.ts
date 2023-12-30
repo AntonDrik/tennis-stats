@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { Player, User } from '@tennis-stats/entities'
-import { DataSource, In, Repository } from 'typeorm'
+import { DataSource, In } from 'typeorm'
+import { BaseRepository } from '../../common/utils'
 
 
 @Injectable()
-class UsersRepository extends Repository<User> {
+class UsersRepository extends BaseRepository<User> {
     
     constructor(dataSource: DataSource) {
-        super(User, dataSource.createEntityManager())
+        super(User, dataSource)
     }
     
-    public getUsersByIds(ids: number[]) {
+    public getByIds(ids: number[]) {
         return this.findBy({
             id: In(ids)
         })

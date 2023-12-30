@@ -20,6 +20,11 @@ class StatisticsController {
         return this.service.getUsersScoreDiff(dto)
     }
     
+    @Get('/all-games')
+    getAllGamesStats() {
+        return this.service.getAllGamesStats()
+    }
+    
 }
 
 export default StatisticsController

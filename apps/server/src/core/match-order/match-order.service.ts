@@ -27,20 +27,20 @@ class MatchOrderService {
      */
     public async createOrderForAllUsers() {
         const allUsers = await this.usersRepository.find()
-        
+
         if (!allUsers.length) {
             throw new UsersNotFoundException()
         }
-        
+
         const randomOrder = this.generateRandomOrder(allUsers)
-        
+
         const entities = randomOrder.map((users, index) => {
             return this.repository.getEntity(users, index + 1)
         })
-        
+
         await this.repository.clear()
         await this.repository.save(entities)
-        
+
         return this.repository.find()
     }
     
@@ -48,10 +48,10 @@ class MatchOrderService {
      * Генерирует последовательность матчей для списка пользователей
      */
     public async generateOrderForUsers(usersIds: number[]): Promise<IMatchOrder[]> {
-        const usersList = await this.usersRepository.getUsersByIds(usersIds)
-        
+        const usersList = await this.usersRepository.getByIds(usersIds)
+
         const randomOrder = this.generateRandomOrder(usersList)
-        
+
         return randomOrder.map((users, index) => {
             return this.repository.getEntity(users, index + 1)
         })
@@ -62,11 +62,11 @@ class MatchOrderService {
      */
     public async applyOrder(entitiesList: Match[]) {
         let currentOrder = await this.getCurrentOrder()
-        
+
         if (!currentOrder.length) {
             currentOrder = await this.createOrderForAllUsers()
         }
-        
+
         return this.sortByReferenceOrder(entitiesList, currentOrder)
     }
     

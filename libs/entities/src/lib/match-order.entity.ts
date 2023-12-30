@@ -22,8 +22,8 @@ export class MatchOrder extends BaseEntity implements IMatchOrder {
     
     
     public isEqual(matchEntity: Match): boolean {
-        const isUser1Equal = matchEntity.player1.user.id === this.user1.id
-        const isUser2Equal = matchEntity.player2.user.id === this.user2.id
+        const isUser1Equal = matchEntity.user1.id === this.user1.id
+        const isUser2Equal = matchEntity.user2.id === this.user2.id
         
         return isUser1Equal && isUser2Equal
     }

@@ -11,7 +11,6 @@ import {
     Typography,
     Paper
 } from '@mui/material'
-import { IUser } from '@tennis-stats/types'
 import { useUsersQuery } from '../../core/api'
 
 

@@ -6,7 +6,7 @@ import axiosFetcher from '../axios/fetcher'
 import { TQueryOptions } from '../types'
 
 
-function useUsersScoreDiffQuery(query: GetUsersScoreDiffQuery, options: TQueryOptions<IUsersScoreDiff[]>) {
+function useUsersScoreDiffQuery(query: GetUsersScoreDiffQuery, options?: TQueryOptions<IUsersScoreDiff[]>) {
     
     const params = queryString.stringify(query)
     

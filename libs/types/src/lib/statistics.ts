@@ -1,3 +1,6 @@
+import { TScoreCaption } from './player'
+
+
 interface IUsersTotalScore {
     user1: {
         id: number
@@ -9,7 +12,7 @@ interface IUsersTotalScore {
         shortName: string
         score: number
     }
-    totalGames: number
+    gamesCount: number
     additionsCount: number
 }
 
@@ -21,7 +24,15 @@ interface IUsersScoreDiff {
     user2AvgScore: string
 }
 
+interface IAllGamesStats {
+    gamesCount: number
+    additionsCount: number
+    mostPopularScore: TScoreCaption
+    avgScoreDifference: number
+}
+
 export {
     IUsersTotalScore,
-    IUsersScoreDiff
+    IUsersScoreDiff,
+    IAllGamesStats
 }

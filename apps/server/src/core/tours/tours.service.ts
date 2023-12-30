@@ -4,7 +4,7 @@ import { Tour } from '@tennis-stats/entities'
 import { EGameSetStatus } from '@tennis-stats/types'
 import { DataSource } from 'typeorm'
 import { HasUnfinishedTourException, UnableCancelTourException } from '../../common/exceptions'
-import { GameSetService, MatchService } from '../match'
+import { GameSetService, MatchService } from './modules/match'
 import { MatchOrderService } from '../match-order'
 import ToursRepository from './tours.repository'
 
@@ -42,9 +42,7 @@ class ToursService {
         
         const tourEntity = this.repository.createEntity(dto, orderedMatches)
         
-        await this.dataSource.transaction(async (manager) => {
-            await manager.save(tourEntity)
-        })
+        await tourEntity.save()
         
         return tourEntity
     }
@@ -52,10 +50,7 @@ class ToursService {
     public async cancelTour(dto: IdDto): Promise<Tour> {
         const tour = await this.repository.findById(dto.id)
         
-        await this.dataSource
-            .transaction(async (manager) => {
-                await this.gameSetService.cancelAllUnfinished(tour, manager)
-            })
+        await this.gameSetService.cancelUnfinishedGameSets(tour)
             .catch((err: Error) => {
                 throw new UnableCancelTourException(err.message)
             })
