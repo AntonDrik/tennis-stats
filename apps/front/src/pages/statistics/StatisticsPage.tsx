@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Tab, Tabs } from '@mui/material'
 import { useState, SyntheticEvent } from 'react'
 import { Page } from '../../shared/components'
 import GeneralStatisticsTab from './tabs/general-statistics/GeneralStatisticsTab'
@@ -15,18 +15,14 @@ function StatisticsPage() {
     
     return (
         <Page title={'Статистика'}>
-            <Typography variant={'h3'} textAlign={'center'} mb={1}>
-                Статистика
-            </Typography>
-            
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={2}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }} mb={4}>
                 <Tabs
                     value={value}
                     variant="fullWidth"
                     onChange={handleTabChange}
                 >
-                    <Tab label="Общая" value={1}/>
-                    <Tab label="Парная" value={2}/>
+                    <Tab label="Общая статистика" value={1}/>
+                    <Tab label="Парная статистика" value={2}/>
                 </Tabs>
             </Box>
             

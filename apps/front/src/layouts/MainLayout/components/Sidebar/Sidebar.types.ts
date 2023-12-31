@@ -1,11 +1,20 @@
 import { ReactElement } from 'react'
 
-export interface IMenuItem {
+
+export type IMenuLinkItem = {
+    type: 'link'
     title: string
     link: string
     icon: ReactElement
 }
 
+export type IMenuComponentItem = {
+    type: 'component',
+    component: ReactElement
+}
+
+export type TMenuItem = IMenuLinkItem | IMenuComponentItem
+
 export interface IMenuSection {
-    items: IMenuItem[]
+    items: TMenuItem[]
 }

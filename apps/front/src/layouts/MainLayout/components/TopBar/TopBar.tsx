@@ -1,7 +1,9 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu'
+import Stack from '@mui/material/Stack';
 import { useAtomValue, useSetAtom } from 'jotai'
 import { changeSidebarAtom, sidebarAtom } from '../Sidebar/Sidebar.state'
+import ProfileAvatar from './components/Avatar/Avatar'
 import BackButton from './components/BackButton/BackButton'
 import Styled from './TopBar.styles'
 
@@ -35,7 +37,10 @@ function TopBar() {
                 {getIcon()}
             </Styled.BurgerButton>
             
-            <BackButton/>
+            <Stack direction={'row'} spacing={2}>
+                <BackButton/>
+                <ProfileAvatar/>
+            </Stack>
         </Styled.Wrapper>
     )
     

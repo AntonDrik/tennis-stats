@@ -1,6 +1,8 @@
 import { ILoggerService } from '@tennis-stats/types'
 import chalk from 'chalk'
 import { Chalk } from 'chalk'
+import fs from 'fs'
+import { join } from 'path'
 
 
 export default class LoggerService implements ILoggerService {
@@ -46,6 +48,15 @@ export default class LoggerService implements ILoggerService {
     }
     
     private formattedLog(level: string, message: string, format?: Chalk | undefined, newLine?: boolean): void {
+    
+        fs.appendFile(
+            `${join(__dirname)}/assets/server-log.txt`,
+            `\n ${new Date()} [${level}]: ${JSON.stringify(message)}`,
+            (err) => {
+                if (err) {
+                    console.log(err)
+                }
+            })
         
         const context = chalk.magenta(this.context)
         const formattedMessage = typeof format === 'function' ? format(message) : message

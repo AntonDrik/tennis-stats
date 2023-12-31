@@ -14,7 +14,6 @@ interface IAvgRatingByDay {
     userId: number,
     userFirstName: string,
     userLastName: string,
-    userAge: number
     userColor: string
 }
 

@@ -1,8 +1,11 @@
-import { ArrayMaxSize, ArrayMinSize, IsNumber, Max, Min } from 'class-validator'
+import { ArrayMaxSize, ArrayMinSize, IsISO8601, IsNumber, Max, Min } from 'class-validator'
 import { IsOddNumber } from '../custom-decorators/is-odd-numbers'
 
 
 class CreateTourDto {
+    
+    @IsISO8601()
+    date: string
     
     @IsOddNumber({message: 'Только нечетные числа'})
     @Max(5, { message: 'Максимум 5 сетов' })

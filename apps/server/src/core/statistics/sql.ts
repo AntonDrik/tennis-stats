@@ -18,12 +18,12 @@ const getTotalGamesScoreQuery = (dto: GetUsersTotalScoreQuery): string => {
                u2.firstName                                  as user2FirstName,
                u1.lastName                                   as user1LastName,
                u2.lastName                                   as user2LastName,
-               COUNT(IIF(p1.isWinner = 1, 1, NULL))          as user1Score,
-               COUNT(IIF(p2.isWinner = 1, 1, NULL))          as user2Score,
-               COUNT(IIF(gs.status IS 'FINISHED', 1, NULL))  as gamesCount,
-               COUNT(IIF(p1.score + p2.score > 20, 1, NULL)) as additionsCount
+               COUNT(IF(p1.isWinner = 1, 1, NULL))          as user1Score,
+               COUNT(IF(p2.isWinner = 1, 1, NULL))          as user2Score,
+               COUNT(IF(gs.status = 'FINISHED', 1, NULL))  as gamesCount,
+               COUNT(IF(p1.score + p2.score > 20, 1, NULL)) as additionsCount
         FROM tour
-                 LEFT JOIN match m on tour.id = m.tourId
+                 LEFT JOIN \`match\` m on tour.id = m.tourId
                  LEFT JOIN game_set gs on m.id = gs.matchId
                  LEFT JOIN player p1 on gs.player1Id = p1.id
                  LEFT JOIN player p2 on gs.player2Id = p2.id
@@ -40,11 +40,11 @@ const getUsersScoreDiff = (dto: GetUsersScoreDiffQuery): string => {
     return `
         SELECT u1.id                           as user1Id,
                u2.id                           as user2Id,
-               strftime('%d-%m-%Y', tour.date) as formattedDate,
+               DATE_FORMAT(tour.date, '%d-%m-%Y') as formattedDate,
                AVG(p1.score - p2.score)        as user1AvgScore,
                AVG(p2.score - p1.score)        as user2AvgScore
         FROM tour
-                 LEFT JOIN match m on tour.id = m.tourId
+                 LEFT JOIN \`match\` m on tour.id = m.tourId
                  LEFT JOIN game_set gs on m.id = gs.matchId
                  LEFT JOIN player p1 on gs.player1Id = p1.id
                  LEFT JOIN player p2 on gs.player2Id = p2.id

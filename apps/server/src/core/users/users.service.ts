@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Match, User } from '@tennis-stats/entities'
-import { getDelta } from '@tennis-stats/helpers'
+import { getRatingDelta } from '@tennis-stats/helpers'
 import { DataSource, EntityManager } from 'typeorm'
 import { MatchNotFoundException } from '../../common/exceptions'
 import { RatingHistoryService } from '../rating-history'
@@ -14,7 +14,8 @@ class UsersService {
         private dataSource: DataSource,
         private ratingHistoryService: RatingHistoryService,
         private repository: UsersRepository,
-    ) {}
+    ) {
+    }
     
     public getAll(): Promise<User[]> {
         return this.repository.find()
@@ -33,21 +34,21 @@ class UsersService {
         
         const { winner, looser } = players
         
-        const delta = getDelta(winner.rating, looser.rating, match.totalScore)
+        const delta = getRatingDelta(winner.rating, looser.rating, match.totalScore)
         const winnerNewRating = winner.rating + delta
         const looserNewRating = looser.rating - (delta / 2)
-    
+        
         await this.repository.withTransaction(async (manager) => {
             await manager.update(User, { id: winner.id }, {
                 rating: winnerNewRating
             })
-    
+            
             await manager.update(User, { id: looser.id }, {
                 rating: looserNewRating
             })
             
             const allUsers = await manager.find(User)
-            await this.ratingHistoryService.makeSnapshot(allUsers, manager)
+            await this.ratingHistoryService.makeSnapshot(allUsers, match.tour.date, manager)
         }, transactionManager)
     }
     

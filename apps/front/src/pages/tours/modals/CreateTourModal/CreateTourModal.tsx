@@ -1,3 +1,7 @@
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { DatePicker as MuiDatePicker } from '@mui/x-date-pickers/DatePicker/DatePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import parseISO from 'date-fns/parseISO'
 import { useEffect } from 'react'
 import * as React from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -27,6 +31,8 @@ function CreateTourModal({ onCreateTour }: IProps) {
         resolver: classValidatorResolver(CreateTourDto)
     })
     
+    const date = form.watch('date')
+    
     const submit = (form: CreateTourDto) => {
         mutateAsync(form).then((tour) => {
             modal.close()
@@ -40,8 +46,15 @@ function CreateTourModal({ onCreateTour }: IProps) {
         form.setValue('usersIds', usersIdsList, { shouldDirty: true })
     }
     
+    const handleDatePickerChange = (newDate: Date | null) => {
+        if (newDate) {
+            form.setValue('date', newDate.toISOString())
+        }
+    }
+    
     useEffect(() => {
         form.setValue('setsCount', 1)
+        form.setValue('date', new Date().toISOString())
     }, [])
     
     return (
@@ -59,6 +72,14 @@ function CreateTourModal({ onCreateTour }: IProps) {
                     <form onSubmit={form.handleSubmit(submit)}>
                         
                         <Stack spacing={3} direction={'column'} sx={{ mt: 2 }}>
+    
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <MuiDatePicker
+                                    label="Дата"
+                                    value={parseISO(date)}
+                                    onChange={handleDatePickerChange}
+                                />
+                            </LocalizationProvider>
                             
                             <UsersAutocomplete
                                 onChange={handleAutocompleteChange}
@@ -79,7 +100,6 @@ function CreateTourModal({ onCreateTour }: IProps) {
                             color={'primary'}
                             type={'submit'}
                             sx={{ mt: 2 }}
-                            disabled={!form.formState.isDirty}
                         >
                             Создать
                         </Button>

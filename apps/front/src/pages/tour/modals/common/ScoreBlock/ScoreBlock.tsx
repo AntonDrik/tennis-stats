@@ -70,6 +70,7 @@ function ScoreBlock({ refetchIntervalMs, onChange }: IProps) {
                 value={value1}
                 min={0}
                 max={20}
+                inputMode={'numeric'}
                 onChange={(e, value) => {
                     handleChangeInput('player1', value)
                 }}
@@ -89,6 +90,7 @@ function ScoreBlock({ refetchIntervalMs, onChange }: IProps) {
                 value={value2}
                 min={0}
                 max={20}
+                inputMode={'numeric'}
                 onChange={(e, value) => {
                     handleChangeInput('player2', value)
                 }}

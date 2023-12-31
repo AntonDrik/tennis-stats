@@ -75,7 +75,7 @@ class StatisticsService {
         
         return {
             ...result,
-            mostPopularScore: maxInCollection(scoreCaptionCollection)[0],
+            mostPopularScore: maxInCollection(scoreCaptionCollection)?.[0] || '0 | 0',
             avgScoreDifference: avgOfSet(scoreDifferenceCollection)
         }
     }

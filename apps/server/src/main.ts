@@ -1,9 +1,11 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { NestFactory, Reflector } from '@nestjs/core'
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core'
 import cookieParser from 'cookie-parser'
 
 import { AppModule } from './app.module'
+import { LoggedInGuard } from './auth/guards'
+import GlobalExceptionsFilter from './common/filters/global-exceptions.filter'
 import LoggerService from './common/utils/logger.service'
 import { IEnvVariables } from './config/env'
 import { SeederService } from './database'
@@ -22,6 +24,7 @@ async function bootstrap() {
     })
     
     const reflector = app.get(Reflector)
+    const httpAdapter = app.get(HttpAdapterHost)
     const configService = app.get(ConfigService) as ConfigService<IEnvVariables>
     const seederService = app.get(SeederService)
     await seederService.seed()
@@ -30,7 +33,9 @@ async function bootstrap() {
     app.setGlobalPrefix('api')
     app.use(cookieParser())
     
+    app.useGlobalFilters(new GlobalExceptionsFilter(httpAdapter, logger))
     app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector))
+    app.useGlobalGuards(new LoggedInGuard(reflector))
     
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
     

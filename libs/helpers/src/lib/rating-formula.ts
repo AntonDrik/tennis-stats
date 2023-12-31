@@ -1,7 +1,7 @@
 import { IMatchScore } from '@tennis-stats/types'
 
 
-function getDelta(winnerRating: number, looserRating: number, matchScore: IMatchScore): number {
+function getRatingDelta(winnerRating: number, looserRating: number, matchScore: IMatchScore): number {
     const scoreMultiplier = getScoreMultiplier(matchScore)
     
     return ((100 - (winnerRating - looserRating)) / 10) * scoreMultiplier
@@ -27,4 +27,4 @@ function getScoreMultiplier(matchScore: IMatchScore): number {
     return 1
 }
 
-export default getDelta
+export default getRatingDelta

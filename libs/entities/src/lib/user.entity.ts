@@ -1,6 +1,7 @@
 import { IUser } from '@tennis-stats/types'
-import { AfterLoad, BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { AfterLoad, BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { RatingHistory } from './rating-history.entity'
+import { UserAuth } from './user-auth.entity'
 
 
 @Entity()
@@ -15,14 +16,15 @@ export class User extends BaseEntity implements IUser {
     @Column('varchar', { nullable: false })
     lastName: string
     
-    @Column('varchar', { nullable: false })
-    age: number
-    
-    @Column('varchar', {default: '#E0E1E6'})
+    @Column('varchar', { default: '#E0E1E6' })
     color: string
     
     @Column('int', { default: 100 })
     rating: number
+    
+    @OneToOne(() => UserAuth, { cascade: true })
+    @JoinColumn()
+    auth?: UserAuth
     
     @OneToMany(
         () => RatingHistory,
@@ -31,6 +33,9 @@ export class User extends BaseEntity implements IUser {
     )
     ratingHistory?: RatingHistory[]
     
+    /**
+     * Computed
+     */
     fullName: string
     shortFullName: string
     

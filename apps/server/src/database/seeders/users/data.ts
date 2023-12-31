@@ -1,25 +1,41 @@
-import { IUser } from '@tennis-stats/types'
+import { IUser, IUserAuth } from '@tennis-stats/types'
 
+export interface ISeedUser extends Omit<IUser, 'id' | 'fullName' | 'shortFullName' | 'auth'> {
+    auth: IUserAuth
+}
 
-export type TSeedUser = Omit<IUser, 'id' | 'fullName' | 'shortFullName'>
-
-export const users: TSeedUser[] = [
+export const users: ISeedUser[] = [
     {
         firstName: 'Антон',
         lastName: 'Дрик',
-        age: 27,
-        color: '#C9E8CA'
+        color: '#C9E8CA',
+        rating: 100,
+        auth: {
+            login: 'adryk',
+            password: '$2b$10$Xoa8hdfi4CjRfliGmKy83.G3cJ1ro/FOocjXb.q1YCgWW6sG5o2EO',
+            refreshToken: null
+        }
     },
     {
         firstName: 'Антон',
         lastName: 'Коновалов',
-        age: 27,
-        color: '#DADCFF'
+        color: '#DADCFF',
+        rating: 100,
+        auth: {
+            login: 'toharik',
+            password: '$2b$10$EMdencGttrWpLxCrYh0uqujUiGtqOGQZRQlWZbz4XS8rywo.WNKbS',
+            refreshToken: null
+        }
     },
     {
         firstName: 'Сева',
         lastName: 'Семенчуков',
-        age: 26,
-        color: '#FBE577'
+        color: '#FBE577',
+        rating: 100,
+        auth: {
+            login: 'sewaparts',
+            password: '$2b$10$gw0u3EOqv/9hDjuWx7RKA.PaIRxuHxCAGoklHMJLDgM9v4DXiAKuy',
+            refreshToken: null
+        }
     }
 ]

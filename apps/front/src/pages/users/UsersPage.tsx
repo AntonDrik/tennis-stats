@@ -1,7 +1,5 @@
-import { Alert } from '@mui/material'
 import {
     Box,
-    IconButton,
     Table,
     TableBody,
     TableCell,
@@ -16,24 +14,21 @@ import { useUsersQuery } from '../../core/api'
 
 export default function UsersPage() {
     
-    const { data: usersList, error } = useUsersQuery()
+    const { data: usersList } = useUsersQuery()
     
     return (
         <Box>
-            <Typography variant="h4" gutterBottom>Пользователи</Typography>
-            
-            {
-                error &&
-                <Alert severity={'error'}>{error.message}</Alert>
-            }
+            <Typography variant="h4" sx={{mb: 2}}>Пользователи</Typography>
             
             {
                 usersList &&
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell><b>Игроки</b></TableCell>
+                                <TableCell>Имя</TableCell>
+                                <TableCell>Фамилия</TableCell>
+                                <TableCell>Рейтинг</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -43,15 +38,9 @@ export default function UsersPage() {
                                         key={user.id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
-                                        <TableCell align="left">
-                                            <IconButton
-                                                aria-label="expand row"
-                                                size="small"
-                                                //onClick={() => setOpen(!open)} - типо по клику можно открывать статистику =)
-                                            >
-                                                {/*{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}*/}
-                                            </IconButton>
-                                            {user.fullName}</TableCell>
+                                        <TableCell align="left">{user.firstName}</TableCell>
+                                        <TableCell align="left">{user.lastName}</TableCell>
+                                        <TableCell align="left">{Math.round(user.rating)}</TableCell>
                                     </TableRow>
                                 ))
                             }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Player, User } from '@tennis-stats/entities'
-import { DataSource, In } from 'typeorm'
+import { DataSource, Equal, In } from 'typeorm'
 import { BaseRepository } from '../../common/utils'
 
 
@@ -9,6 +9,26 @@ class UsersRepository extends BaseRepository<User> {
     
     constructor(dataSource: DataSource) {
         super(User, dataSource)
+    }
+    
+    public findByRefreshToken(token: string) {
+        return this.findOne({
+            relations: ['auth'],
+            where: {
+                auth: {
+                    refreshToken: Equal(token)
+                }
+            }
+        })
+    }
+    
+    public findByLogin(login: string) {
+        return this.findOne({
+            relations: ['auth'],
+            where: {
+                auth: { login }
+            }
+        })
     }
     
     public getByIds(ids: number[]) {

@@ -18,6 +18,7 @@ const Wrapper = styled(Box)<IWrapperProps>(
         borderRadius: '0.25rem',
         width: '100%',
         cursor: 'pointer',
+        position: 'relative'
     },
     ({ $isSelected }) => ({
         backgroundColor: $isSelected ? theme.palette.primary.main : 'inherit',

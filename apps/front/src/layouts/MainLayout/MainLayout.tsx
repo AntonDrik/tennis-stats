@@ -1,7 +1,5 @@
-import { Box } from '@mui/material'
-import { ReactElement, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { appRoutes } from '../../routes/routes.constant'
+import { Box, Container } from '@mui/material'
+import { ReactElement } from 'react'
 
 import Sidebar from './components/Sidebar/Sidebar'
 import TopBar from './components/TopBar/TopBar'
@@ -14,16 +12,6 @@ interface IProps {
 
 function MainLayout({ children }: IProps) {
     
-    const navigate = useNavigate()
-    
-    useEffect(() => {
-        const isLoggedIn = localStorage.getItem('isLoggedIn')
-        
-        if (isLoggedIn !== 'true') {
-            navigate(appRoutes.LOGIN)
-        }
-    }, [])
-    
     return (
         <Box display={'flex'}>
             
@@ -31,9 +19,12 @@ function MainLayout({ children }: IProps) {
             
             <Sidebar/>
             
-            <Styled.Content>
-                {children}
-            </Styled.Content>
+            <Container maxWidth={'lg'} sx={{px: '0px!important'}}>
+                <Styled.Content>
+                    {children}
+                </Styled.Content>
+            </Container>
+            
         </Box>
     )
 }

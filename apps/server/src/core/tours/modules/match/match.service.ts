@@ -14,32 +14,30 @@ class MatchService {
     
     constructor(
         private dataSource: DataSource,
-        
         private repository: MatchRepository,
         private usersRepository: UsersRepository,
-        
         private usersService: UsersService,
         private gameSetService: GameSetService
     ) {}
     
     public async getMatchesForTour(dto: CreateTourDto): Promise<Match[]> {
         const allCombinationsIds = uniqueCombinations(dto.usersIds)
-
+        
         const promises = allCombinationsIds.map(async (usersIds) => {
-            const user1Entity = await this.usersRepository.findOneBy({id: usersIds[0]})
-            const user2Entity = await this.usersRepository.findOneBy({id: usersIds[1]})
-
+            const user1Entity = await this.usersRepository.findOneBy({ id: usersIds[0] })
+            const user2Entity = await this.usersRepository.findOneBy({ id: usersIds[1] })
+            
             if (!user1Entity || !user2Entity) {
                 throw new UserNotFoundException()
             }
-
+            
             const gameSets = await this.gameSetService.createEntities(usersIds, dto.setsCount)
-
+            
             const match = new Match()
             match.user1 = user1Entity
             match.user2 = user2Entity
             match.gameSets = gameSets
-
+            
             return match
         })
         
@@ -51,7 +49,12 @@ class MatchService {
             const gameSet = await this.gameSetService.finishGameSet(gameSetId, dto, manager)
             
             if (gameSet.isLastInMatch) {
-                const match = await this.repository.findOneBy({ id: matchId })
+                const match = await manager.findOne(Match, {
+                    relations: ['tour'],
+                    where: {
+                        id: matchId
+                    }
+                })
                 
                 await this.usersService.updateRating(match, manager)
             }

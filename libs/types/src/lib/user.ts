@@ -1,3 +1,4 @@
+import { IUserAuth } from './auth'
 import { IRatingHistory } from './rating-history'
 
 
@@ -8,8 +9,9 @@ interface IUser {
     fullName: string
     color: string
     shortFullName: string
-    age: number
+    rating: number
     ratingHistory?: IRatingHistory[]
+    auth?: IUserAuth
 }
 
 export { IUser }

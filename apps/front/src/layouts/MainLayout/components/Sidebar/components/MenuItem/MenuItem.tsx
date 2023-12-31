@@ -1,23 +1,21 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { changeSidebarAtom, sidebarAtom } from '../../Sidebar.state'
-import { IMenuItem } from '../../Sidebar.types'
+import { sidebarAtom } from '../../Sidebar.state'
+import { IMenuLinkItem } from '../../Sidebar.types'
 import Styled from './MenuItem.styles'
 
 
-function MenuItem({ title, link, icon }: IMenuItem) {
+function MenuItem({ title, link, icon }: IMenuLinkItem) {
     const navigate = useNavigate()
     const location = useLocation()
     
     const sidebar = useAtomValue(sidebarAtom)
-    const toggleSidebar = useSetAtom(changeSidebarAtom)
     
     const isSelected = location.pathname.includes(link)
     
     const handleClick = () => {
         navigate(link)
-        toggleSidebar(false)
     }
     
     return (

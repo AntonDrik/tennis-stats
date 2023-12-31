@@ -15,30 +15,33 @@ function AuthPage() {
     
     const auth = useLoginMutation()
     
+    const [login, setLogin] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     
     const handleClick = () => {
-        auth.mutateAsync({ password })
-            .then((isValidPassword) => {
-                console.log(isValidPassword)
-                if (!isValidPassword) {
+        auth.mutateAsync({ login, password })
+            .then((response) => {
+                if (!response.user) {
                     return
                 }
                 
-                localStorage.setItem('isLoggedIn', String(true))
-    
                 navigate(appRoutes.TOURS_LIST)
             })
     }
     
     return (
-        <Styled.Card>
+        <Styled.Card gap={2}>
             <Typography variant={'h2'} mb={2}>Авторизация</Typography>
+            
+            <TextField
+                placeholder={'Введите логин'}
+                value={login}
+                onChange={(e) => setLogin(e.target.value as string)}
+            />
             
             <TextField
                 placeholder={'Введите пароль'}
                 value={password}
-                size={'small'}
                 type={'password'}
                 onChange={(e) => setPassword(e.target.value as string)}
             />
@@ -53,8 +56,7 @@ function AuthPage() {
         </Styled.Card>
     )
     
-
-
+    
 }
 
 export default AuthPage

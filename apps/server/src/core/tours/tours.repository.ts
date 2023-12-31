@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery } from '@tennis-stats/dto'
 import { Match, Tour } from '@tennis-stats/entities'
+import { parseISO } from 'date-fns'
 import { DataSource, Repository } from 'typeorm'
 import { TourNotFoundException } from '../../common/exceptions'
 
@@ -57,7 +58,7 @@ class ToursRepository extends Repository<Tour> {
     public createEntity(dto: CreateTourDto, matchEntities: Match[]): Tour {
         const tour = new Tour()
         
-        tour.date = new Date()
+        tour.date = parseISO(dto.date)
         tour.matches = matchEntities
         tour.setsCount = dto.setsCount
         

@@ -11,7 +11,7 @@ import { PlayersModule } from './core/players'
 import { UsersModule } from './core/users'
 import { MatchModule } from './core/tours/modules/match'
 import { TourModule } from './core/tours'
-import { AuthModule } from './core/auth'
+import { AuthModule } from './auth'
 
 
 @Module({

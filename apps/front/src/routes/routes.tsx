@@ -1,6 +1,12 @@
 import React, { ReactElement } from 'react'
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom'
-import { StatsPage, UsersPage, TourPage, ToursPage, MatchOrderPage, AuthPage } from '../pages'
+import {
+    createBrowserRouter,
+    createRoutesFromElements,
+    Navigate,
+    Route,
+    RouterProvider
+} from 'react-router-dom'
+import { StatsPage, UsersPage, TourPage, ToursPage, MatchOrderPage, AuthPage, ProfilePage } from '../pages'
 import AuthRoute from './AuthRoute'
 import MainRoute from './MainRoute'
 import { appRoutes } from './routes.constant'
@@ -27,12 +33,19 @@ const routes = createBrowserRouter(
                 <Route path={appRoutes.TOUR_BY_ID()} element={<TourPage/>}/>
                 
                 <Route path={appRoutes.MATCH_ORDER} element={<MatchOrderPage/>}/>
+                
+                <Route path={appRoutes.PROFILE} element={<ProfilePage/>}/>
             </Route>
         
         </Route>
     )
 )
 
-export default function AppRoutes(): ReactElement {
+function AppRoutes(): ReactElement {
     return <RouterProvider router={routes}/>
+}
+
+export {
+    AppRoutes,
+    routes
 }

@@ -6,6 +6,8 @@ const Card = styled(Stack)`
     padding: 16px;
     width: 100%;
     text-align: center;
+    justifyContent: center;
+    alignItems: center;
 
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);

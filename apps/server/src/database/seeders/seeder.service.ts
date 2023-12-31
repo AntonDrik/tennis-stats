@@ -19,8 +19,8 @@ class SeederService {
     async seed() {
         try {
             await this.users()
-        } catch {
-            this.logger.error('Seeding error')
+        } catch (err) {
+            this.logger.error(`Seeding error: ${JSON.stringify(err)}`)
         }
     }
     

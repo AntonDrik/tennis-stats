@@ -1,5 +1,6 @@
-import { Box } from '@mui/material'
+import { Box, Backdrop as MuiBackdrop } from '@mui/material'
 import styled from 'styled-components'
+import theme from '../../../../theme/theme'
 
 
 interface IMenuWrapperProps {
@@ -10,7 +11,6 @@ const MenuWrapper = styled(Box)<IMenuWrapperProps>(
     {
         transition: '.3s',
         position: 'absolute',
-        // marginTop: '110px',
         height: '100%',
         backgroundColor: '#F7F9F8',
         zIndex: 999
@@ -22,6 +22,12 @@ const MenuWrapper = styled(Box)<IMenuWrapperProps>(
     })
 )
 
+const Backdrop = styled(MuiBackdrop)({
+    zIndex: theme.zIndex.drawer + 1,
+    marginTop: '55px'
+})
+
 export default {
-    MenuWrapper
+    MenuWrapper,
+    Backdrop
 }
