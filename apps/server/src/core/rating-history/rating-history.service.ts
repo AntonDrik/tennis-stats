@@ -14,9 +14,15 @@ class RatingHistoryService {
         private repository: RatingHistoryRepository
     ) {}
     
-    public getHistory(): Promise<IAvgRatingByDay[]> {
+    public getHistoryForAll(): Promise<IAvgRatingByDay[]> {
         const query = getAvgRatingByDaysQuery()
         
+        return this.repository.executeQuery<IAvgRatingByDay[]>(query)
+    }
+    
+    public getHistoryForUser(userId: number): Promise<IAvgRatingByDay[]> {
+        const query = getAvgRatingByDaysQuery(userId)
+    
         return this.repository.executeQuery<IAvgRatingByDay[]>(query)
     }
     

@@ -6,7 +6,9 @@ function getRatingDelta(winnerRating: number, looserRating: number, tour: ITour,
     const tourMultiplier = getTourMultiplier(tour)
     const scoreMultiplier = getScoreMultiplier(matchScore)
     
-    return ((100 - (winnerRating - looserRating)) / 10) * tourMultiplier * scoreMultiplier
+    const delta = ((100 - (winnerRating - looserRating)) / 10) * tourMultiplier * scoreMultiplier
+    
+    return Math.round(delta)
 }
 
 

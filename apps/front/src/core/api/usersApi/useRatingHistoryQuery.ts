@@ -3,10 +3,13 @@ import { useQuery } from 'react-query'
 import axiosFetcher from '../axios/fetcher'
 
 
-function useRatingHistoryQuery() {
+function useRatingHistoryQuery(userId?: number) {
+    
+    const url = userId ? `/rating-history/user/${userId}` : '/rating-history'
+    
     return useQuery<IAvgRatingByDay[]>(
-        ['rating-history'],
-        () => axiosFetcher.get<IAvgRatingByDay[]>('/rating-history')
+        [`rating-history-${userId}`],
+        () => axiosFetcher.get<IAvgRatingByDay[]>(url)
     )
 }
 

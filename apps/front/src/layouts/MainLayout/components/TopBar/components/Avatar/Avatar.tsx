@@ -11,7 +11,11 @@ function ProfileAvatar() {
     const { data: user, isLoading } = useMeQuery()
     
     const handleClick = () => {
-        navigate(appRoutes.PROFILE)
+        if (!user) {
+            return
+        }
+        
+        navigate(appRoutes.PROFILE(user.id))
     }
     
     return (

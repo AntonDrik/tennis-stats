@@ -12,3 +12,9 @@ export class UsersNotFoundException extends HttpException {
         super(`Нет ни одного пользователя`, HttpStatus.NOT_FOUND, options)
     }
 }
+
+export class UserExistException extends HttpException {
+    constructor(options?: HttpExceptionOptions) {
+        super(`Пользователь с таким логином уже существует`, HttpStatus.CONFLICT, options)
+    }
+}

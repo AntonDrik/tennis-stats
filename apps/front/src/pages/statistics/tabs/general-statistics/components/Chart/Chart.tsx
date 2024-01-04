@@ -5,9 +5,8 @@ import { format, parse } from 'date-fns'
 import ruLocale from 'date-fns/locale/ru'
 import { useCallback, useMemo } from 'react'
 import { LineChart, Tooltip, CartesianGrid, Line, YAxis, XAxis } from 'recharts'
-import { ChartLegend, ChartTooltip, useChartLegend } from '../../../../../../shared/components'
+import { ChartLegend, ChartTooltip, useChartLegend, ChartStyles } from '../../../../../../shared/components'
 import { useMap } from '../../../../../../shared/hooks/useMap'
-import Styled from './Chart.styles'
 
 
 type TUsersList = {
@@ -68,7 +67,7 @@ function SparkChart({ data }: IProps) {
     return (
         <Stack height={'340px'} width={'100%'}>
             
-            <Styled.ResponsiveContainer width={'100%'} height={'85%'}>
+            <ChartStyles.ResponsiveContainer width={'100%'} height={'85%'}>
                 <LineChart
                     data={usersList}
                     margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
@@ -125,7 +124,7 @@ function SparkChart({ data }: IProps) {
                         ))
                     }
                 </LineChart>
-            </Styled.ResponsiveContainer>
+            </ChartStyles.ResponsiveContainer>
     
             <ChartLegend
                 data={chartLegend}

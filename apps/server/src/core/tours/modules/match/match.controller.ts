@@ -15,6 +15,11 @@ class MatchController {
         private gameSetRepository: GameSetRepository,
     ) {}
     
+    @Get('/:matchId/rating-delta')
+    getRatingDeltaOfMatch(@IdParam('matchId') matchId: number) {
+        return this.matchService.calculateRatingDelta(matchId)
+    }
+    
     @Get('/:matchId/game-set/:setId')
     getGameSet(@IdParam('setId') setId: number): Promise<GameSet> {
         return this.gameSetRepository.findById(setId)

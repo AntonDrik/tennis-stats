@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import { useRatingHistoryQuery, useAllGamesStatsQuery } from '../../../../core/api'
+import { InfoSection } from '../../../../shared/components'
 import Chart from './components/Chart/Chart'
 import InfoCard from './components/InfoCard/InfoCard'
-import Section from './components/Section/Section'
 import StarsIcon from '@mui/icons-material/Stars'
 import InfoIcon from '@mui/icons-material/Info'
 import Stack from '@mui/material/Stack'
@@ -19,14 +19,14 @@ function GeneralStatisticsTab() {
             <Stack spacing={3}>
                 {
                     (ratingQuery.data && ratingQuery.data.length > 0) &&
-                    <Section title={'Рейтинг'} icon={<StarsIcon color={'warning'}/>}>
+                    <InfoSection title={'Рейтинг'} icon={<StarsIcon color={'warning'}/>}>
                         <Chart data={ratingQuery.data}/>
-                    </Section>
+                    </InfoSection>
                 }
     
                 {
                     gamesStatsQuery.data &&
-                    <Section title={'Данные по всем играм'} icon={<InfoIcon color={'info'}/>}>
+                    <InfoSection title={'Данные по всем играм'} icon={<InfoIcon color={'info'}/>}>
                         <Box
                             display={'grid'}
                             gridTemplateColumns={'repeat(2, 1fr)'}
@@ -53,7 +53,7 @@ function GeneralStatisticsTab() {
                             />
 
                         </Box>
-                    </Section>
+                    </InfoSection>
                 }
                 
             </Stack>

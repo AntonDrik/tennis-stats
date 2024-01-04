@@ -1,6 +1,6 @@
 import {ResponsiveContainer as RechartsContainer} from 'recharts'
 import styled from 'styled-components'
-import theme from '../../../../../../theme/theme'
+import theme from '../../../theme/theme'
 
 
 const ResponsiveContainer = styled(RechartsContainer)({
@@ -9,6 +9,7 @@ const ResponsiveContainer = styled(RechartsContainer)({
     paddingBottom: '10px',
     borderTopRightRadius: theme.shape.borderRadius,
     borderTopLeftRadius: theme.shape.borderRadius,
+    position: 'relative'
 })
 
 export default {

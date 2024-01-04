@@ -16,4 +16,9 @@ interface IMatch {
     totalScore: IMatchScore
 }
 
-export { IMatch, IMatchScore }
+interface IMatchRatingDelta {
+    score: string
+    delta: number
+}
+
+export { IMatch, IMatchScore, IMatchRatingDelta }

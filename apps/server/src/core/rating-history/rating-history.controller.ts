@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
+import { IdParam } from '../../common/decorators'
 import RatingHistoryService from './rating-history.service'
 
 
@@ -10,8 +11,13 @@ class RatingHistoryController {
     ) {}
     
     @Get()
-    getRatingHistory() {
-        return this.service.getHistory()
+    getRatingHistoryForAll() {
+        return this.service.getHistoryForAll()
+    }
+    
+    @Get('/user/:id')
+    getRatingHistory(@IdParam() id: number) {
+        return this.service.getHistoryForUser(id)
     }
     
 }

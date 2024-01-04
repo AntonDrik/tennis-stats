@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTourDto, FinishGameSetDto } from '@tennis-stats/dto'
 import { Match, Tour } from '@tennis-stats/entities'
-import { uniqueCombinations } from '@tennis-stats/helpers'
+import { getRatingDelta, uniqueCombinations } from '@tennis-stats/helpers'
+import { IMatchRatingDelta } from '@tennis-stats/types'
 import { DataSource } from 'typeorm'
-import { UserNotFoundException } from '../../../../common/exceptions'
+import { TourNotFoundException, UserNotFoundException } from '../../../../common/exceptions'
 import { UsersRepository, UsersService } from '../../../users'
+import { getAvailableScoresBySetsCount } from './helpers'
 import MatchRepository from './match.repository'
 import { GameSetService } from './modules/game-set'
 
@@ -129,6 +131,40 @@ class MatchService {
                 
                 await this.usersService.updateRating(tour, match, manager)
             }
+        })
+    }
+    
+    public async calculateRatingDelta(matchId: number): Promise<IMatchRatingDelta[][]> {
+        const match = await this.repository.findOneById(matchId)
+        const tour = await this.dataSource.manager.findOneBy(Tour, { id: match.tour.id })
+        
+        if (!tour) {
+            throw new TourNotFoundException()
+        }
+        
+        const availableScores = getAvailableScoresBySetsCount(tour.setsCount)
+        
+        return availableScores.map((score) => {
+            const deltaIfUser1Win = getRatingDelta(match.user1.rating, match.user2.rating, tour, {
+                user1: Math.max(...score),
+                user2: Math.min(...score)
+            })
+            
+            const deltaIfUser2Win = getRatingDelta(match.user2.rating, match.user1.rating, tour, {
+                user1: Math.min(...score),
+                user2: Math.max(...score)
+            })
+            
+            return [
+                {
+                    score: `(${Math.max(...score)} - ${Math.min(...score)})`,
+                    delta: deltaIfUser1Win
+                },
+                {
+                    score: `(${Math.min(...score)} - ${Math.max(...score)})`,
+                    delta: deltaIfUser2Win
+                }
+            ]
         })
     }
     

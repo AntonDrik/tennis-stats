@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Player, User } from '@tennis-stats/entities'
 import { DataSource, Equal, In } from 'typeorm'
+import { UserNotFoundException } from '../../common/exceptions'
 import { BaseRepository } from '../../common/utils'
 
 
@@ -29,6 +30,16 @@ class UsersRepository extends BaseRepository<User> {
                 auth: { login }
             }
         })
+    }
+    
+    public async findById(id: number): Promise<User> {
+        const user = await this.findOneBy({ id })
+        
+        if (!user) {
+            throw new UserNotFoundException()
+        }
+        
+        return user
     }
     
     public getByIds(ids: number[]) {

@@ -34,7 +34,7 @@ const routes = createBrowserRouter(
                 
                 <Route path={appRoutes.MATCH_ORDER} element={<MatchOrderPage/>}/>
                 
-                <Route path={appRoutes.PROFILE} element={<ProfilePage/>}/>
+                <Route path={appRoutes.PROFILE()} element={<ProfilePage/>}/>
             </Route>
         
         </Route>

@@ -5,7 +5,7 @@ const appRoutes = {
     TOUR_BY_ID: (id?: number) => id ? `/tours/${id}` : '/tours/:id',
     STATS: '/stats',
     MATCH_ORDER: '/match-order',
-    PROFILE: '/profile'
+    PROFILE: (id?: number) => id ? `/profile/${id}` : 'profile/:id'
 }
 
 export {

@@ -3,18 +3,33 @@ import { styled } from 'styled-components'
 import theme from '../../../../../../theme/theme'
 
 
-const Header = styled(Stack)({
+const Wrapper = styled(Stack)({
     backgroundColor: '#EAE7EC',
     borderBottom: '1px solid #D0CDD7',
     
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     
-    paddingBottom: theme.spacing(0.5),
-    paddingTop: theme.spacing(0.5),
+    padding: theme.spacing(0.5),
+    
+    position: 'relative'
 })
 
 
+interface IProps {
+    $withPadding: boolean
+}
+
+const TextWrapper = styled(Stack)<IProps>({
+    textAlign: 'center',
+    overflow: 'hidden',
+    flex: 1
+}, ({ $withPadding }) => ({
+    paddingLeft: $withPadding ? '40px' : 0
+}))
+
+
 export default {
-    Header
+    Wrapper,
+    TextWrapper
 }
