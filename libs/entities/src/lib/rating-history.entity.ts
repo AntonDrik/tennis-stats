@@ -15,7 +15,7 @@ export class RatingHistory extends BaseEntity implements IRatingHistory {
     @Column('datetime', { nullable: true })
     date: Date
     
-    @Column('int', { nullable: false })
+    @Column('double', { nullable: false })
     rating: number
     
 }

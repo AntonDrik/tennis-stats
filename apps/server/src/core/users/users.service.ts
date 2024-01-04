@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { Match, User } from '@tennis-stats/entities'
+import { Match, Tour, User } from '@tennis-stats/entities'
 import { getRatingDelta } from '@tennis-stats/helpers'
 import { DataSource, EntityManager } from 'typeorm'
-import { MatchNotFoundException } from '../../common/exceptions'
+import { MatchNotFoundException, TourNotFoundException } from '../../common/exceptions'
 import { RatingHistoryService } from '../rating-history'
 import UsersRepository from './users.repository'
 
@@ -14,14 +14,17 @@ class UsersService {
         private dataSource: DataSource,
         private ratingHistoryService: RatingHistoryService,
         private repository: UsersRepository,
-    ) {
-    }
+    ) {}
     
     public getAll(): Promise<User[]> {
         return this.repository.find()
     }
     
-    public async updateRating(match: Match | null, transactionManager?: EntityManager) {
+    public async updateRating(tour: Tour | null, match: Match | null, transactionManager?: EntityManager) {
+        if (!tour) {
+            throw new TourNotFoundException()
+        }
+        
         if (!match) {
             throw new MatchNotFoundException()
         }
@@ -34,17 +37,15 @@ class UsersService {
         
         const { winner, looser } = players
         
-        const delta = getRatingDelta(winner.rating, looser.rating, match.totalScore)
-        const winnerNewRating = winner.rating + delta
-        const looserNewRating = looser.rating - (delta / 2)
+        const delta = getRatingDelta(winner.rating, looser.rating, tour, match.totalScore)
         
         await this.repository.withTransaction(async (manager) => {
             await manager.update(User, { id: winner.id }, {
-                rating: winnerNewRating
+                rating: winner.rating + delta
             })
             
             await manager.update(User, { id: looser.id }, {
-                rating: looserNewRating
+                rating: looser.rating - delta
             })
             
             const allUsers = await manager.find(User)

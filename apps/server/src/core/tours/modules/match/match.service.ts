@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { CreateTourDto, FinishGameSetDto } from '@tennis-stats/dto'
-import { Match } from '@tennis-stats/entities'
+import { Match, Tour } from '@tennis-stats/entities'
 import { uniqueCombinations } from '@tennis-stats/helpers'
 import { DataSource } from 'typeorm'
 import { UserNotFoundException } from '../../../../common/exceptions'
@@ -19,6 +19,75 @@ class MatchService {
         private usersService: UsersService,
         private gameSetService: GameSetService
     ) {}
+    
+    // async onApplicationBootstrap() {
+    //     const x = await this.repository.find({
+    //         relations: ['gameSets', 'tour']
+    //     })
+    //
+    //     const usersRating = new Map<string, number>()
+    //     usersRating.set('Дрик', 100)
+    //     usersRating.set('Семенчуков', 100)
+    //     usersRating.set('Коновалов', 100)
+    //
+    //     const res1: {
+    //         date: string
+    //         data: Map<string, number>
+    //     }[] = []
+    //
+    //     x.forEach((match) => {
+    //         // @ts-ignore
+    //         const x = match.getWinnerLooser()
+    //         if (!x) {
+    //             return
+    //         }
+    //
+    //         const { winner, looser } = x
+    //
+    //         if (winner.lastName === 'Дрик') {
+    //             winner.rating = usersRating.get('Дрик') ?? 0
+    //         }
+    //         if (winner.lastName === 'Семенчуков') {
+    //             winner.rating = usersRating.get('Семенчуков') ?? 0
+    //         }
+    //         if (winner.lastName === 'Коновалов') {
+    //             winner.rating = usersRating.get('Коновалов') ?? 0
+    //         }
+    //
+    //         if (looser.lastName === 'Дрик') {
+    //             looser.rating = usersRating.get('Дрик') ?? 0
+    //         }
+    //         if (looser.lastName === 'Семенчуков') {
+    //             looser.rating = usersRating.get('Семенчуков') ?? 0
+    //         }
+    //         if (looser.lastName === 'Коновалов') {
+    //             looser.rating = usersRating.get('Коновалов') ?? 0
+    //         }
+    //
+    //         const delta = getRatingDelta(winner.rating, looser.rating, match.totalScore)
+    //
+    //         usersRating.set(winner.lastName, winner.rating + delta)
+    //         usersRating.set(looser.lastName, looser.rating - delta)
+    //
+    //         const found = res1.find((item) => item.date === format(match.tour.date, 'dd-MM-yyyy'))
+    //
+    //         if (!found) {
+    //             res1.push({
+    //                 date: format(match.tour.date, 'dd-MM-yyyy'),
+    //                 data: new Map<string, number>([
+    //                     [winner.lastName, winner.rating + delta],
+    //                     [looser.lastName, looser.rating - delta],
+    //                 ])
+    //             })
+    //         } else {
+    //             found.data.set(winner.lastName, winner.rating + delta)
+    //             found.data.set(looser.lastName, looser.rating - delta)
+    //         }
+    //     })
+    //
+    //     console.log(res1)
+    //     console.log(usersRating)
+    // }
     
     public async getMatchesForTour(dto: CreateTourDto): Promise<Match[]> {
         const allCombinationsIds = uniqueCombinations(dto.usersIds)
@@ -56,7 +125,9 @@ class MatchService {
                     }
                 })
                 
-                await this.usersService.updateRating(match, manager)
+                const tour = await manager.findOneBy(Tour, { id: match?.tour.id })
+                
+                await this.usersService.updateRating(tour, match, manager)
             }
         })
     }

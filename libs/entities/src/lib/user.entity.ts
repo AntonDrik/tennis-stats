@@ -19,7 +19,7 @@ export class User extends BaseEntity implements IUser {
     @Column('varchar', { default: '#E0E1E6' })
     color: string
     
-    @Column('int', { default: 100 })
+    @Column('double', { default: 100 })
     rating: number
     
     @OneToOne(() => UserAuth, { cascade: true })

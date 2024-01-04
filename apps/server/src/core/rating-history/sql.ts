@@ -1,5 +1,5 @@
 const getAvgRatingByDaysQuery = () => `
-    SELECT DATE_FORMAT(CONVERT_TZ(rating_history.date, 'UTC', 'Europe/Minsk'), '%d-%m-%Y') as formattedDate,
+    SELECT DATE_FORMAT(CONVERT_TZ(rating_history.date, '+00:00', '+03:00'), '%d-%m-%Y') as formattedDate,
            rating_history.id                            as ratingHistoryId,
            rating_history.rating                        as rating,
            u.firstName                                  as userFirstName,
