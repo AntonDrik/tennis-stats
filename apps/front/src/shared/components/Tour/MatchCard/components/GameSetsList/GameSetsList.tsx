@@ -50,7 +50,7 @@ function GameSetsList({ gameSetList, renderMenuCell }: IProps) {
                             </Stack>
                         </Box>
                         
-                        <Box width={'30px'}>
+                        <Box width={'35px'}>
                             {getMenuCell(set)}
                         </Box>
                     </Styled.Row>

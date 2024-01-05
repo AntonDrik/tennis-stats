@@ -1,11 +1,11 @@
 import { Stack } from '@mui/material'
 import Divider from '@mui/material/Divider'
-import { IUsersTotalScore } from '@tennis-stats/types'
+import { IPairStatistic } from '@tennis-stats/types'
 import Styled from './ScoreItem.styles'
 
 
 interface IProps {
-    data: IUsersTotalScore
+    data: IPairStatistic
 }
 
 function ScoreItem({ data }: IProps) {

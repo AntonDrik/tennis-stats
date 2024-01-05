@@ -5,13 +5,14 @@ import { join } from 'path'
 import { SeederModule, SqliteProviderModule } from './database'
 import { EnvConfigModule } from './config/env'
 import { MatchOrderModule } from './core/match-order'
-import { StatisticsModule } from './core/statistics'
+import { StatisticModule } from './core/statistics'
 import { RatingHistoryModule } from './core/rating-history'
 import { PlayersModule } from './core/players'
 import { UsersModule } from './core/users'
 import { MatchModule } from './core/tours/modules/match'
 import { TourModule } from './core/tours'
 import { AuthModule } from './auth'
+import { ProfileModule } from './core/users/modules/profile'
 
 
 @Module({
@@ -20,12 +21,13 @@ import { AuthModule } from './auth'
         SqliteProviderModule,
         SeederModule,
         UsersModule,
+        ProfileModule,
         TourModule,
         MatchModule,
         PlayersModule,
         MatchOrderModule,
         AuthModule,
-        StatisticsModule,
+        StatisticModule,
         RatingHistoryModule,
         
         ServeStaticModule.forRoot({

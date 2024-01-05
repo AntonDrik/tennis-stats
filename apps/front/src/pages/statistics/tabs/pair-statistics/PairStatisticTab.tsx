@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material'
 import { useAtomValue } from 'jotai'
-import { useUsersTotalScoreQuery } from '../../../../core/api'
+import { usePairStatisticQuery } from '../../../../core/api'
 import DatePicker from './components/DatePicker/DatePicker'
 import { dateRangeAtom } from './components/DatePicker/DatePicker.state'
 import TotalScoreCard from './components/TotalScoreCard/TotalScoreCard'
@@ -9,7 +9,7 @@ import TotalScoreCard from './components/TotalScoreCard/TotalScoreCard'
 function PairStatisticTab() {
     
     const dateRange = useAtomValue(dateRangeAtom)
-    const { data } = useUsersTotalScoreQuery(dateRange)
+    const { data } = usePairStatisticQuery(dateRange)
 
     return (
         <>

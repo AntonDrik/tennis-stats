@@ -1,1 +1,1 @@
-export {default as StatisticsModule} from './statistics.module'
+export {default as StatisticModule} from './statistic.module'

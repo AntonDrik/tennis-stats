@@ -1,20 +1,18 @@
 import { Controller, Get } from '@nestjs/common'
-import { IdParam } from '../../../common/decorators'
+import { IdParam } from '../../../../common/decorators'
+import ProfileService from './profile.service'
 
 
 @Controller('/users/:id/profile')
 class ProfileController {
     
-    constructor() {}
+    constructor(
+        private service: ProfileService
+    ) {}
     
     @Get('/info')
     getProfileInfo(@IdParam() userId: number) {
-    
-    }
-    
-    @Get('chart')
-    getProfileChart(@IdParam() userId: number) {
-    
+        return this.service.getInfo(userId)
     }
     
 }

@@ -63,7 +63,7 @@ export class GameSet extends BaseEntity implements IGameSet {
         
         this.isFinished = [EGameSetStatus.FINISHED, EGameSetStatus.CANCELED].includes(this.status)
         
-        this.scoreCaption = `${this.player1.score} | ${this.player2.score}`
+        this.scoreCaption = `${this.player1?.score} | ${this.player2?.score}`
     }
     
 }

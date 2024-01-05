@@ -10,8 +10,7 @@ export { default as GameSetScoreDto } from './lib/game-set/game-set-score.dto'
 
 export { default as LoginDto } from './lib/auth/login.dto'
 
-export { default as GetUsersTotalScoreQuery } from './lib/statistics/get-users-total-score.query'
-export { default as GetUsersScoreDiffQuery } from './lib/statistics/get-users-score-diff.query'
+export { default as GetPairStatisticQuery } from './lib/statistics/get-pair-statistic.query'
 
 
 export { default as CreateUserDto } from './lib/user/create-user.dto'

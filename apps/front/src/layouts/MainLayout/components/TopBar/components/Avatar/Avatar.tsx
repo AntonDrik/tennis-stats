@@ -20,6 +20,7 @@ function ProfileAvatar() {
     
     return (
         <Avatar
+            sx={{cursor: 'pointer'}}
             onClick={handleClick}
         >
             {isLoading && <Spinner/>}

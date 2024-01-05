@@ -1,4 +1,5 @@
-import Styled from './InfoCard.styles'
+import Box from '@mui/material/Box'
+import Styled from './MiniCard.styles'
 
 
 interface IProps {
@@ -12,7 +13,9 @@ function InfoCard({ label, value, width }: IProps) {
     return (
         <Styled.Wrapper width={width}>
             <Styled.Title>{label}</Styled.Title>
-            <Styled.ValueText>{value}</Styled.ValueText>
+            <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Styled.ValueText>{value}</Styled.ValueText>
+            </Box>
         </Styled.Wrapper>
     )
     

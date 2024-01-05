@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import ms from 'ms'
 import { useParams } from 'react-router-dom'
@@ -41,28 +42,31 @@ function TourPage() {
                 <TourInfoPanel tour={tour}/>
             }
             
-            {
-                tour &&
-                <Stack spacing={3}>
-                    {
-                        tour.matches.map((match) => (
-                            <MatchCard key={match.id}>
-                                <MatchCardHeader match={match}/>
-                                
-                                <GameSetsList
-                                    gameSetList={match.gameSets}
-                                    renderMenuCell={(gameSet) => (
-                                        <GameSetMenu
-                                            match={match}
-                                            gameSet={gameSet}
-                                        />
-                                    )}
-                                />
-                            </MatchCard>
-                        ))
-                    }
-                </Stack>
-            }
+            <Box height={'100%'} overflow={'auto'}>
+                {
+                    tour &&
+                    <Stack spacing={3}>
+                        {
+                            tour.matches.map((match) => (
+                                <MatchCard key={match.id}>
+                                    <MatchCardHeader match={match}/>
+                                    
+                                    <GameSetsList
+                                        gameSetList={match.gameSets}
+                                        renderMenuCell={(gameSet) => (
+                                            <GameSetMenu
+                                                match={match}
+                                                gameSet={gameSet}
+                                            />
+                                        )}
+                                    />
+                                </MatchCard>
+                            ))
+                        }
+                    </Stack>
+                }
+            </Box>
+        
         </Page>
     )
     

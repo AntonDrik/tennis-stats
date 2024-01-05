@@ -30,7 +30,7 @@ function MatchOrderPage() {
             
             {
                 matchQuery.data &&
-                <Stepper orientation="vertical" sx={{mt: 5}}>
+                <Stepper orientation="vertical" sx={{mt: 5, overflow: 'auto'}}>
                     {
                         matchQuery.data.map((order) => (
                             <Step active={true} key={order.order}>

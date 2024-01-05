@@ -3,7 +3,7 @@ import { IUser } from '@tennis-stats/types'
 import { format, parse } from 'date-fns'
 import ruLocale from 'date-fns/locale/ru'
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
-import useRatingHistoryQuery from '../../../../core/api/usersApi/useRatingHistoryQuery'
+import useRatingHistoryQuery from '../../../../core/api/statisticsApi/useRatingHistoryQuery'
 import { ChartStyles, ChartTooltip, Spinner } from '../../../../shared/components'
 
 

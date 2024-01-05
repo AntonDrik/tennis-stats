@@ -1,3 +1,3 @@
-export { default as useUsersTotalScoreQuery } from './useUsersTotalScoreQuery'
-export { default as useUsersScoreDiffQuery } from './useUsersScoreDiffQuery'
-export { default as useAllGamesStatsQuery } from './useAllGamesStatsQuery'
+export { default as usePairStatisticQuery } from './usePairStatisticQuery'
+export { default as useCommonStatisticQuery } from './useCommonStatisticQuery'
+export { default as useRatingHistoryQuery } from './useRatingHistoryQuery'

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { User, UserAuth } from '@tennis-stats/entities'
+import { UserAuth } from '@tennis-stats/entities'
 import { DataSource, Equal } from 'typeorm'
 import { BaseRepository } from '../../common/utils'
 

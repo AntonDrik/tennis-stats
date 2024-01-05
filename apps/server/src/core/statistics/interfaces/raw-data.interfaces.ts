@@ -1,4 +1,4 @@
-interface IUsersTotalScoreRawData {
+interface IPairStatisticRawData {
     user1Id: string
     user2Id: string
     user1FirstName: string
@@ -12,5 +12,5 @@ interface IUsersTotalScoreRawData {
 }
 
 export {
-    IUsersTotalScoreRawData
+    IPairStatisticRawData
 }

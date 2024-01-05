@@ -1,7 +1,7 @@
 import { TScoreCaption } from './player'
 
 
-interface IUsersTotalScore {
+interface IPairStatistic {
     user1: {
         id: number
         shortName: string
@@ -16,15 +16,8 @@ interface IUsersTotalScore {
     additionsCount: number
 }
 
-interface IUsersScoreDiff {
-    user1Id: string
-    user2Id: string
-    formattedDate: string,
-    user1AvgScore: string,
-    user2AvgScore: string
-}
 
-interface IAllGamesStats {
+interface ICommonStatistic {
     gamesCount: number
     additionsCount: number
     mostPopularScore: TScoreCaption
@@ -32,7 +25,6 @@ interface IAllGamesStats {
 }
 
 export {
-    IUsersTotalScore,
-    IUsersScoreDiff,
-    IAllGamesStats
+    IPairStatistic,
+    ICommonStatistic
 }

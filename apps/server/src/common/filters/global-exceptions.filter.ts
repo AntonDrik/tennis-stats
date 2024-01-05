@@ -24,7 +24,6 @@ export default class GlobalExceptionsFilter implements ExceptionFilter {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR
         
-        
         httpAdapter.reply(
             ctx.getResponse(),
             {

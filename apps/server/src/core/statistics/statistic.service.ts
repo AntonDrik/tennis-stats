@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common/decorators'
-import { GetUsersTotalScoreQuery, GetUsersScoreDiffQuery } from '@tennis-stats/dto'
+import { GetPairStatisticQuery } from '@tennis-stats/dto'
 import { maxInCollection, avgOfSet } from '@tennis-stats/helpers'
-import { IAllGamesStats, IUsersScoreDiff, IUsersTotalScore, TScoreCaption } from '@tennis-stats/types'
+import { ICommonStatistic, IPairStatistic, TScoreCaption } from '@tennis-stats/types'
 
 import { TourRepository } from '../tours'
 import { GameSetRepository } from '../tours/modules/match'
 import isAdditionScore from './helpers/is-addition-score'
-import { IUsersTotalScoreRawData } from './interfaces/raw-data.interfaces'
-import { getTotalGamesScoreQuery, getUsersScoreDiff } from './sql'
+import { IPairStatisticRawData } from './interfaces/raw-data.interfaces'
+import { getPairStatisticQuery } from './sql'
 
 
 @Injectable()
-class StatisticsService {
+class StatisticService {
     
     constructor(
         private tourRepository: TourRepository,
         private gameSetRepository: GameSetRepository
     ) {}
     
-    public async getUsersTotalScore(dto: GetUsersTotalScoreQuery): Promise<IUsersTotalScore[]> {
-        const query = getTotalGamesScoreQuery(dto)
-        const rawData = await this.tourRepository.executeQuery<IUsersTotalScoreRawData>(query)
+    public async getPairStatistic(dto: GetPairStatisticQuery): Promise<IPairStatistic[]> {
+        const query = getPairStatisticQuery(dto)
+        const rawData = await this.tourRepository.executeQuery<IPairStatisticRawData>(query)
         
         return rawData.map((item) => {
             return {
@@ -40,16 +40,10 @@ class StatisticsService {
         })
     }
     
-    public getUsersScoreDiff(dto: GetUsersScoreDiffQuery): Promise<IUsersScoreDiff[]> {
-        const query = getUsersScoreDiff(dto)
-        
-        return this.tourRepository.executeQuery<IUsersScoreDiff>(query)
-    }
-    
-    public async getAllGamesStats(): Promise<IAllGamesStats> {
+    public async getCommonStatistic(): Promise<ICommonStatistic> {
         const allGameSets = await this.gameSetRepository.find()
         
-        const result: IAllGamesStats = {
+        const result: ICommonStatistic = {
             gamesCount: 0,
             additionsCount: 0,
             avgScoreDifference: 0,
@@ -82,4 +76,4 @@ class StatisticsService {
     
 }
 
-export default StatisticsService
+export default StatisticService

@@ -4,6 +4,7 @@ import { EGameSetStatus } from '@tennis-stats/types'
 import { DataSource, In, Not } from 'typeorm'
 import { GameSetNotFoundException } from '../../../../../../common/exceptions'
 import BaseRepository from '../../../../../../common/utils/base.repository'
+import { IFindManyByIdOptions } from './interfaces/repository.interfaces'
 
 
 @Injectable()
@@ -21,6 +22,33 @@ class GameSetRepository extends BaseRepository<GameSet> {
         }
         
         return gameSet
+    }
+    
+    public findManyByUserId(userId: number, options?: IFindManyByIdOptions) {
+        return this.findBy([
+            {
+                player1: {
+                    user: { id: userId }
+                },
+                ...(options?.onlyFinished ? { status: EGameSetStatus.FINISHED } : {}),
+                ...(options?.date ? {
+                    match: {
+                        tour: { date: options.date }
+                    }
+                } : {})
+            },
+            {
+                player2: {
+                    user: { id: userId }
+                },
+                ...(options?.onlyFinished ? { status: EGameSetStatus.FINISHED } : {}),
+                ...(options?.date ? {
+                    match: {
+                        tour: { date: options.date }
+                    }
+                } : {})
+            }
+        ])
     }
     
     public getAllUnfinished(tourId: number): Promise<GameSet[]> {

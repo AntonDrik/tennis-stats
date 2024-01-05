@@ -1,11 +1,11 @@
 import { Box } from '@mui/material'
-import { IUsersTotalScore } from '@tennis-stats/types'
+import { IPairStatistic } from '@tennis-stats/types'
 
 import Styled from './InfoItem.styles'
 
 
 interface IProps {
-    data: IUsersTotalScore
+    data: IPairStatistic
 }
 
 function InfoItem({ data }: IProps) {
