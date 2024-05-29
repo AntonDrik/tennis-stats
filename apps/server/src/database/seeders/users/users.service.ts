@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { User, UserAuth } from '@tennis-stats/entities'
+import { Permission, User, UserAuth } from '@tennis-stats/entities'
+import { EPermission } from '@tennis-stats/types'
 import { Repository } from 'typeorm'
 import { ISeedUser, users } from './data'
 
@@ -41,7 +42,17 @@ export class UserSeederService {
         user.firstName = seedUser.firstName
         user.lastName = seedUser.lastName
         user.auth = auth
+        user.permissions = this.getPermissionEntities(seedUser.permissions)
         
         return user
+    }
+    
+    private getPermissionEntities(permissions: EPermission[]) {
+        return permissions.map((permission) => {
+            const entity = new Permission()
+            entity.value = permission
+            
+            return entity
+        })
     }
 }

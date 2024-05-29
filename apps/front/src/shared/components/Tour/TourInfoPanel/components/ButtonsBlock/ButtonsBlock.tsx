@@ -3,7 +3,7 @@ import { IconButton, Stack } from '@mui/material'
 import { ITour } from '@tennis-stats/types'
 import { toast } from 'react-hot-toast'
 import { useCancelTourMutation } from '../../../../../../core/api'
-import { useDeleteConfirmModal } from '../../../../Modals'
+import { useConfirmModal } from '../../../../Modals'
 
 
 interface IProps {
@@ -11,26 +11,26 @@ interface IProps {
 }
 
 function ButtonsBlock({ tour }: IProps) {
-    
+
     const { mutateAsync } = useCancelTourMutation()
-    
-    const openConfirmModal = useDeleteConfirmModal({
+
+    const openConfirmModal = useConfirmModal({
         title: `Вы действительно хотите завершить ${tour.id} тур`,
         confirmTitle: 'Да, завершить',
         denyTitle: 'Нет, отменить'
     })
-    
+
     const handleCancelClick = () => {
         openConfirmModal(() => deleteTour())
     }
-    
+
     const deleteTour = () => {
         void mutateAsync({ id: tour.id })
             .then(() => {
                 toast.success(`${tour.id} Тур отменен`)
             })
     }
-    
+
     return (
         <Stack direction={'row'} spacing={1}>
             <IconButton
@@ -41,7 +41,7 @@ function ButtonsBlock({ tour }: IProps) {
             </IconButton>
         </Stack>
     )
-    
+
 }
 
 export default ButtonsBlock

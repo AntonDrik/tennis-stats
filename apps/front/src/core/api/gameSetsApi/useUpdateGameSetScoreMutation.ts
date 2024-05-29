@@ -1,19 +1,31 @@
-import { GameSetScoreDto } from '@tennis-stats/dto'
-import { IGameSet } from '@tennis-stats/types'
-import { useMutation } from 'react-query'
-import axiosFetcher from '../axios/fetcher'
+import { UpdateGameSetScoreDto } from '@tennis-stats/dto';
+import { IGameSet } from '@tennis-stats/types';
+import { useMutation, useQueryClient } from 'react-query';
+import axiosFetcher from '../axios/fetcher';
+import { ITourPageState } from '../../../pages/tour/TourPage.state';
 
 
-function useUpdateGameSetScoreMutation(matchId?: number, setId?: number) {
-    return useMutation(
-        ['update-game-set-score'],
-        (dto: GameSetScoreDto) => {
-            return axiosFetcher.put<IGameSet, GameSetScoreDto>(
-                `/match/${matchId}/game-set/${setId}/update-score`,
-                dto
-            )
+function useUpdateGameSetScoreMutation(tourState: ITourPageState, invalidateTour = false) {
+
+  const { selectedMatch, selectedGameSet } = tourState;
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    ['update-game-set-score'],
+    (dto: UpdateGameSetScoreDto) => {
+      return axiosFetcher.put<IGameSet, UpdateGameSetScoreDto>(
+        `/match/${selectedMatch?.id}/game-set/${selectedGameSet?.id}/update-score`,
+        dto
+      );
+    },
+    {
+      onSuccess: () => {
+        if (invalidateTour) {
+          void queryClient.invalidateQueries({ queryKey: 'get-tour' });
         }
-    )
+      }
+    }
+  );
 }
 
-export default useUpdateGameSetScoreMutation
+export default useUpdateGameSetScoreMutation;

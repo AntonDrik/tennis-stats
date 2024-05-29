@@ -6,6 +6,8 @@
     "server": "nx run server:serve",
     "server:build": "nx run server:build",
     "server:start-prod": "node dist/apps/server/main.js",
+    "server:generate-migrations": "typeorm -d dist/apps/migrations/main.js migration:generate ./files/Migration -o",
+    "server:run-migrations": "typeorm -d dist/apps/migrations/main.js migration:run",
     "front": "nx run front:serve",
     "front:build": "nx run front:build"
   },
@@ -106,7 +108,8 @@
     "sqlite3": "^5.1.6",
     "styled-components": "^6.1.1",
     "tslib": "^2.3.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "webpack-merge": "^5.10.0"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",

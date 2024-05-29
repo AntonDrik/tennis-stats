@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 
+
 import { SeederModule, SqliteProviderModule } from './database'
 import { EnvConfigModule } from './config/env'
 import { MatchOrderModule } from './core/match-order'
@@ -13,6 +14,7 @@ import { MatchModule } from './core/tours/modules/match'
 import { TourModule } from './core/tours'
 import { AuthModule } from './auth'
 import { ProfileModule } from './core/users/modules/profile'
+import { PermissionsModule } from './core/users/modules/permissions'
 
 
 @Module({
@@ -27,6 +29,7 @@ import { ProfileModule } from './core/users/modules/profile'
         PlayersModule,
         MatchOrderModule,
         AuthModule,
+        PermissionsModule,
         StatisticModule,
         RatingHistoryModule,
         

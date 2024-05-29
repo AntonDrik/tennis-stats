@@ -4,7 +4,7 @@ import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core'
 import cookieParser from 'cookie-parser'
 
 import { AppModule } from './app.module'
-import { LoggedInGuard } from './auth/guards'
+import { LoggedInGuard, PermissionsGuard } from './auth/guards'
 import GlobalExceptionsFilter from './common/filters/global-exceptions.filter'
 import LoggerService from './common/utils/logger.service'
 import { IEnvVariables } from './config/env'
@@ -35,7 +35,7 @@ async function bootstrap() {
     
     app.useGlobalFilters(new GlobalExceptionsFilter(httpAdapter, logger))
     app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector))
-    app.useGlobalGuards(new LoggedInGuard(reflector))
+    app.useGlobalGuards(new LoggedInGuard(reflector), new PermissionsGuard(reflector))
     
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
     

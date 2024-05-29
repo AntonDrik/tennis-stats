@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common'
 import { CreateTourDto, GetToursQuery, IdDto } from '@tennis-stats/dto'
 import { Tour } from '@tennis-stats/entities'
+import { EPermission } from '@tennis-stats/types'
+import { Permissions } from '../../auth/decorators'
 import { IdParam } from '../../common/decorators'
 import ToursService from './tours.service'
 
@@ -21,16 +23,19 @@ class ToursController {
     }
     
     @Post()
+    @Permissions([EPermission.TOUR_CRUD])
     createTour(@Body() dto: CreateTourDto): Promise<Tour> {
         return this.tourService.createTour(dto)
     }
     
     @Post('/cancel')
+    @Permissions([EPermission.TOUR_CRUD])
     cancelTour(@Body() dto: IdDto): Promise<Tour> {
         return this.tourService.cancelTour(dto)
     }
     
     @Delete()
+    @Permissions([EPermission.TOUR_CRUD])
     deleteTour(@Body() dto: IdDto) {
         console.log(dto)
         

@@ -1,39 +1,37 @@
-import Typography from '@mui/material/Typography'
-import { EGameSetStatus, IMatch } from '@tennis-stats/types'
-import RatingPopover from './components/RatingPopover/RatingPopover'
-import Styled from './MatchCardHeader.styles'
+import Typography from '@mui/material/Typography';
+import { EGameSetStatus, IMatch } from '@tennis-stats/types';
+import Styled from './MatchCardHeader.styles';
+import RatingPopover from '../../../RatingPopover/RatingPopover';
 
 
 interface IProps {
-    match: IMatch
+  match: IMatch;
 }
 
 function MatchCardHeader({ match }: IProps) {
-    
-    const { user1, user2, totalScore } = match
-    
-    const isActive = match.gameSets.some((gameSet) => {
-        return [EGameSetStatus.READY_TO_START, EGameSetStatus.IN_PROCESS].includes(gameSet.status)
-    })
-    
-    return (
-        <Styled.Wrapper direction={'row'}>
-            <Styled.TextWrapper $withPadding={isActive}>
-                <Typography variant={'subtitle1'} noWrap>
-                    {user1.shortFullName} - {user2.shortFullName}
-                </Typography>
-                
-                <Typography variant={'body1'} sx={{ opacity: 0.7 }}>
-                    Счет матча: {totalScore?.user1} - {totalScore?.user2}
-                </Typography>
-            </Styled.TextWrapper>
-            
-            {
-                isActive && <RatingPopover match={match}/>
-            }
-        </Styled.Wrapper>
-    )
-    
+
+  const { user1, user2, totalScore } = match;
+
+  const isActive = match.gameSets.some((gameSet) => {
+    return [EGameSetStatus.READY_TO_START, EGameSetStatus.IN_PROCESS].includes(gameSet.status);
+  });
+
+  return (
+    <Styled.Wrapper direction={'row'}>
+      <Styled.TextWrapper $withPadding={isActive}>
+        <Typography variant={'subtitle1'} noWrap>
+          {user1.shortFullName} - {user2.shortFullName}
+        </Typography>
+
+        <Typography variant={'body1'} sx={{ opacity: 0.7 }}>
+          Счет матча: {totalScore?.user1} - {totalScore?.user2}
+        </Typography>
+      </Styled.TextWrapper>
+
+      {isActive && <RatingPopover match={match} />}
+    </Styled.Wrapper>
+  );
+
 }
 
-export default MatchCardHeader
+export default MatchCardHeader;

@@ -17,6 +17,7 @@ import { useUsersQuery } from '../../core/api'
 import AddIcon from '@mui/icons-material/Add'
 import { appRoutes } from '../../routes/routes.constant'
 import { useModal } from '../../shared/components'
+import usePermissions from '../../shared/hooks/usePermissions'
 import CreateUserModal from './modals/CreateUserModal/CreateUserModal'
 
 
@@ -26,6 +27,7 @@ export default function UsersPage() {
     
     const modal = useModal()
     const navigate = useNavigate()
+    const permissions = usePermissions()
     
     const handleNewUserClick = () => {
         modal.open(<CreateUserModal/>)
@@ -39,17 +41,19 @@ export default function UsersPage() {
         <Box>
             <Stack direction={'row'} alignItems={'center'} mb={2} gap={2}>
                 <Typography variant="h4">Пользователи</Typography>
-                <Button
-                    variant={'contained'}
-                    color={'success'}
-                    size={'small'}
-                    sx={{ minWidth: 40 }}
-                    onClick={handleNewUserClick}
-                >
-                    <AddIcon/>
-                </Button>
+                {
+                    permissions.canCreateUser &&
+                    <Button
+                        variant={'contained'}
+                        color={'success'}
+                        size={'small'}
+                        sx={{ minWidth: 40 }}
+                        onClick={handleNewUserClick}
+                    >
+                        <AddIcon/>
+                    </Button>
+                }
             </Stack>
-            
             
             {
                 usersList &&

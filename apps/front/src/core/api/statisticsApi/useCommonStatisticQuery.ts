@@ -4,9 +4,9 @@ import axiosFetcher from '../axios/fetcher'
 
 
 function useCommonStatisticQuery() {
-    
+
     return useQuery(
-        ['common-statistic'],
+        ['components-statistic'],
         () => axiosFetcher.get<ICommonStatistic>(`/statistic/common`)
     )
 }

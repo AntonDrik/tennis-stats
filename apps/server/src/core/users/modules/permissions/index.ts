@@ -1,0 +1,1 @@
+export { default as PermissionsModule } from './permissions.module'

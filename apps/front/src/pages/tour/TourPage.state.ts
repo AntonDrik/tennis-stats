@@ -7,9 +7,9 @@ interface ITourPageState {
     selectedGameSet: IGameSet | null
 }
 
-const tourPageState = atom<ITourPageState>({
+const tourPageStateAtom = atom<ITourPageState>({
     selectedMatch: null,
     selectedGameSet: null
 })
 
-export { tourPageState }
+export { tourPageStateAtom, ITourPageState }

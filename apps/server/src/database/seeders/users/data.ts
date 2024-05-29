@@ -1,7 +1,9 @@
-import { IUser, IUserAuth } from '@tennis-stats/types'
+import { EPermission, IUser, IUserAuth } from '@tennis-stats/types'
 
-export interface ISeedUser extends Omit<IUser, 'id' | 'fullName' | 'shortFullName' | 'auth'> {
+
+export interface ISeedUser extends Omit<IUser, 'id' | 'fullName' | 'shortFullName' | 'auth' | 'permissions'> {
     auth: IUserAuth
+    permissions: EPermission[]
 }
 
 export const users: ISeedUser[] = [
@@ -14,7 +16,8 @@ export const users: ISeedUser[] = [
             login: 'adryk',
             password: '$2b$10$Xoa8hdfi4CjRfliGmKy83.G3cJ1ro/FOocjXb.q1YCgWW6sG5o2EO',
             refreshToken: null
-        }
+        },
+        permissions: [EPermission.CREATE_USER, EPermission.TOUR_CRUD, EPermission.GAME_SET_CRUD]
     },
     {
         firstName: 'Антон',
@@ -25,7 +28,8 @@ export const users: ISeedUser[] = [
             login: 'toharik',
             password: '$2b$10$EMdencGttrWpLxCrYh0uqujUiGtqOGQZRQlWZbz4XS8rywo.WNKbS',
             refreshToken: null
-        }
+        },
+        permissions: [EPermission.TOUR_CRUD, EPermission.GAME_SET_CRUD]
     },
     {
         firstName: 'Сева',
@@ -36,6 +40,7 @@ export const users: ISeedUser[] = [
             login: 'sewaparts',
             password: '$2b$10$gw0u3EOqv/9hDjuWx7RKA.PaIRxuHxCAGoklHMJLDgM9v4DXiAKuy',
             refreshToken: null
-        }
+        },
+        permissions: [EPermission.TOUR_CRUD, EPermission.GAME_SET_CRUD]
     }
 ]

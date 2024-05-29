@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useLoginMutation from '../../core/api/authApi/useLoginMutation'
+import { updateMeStore } from '../../core/store'
 import { appRoutes } from '../../routes/routes.constant'
 
 import Styled from './AuthPage.styles'
@@ -25,6 +26,7 @@ function AuthPage() {
                     return
                 }
                 
+                updateMeStore(response.user)
                 navigate(appRoutes.TOURS_LIST)
             })
     }

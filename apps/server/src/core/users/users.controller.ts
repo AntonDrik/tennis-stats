@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common'
 import { CreateUserDto } from '@tennis-stats/dto'
-import { IUser } from '@tennis-stats/types'
-import { CurrentUser } from '../../auth/decorators'
+import { EPermission, IUser } from '@tennis-stats/types'
+import { CurrentUser, Permissions } from '../../auth/decorators'
 import { IdParam } from '../../common/decorators'
 import UsersRepository from './users.repository'
 
@@ -32,6 +32,7 @@ class UsersController {
     }
     
     @Post()
+    @Permissions([EPermission.CREATE_USER])
     create(@Body() dto: CreateUserDto) {
         return this.usersService.createUser(dto)
     }

@@ -5,21 +5,21 @@ import StatisticService from './statistic.service'
 
 @Controller('statistic')
 class StatisticController {
-    
+
     constructor(
         private service: StatisticService
     ) {}
-    
+
     @Get('/pair')
     getPairStatistic(@Query() dto: GetPairStatisticQuery) {
         return this.service.getPairStatistic(dto)
     }
-    
-    @Get('/common')
+
+    @Get('/components')
     getCommonStatistic() {
         return this.service.getCommonStatistic()
     }
-    
+
 }
 
 export default StatisticController
