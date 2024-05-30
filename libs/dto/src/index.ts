@@ -7,7 +7,6 @@ export { default as DateRangeQuery } from './lib/common/date-range.query'
 
 export { default as FinishGameSetDto } from './lib/game-set/finish-game-set.dto'
 export { default as GameSetScoreDto } from './lib/game-set/game-set-score.dto'
-export { default as UpdateGameSetScoreDto } from './lib/game-set/update-game-set-score.dto'
 
 export { default as LoginDto } from './lib/auth/login.dto'
 

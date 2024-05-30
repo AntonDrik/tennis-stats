@@ -1,9 +1,10 @@
 import Button from '@mui/material/Button';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
-import { useFinishGameSetMutation, useUpdateGameSetScoreMutation } from '../../../../../core/api';
+import { useFinishGameSetMutation } from '../../../../../core/api';
 import { tourPageStateAtom } from '../../../TourPage.state';
 import { isValidScoreAtom, scoreAtom } from '../ScoreBlock/state/Score.state';
+import useEditGameSetScoreMutation from '../../../../../core/api/gameSetApi/useEditGameSetScoreMutation';
 
 
 interface IProps {
@@ -18,7 +19,7 @@ function FinishButton(props: IProps) {
   const tourPageState = useAtomValue(tourPageStateAtom);
 
   const finishGameSet = useFinishGameSetMutation(tourPageState);
-  const editGameSetScore = useUpdateGameSetScoreMutation(tourPageState, true);
+  const editGameSetScore = useEditGameSetScoreMutation(tourPageState);
 
   const handleFinishClick = () => {
 
@@ -34,8 +35,7 @@ function FinishButton(props: IProps) {
 
     editGameSetScore.mutateAsync({
       player1Score: score[0],
-      player2Score: score[1],
-      force: true
+      player2Score: score[1]
     }).then(props.onSuccess);
   };
 

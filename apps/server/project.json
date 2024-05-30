@@ -42,54 +42,6 @@
         }
       }
     },
-    "build-migration-config": {
-      "executor": "@nrwl/webpack:webpack",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "webpackConfig": "apps/server/webpack.config.js",
-        "isolatedConfig": true,
-        "outputPath": "dist/apps/migrations",
-        "main": "apps/server/src/database/migration.datasource.ts",
-        "tsConfig": "apps/server/tsconfig.json",
-        "assets": [
-          "apps/server/src/assets/.env"
-        ]
-      }
-    },
-    "typeorm-generate-migrations": {
-      "executor": "nx:run-commands",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "cwd": "dist/apps/migrations",
-        "commands": [
-          "typeorm -d main.js migration:generate ./files/Migration -o"
-        ]
-      },
-      "dependsOn": [
-        "build-migration-config"
-      ]
-    },
-    "typeorm-run-migrations": {
-      "executor": "nx:run-commands",
-      "outputs": [
-        "{options.outputPath}"
-      ],
-      "options": {
-        "cwd": "dist/apps/migrations",
-        "commands": [
-          "typeorm -d main.js migration:run"
-        ]
-      },
-      "dependsOn": [
-        "typeorm-generate-migrations"
-      ]
-    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": [

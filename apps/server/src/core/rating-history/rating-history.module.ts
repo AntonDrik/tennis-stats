@@ -12,7 +12,7 @@ import RatingHistoryService from './rating-history.service'
     ],
     controllers: [RatingHistoryController],
     providers: [RatingHistoryService, RatingHistoryRepository],
-    exports: [RatingHistoryService]
+    exports: [RatingHistoryService, RatingHistoryRepository]
 })
 class RatingHistoryModule {}
 

@@ -11,7 +11,7 @@ import { CreateTourDto } from '@tennis-stats/dto';
 import { ITour, IUser } from '@tennis-stats/types';
 
 import { Spinner, useModal } from '../../../../shared/components';
-import useCreateTourMutation from '../../../../core/api/toursApi/useCreateTourMutation';
+import useCreateTourMutation from '../../../../core/api/tourApi/useCreateTourMutation';
 import { getTextFieldError } from '../../../../utils';
 import UsersAutocomplete from './components/UsersAutocomplete/UsersAutocomplete';
 

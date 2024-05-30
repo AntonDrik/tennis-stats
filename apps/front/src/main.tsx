@@ -2,7 +2,7 @@ import { Alert } from '@mui/material'
 import { StrictMode } from 'react'
 import * as ReactDOM from 'react-dom/client'
 import App from './App'
-import { fetchMe } from './core/api/usersApi/useMeQuery'
+import { fetchMe } from './core/api/userApi/useMeQuery'
 import { updateMeStore } from './core/store'
 
 
@@ -14,7 +14,7 @@ void (async function () {
     try {
         const user = await fetchMe().catch(() => null)
         updateMeStore(user)
-        
+
         root.render(
             <StrictMode>
                 <App/>

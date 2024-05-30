@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { FinishGameSetDto, GameSetScoreDto, UpdateGameSetScoreDto } from '@tennis-stats/dto';
+import { FinishGameSetDto, GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Player, Tour } from '@tennis-stats/entities';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { DataSource, EntityManager } from 'typeorm';
 import {
-  GameSetFinishedException,
+  GameSetFinishedException, GameSetNotFoundException,
   UserNotFoundException
 } from '../../../../../../common/exceptions';
 import settle from '../../../../../../common/utils/settle';
@@ -19,7 +19,8 @@ class GameSetService {
     private dataSource: DataSource,
     private repository: GameSetRepository,
     private usersRepository: UsersRepository
-  ) {}
+  ) {
+  }
 
   public createEntities(usersIds: number[], setsCount: number): Promise<GameSet[]> {
     const promises = Array.from({ length: setsCount }, async (_, i) => {
@@ -104,15 +105,39 @@ class GameSetService {
     }, transactionManager);
   }
 
-  public async updateScore(id: number, dto: UpdateGameSetScoreDto): Promise<GameSet> {
+  public async updateScore(id: number, dto: GameSetScoreDto): Promise<GameSet> {
     const gameSet = await this.repository.findById(id);
 
-    if (!dto.force && gameSet.isFinished) {
+    if (!gameSet) {
+      throw new GameSetNotFoundException();
+    }
+
+    if (gameSet.isFinished) {
       throw new GameSetFinishedException();
     }
 
     gameSet.player1.score = dto.player1Score;
     gameSet.player2.score = dto.player2Score;
+
+    await gameSet.save();
+
+    return gameSet;
+  }
+
+  public async editScore(id: number, dto: GameSetScoreDto): Promise<GameSet> {
+    const gameSet = await this.repository.findById(id);
+
+    if (!gameSet) {
+      throw new GameSetNotFoundException();
+    }
+
+    gameSet.player1.score = dto.player1Score;
+    gameSet.player2.score = dto.player2Score;
+
+    if (gameSet.isFinished) {
+      gameSet.player1.isWinner = dto.player1Score > dto.player2Score;
+      gameSet.player2.isWinner = dto.player2Score > dto.player1Score;
+    }
 
     await gameSet.save();
 

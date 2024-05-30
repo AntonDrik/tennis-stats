@@ -74,12 +74,15 @@ function ProfilePage() {
           </InfoSection>
         }
 
-        <InfoSection
-          title={'Настройки'}
-          icon={<AnalyticsIcon color={'info'} />}
-        >
-          <Button variant={'contained'} onClick={resetServe}>Сбросить состояние подач</Button>
-        </InfoSection>
+        {
+          profile &&
+          <InfoSection
+            title={'Настройки'}
+            icon={<AnalyticsIcon color={'info'} />}
+          >
+            <Button variant={'contained'} onClick={resetServe}>Сбросить состояние подач</Button>
+          </InfoSection>
+        }
       </Stack>
 
     </React.Fragment>

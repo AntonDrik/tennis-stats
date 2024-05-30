@@ -7,24 +7,24 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 
 function WinPercentCard({ prev, todayDiff }: IProfile['winPercent']) {
-    
+
     const totalWinPercent = ((prev + todayDiff).toFixed(2)) + '%'
-    
-    const isPositive = todayDiff > 0
+
+    const isPositive = todayDiff >= 0
     const diffValue = isPositive ? `+${todayDiff}%` : `${todayDiff}%`
-    
+
     return (
         <MiniCardStyles.Wrapper>
             <Stack alignItems={'center'} mb={1}>
                 <MiniCardStyles.Title>
                     Процент побед
                 </MiniCardStyles.Title>
-                
+
                 <Styled.Subtitle isPositive={isPositive}>
                     За сегодня ({diffValue})
                 </Styled.Subtitle>
             </Stack>
-            
+
             <Stack direction={'row'} alignItems={'center'} justifyContent={'center'} spacing={-0.5}>
                 {
                     isPositive
@@ -35,7 +35,7 @@ function WinPercentCard({ prev, todayDiff }: IProfile['winPercent']) {
             </Stack>
         </MiniCardStyles.Wrapper>
     )
-    
+
 }
 
 export default WinPercentCard

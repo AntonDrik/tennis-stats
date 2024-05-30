@@ -15,7 +15,9 @@ const a = keyframes({
 });
 
 const RandomIconButton = styled(CasinoIcon)<IRandomIconProps>(
-  {},
+  {
+    cursor: 'pointer'
+  },
   ({ $animate }) => $animate && css`
       animation: ${a} 3s linear infinite;
       animation-timing-function: ease-out;

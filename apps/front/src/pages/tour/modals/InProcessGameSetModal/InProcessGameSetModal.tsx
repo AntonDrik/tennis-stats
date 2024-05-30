@@ -26,8 +26,7 @@ function InProcessGameSetModal() {
   const handleScoreChange = (score: [TScore, TScore]) => {
     updateScore.mutate({
       player1Score: score[0],
-      player2Score: score[1],
-      force: false
+      player2Score: score[1]
     });
   };
 
@@ -40,7 +39,7 @@ function InProcessGameSetModal() {
     <>
       {isMutating > 0 && <Spinner />}
 
-      <ModalHeader showRatingDelta/>
+      <ModalHeader showRatingDelta />
 
       <DialogContent>
         <ScoreBlock

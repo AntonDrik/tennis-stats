@@ -30,6 +30,9 @@ function ScoreBlock(props: IProps) {
   const [value1, setValue1] = useState<TScore>(0);
   const [value2, setValue2] = useState<TScore>(0);
 
+  const isPlayer1Server = Boolean(props.interactive && serve.player === 1);
+  const isPlayer2Server = Boolean(props.interactive && serve.player === 2);
+
   const { data: gameSet } = useGetGameSetQuery(
     tourPageState,
     props.refetchIntervalMs
@@ -68,7 +71,7 @@ function ScoreBlock(props: IProps) {
   return (
     <Stack direction={isReverted ? 'row-reverse' : 'row'} justifyContent={'space-evenly'}>
 
-      <Styled.SectionWrapper gap={3} $selected={serve.player === 1}>
+      <Styled.SectionWrapper gap={3} $selected={isPlayer1Server}>
         <PlayerLabel player={gameSet?.player1} number={1} />
 
         <VerticalNumberInput
@@ -91,7 +94,7 @@ function ScoreBlock(props: IProps) {
         onRevertClick={() => setIsReverted(!isReverted)}
       />
 
-      <Styled.SectionWrapper gap={3} $selected={serve.player === 2}>
+      <Styled.SectionWrapper gap={3} $selected={isPlayer2Server}>
         <PlayerLabel player={gameSet?.player2} number={2} />
 
         <VerticalNumberInput

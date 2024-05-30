@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { FinishGameSetDto, UpdateGameSetScoreDto } from '@tennis-stats/dto';
+import { FinishGameSetDto, GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { Permissions } from '../../../../auth/decorators';
@@ -15,7 +15,8 @@ class MatchController {
     private matchService: MatchService,
     private gameSetService: GameSetService,
     private gameSetRepository: GameSetRepository
-  ) {}
+  ) {
+  }
 
   @Get('/:matchId/rating-delta')
   getRatingDeltaOfMatch(@IdParam('matchId') matchId: number) {
@@ -50,9 +51,18 @@ class MatchController {
   @Permissions([EPermission.GAME_SET_CRUD])
   updateScore(
     @IdParam('setId') setId: number,
-    @Body() dto: UpdateGameSetScoreDto
+    @Body() dto: GameSetScoreDto
   ): Promise<GameSet> {
     return this.gameSetService.updateScore(setId, dto);
+  }
+
+  @Put('/:matchId/game-set/:setId/edit-score')
+  @Permissions([EPermission.GAME_SET_CRUD])
+  editScore(
+    @IdParam('setId') setId: number,
+    @Body() dto: GameSetScoreDto
+  ) {
+    return this.gameSetService.editScore(setId, dto);
   }
 }
 
