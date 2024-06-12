@@ -1,14 +1,16 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import { EGameSetStatus, IGameSet, IMatch } from '@tennis-stats/types';
+import { useSetAtom } from 'jotai';
 import ms from 'ms';
 import { useParams } from 'react-router-dom';
 import { useGetTourQuery } from '../../core/api';
+import { tourPageStateAtom } from '../../core/store';
 import { useBackButton } from '../../layouts/MainLayout';
 import { appRoutes } from '../../routes/routes.constant';
 import { GameSetsList, MatchCard, MatchCardHeader, Page, Spinner, TourInfoPanel } from '../../shared/components';
-import { EGameSetStatus } from '@tennis-stats/types';
-import ReadyGameSetMenu from './components/ReadyGameSetMenu/ReadyGameSetMenu';
 import FinishedGameSetMenu from './components/FinishedGameSetMenu/FinishedGameSetMenu';
+import ReadyGameSetMenu from './components/ReadyGameSetMenu/ReadyGameSetMenu';
 
 
 type IRouteParams = {
@@ -21,9 +23,19 @@ function TourPage() {
 
   const params = useParams<IRouteParams>();
 
+  const tourPageState = useSetAtom(tourPageStateAtom);
+
   const { data: tour, isLoading } = useGetTourQuery(params?.id ?? 0, {
     refetchInterval: ms('5s')
   });
+
+  const handleGameSetClick = (match: IMatch, set: IGameSet) => {
+    tourPageState({
+      selectedTour: tour,
+      selectedMatch: match,
+      selectedGameSet: set
+    });
+  };
 
   useBackButton({
     title: 'К списку туров',
@@ -45,23 +57,14 @@ function TourPage() {
 
                 <GameSetsList
                   gameSetList={match.gameSets}
+                  onClick={(set) => handleGameSetClick(match, set)}
                   renderMenuCell={(gameSet) => {
                     if (gameSet.status === EGameSetStatus.FINISHED) {
-                      return (
-                        <FinishedGameSetMenu
-                          match={match}
-                          gameSet={gameSet}
-                        />
-                      );
+                      return <FinishedGameSetMenu />;
                     }
 
                     if (FULL_MENU_STATUS.includes(gameSet.status)) {
-                      return (
-                        <ReadyGameSetMenu
-                          match={match}
-                          gameSet={gameSet}
-                        />
-                      );
+                      return <ReadyGameSetMenu />;
                     }
 
                     return null;

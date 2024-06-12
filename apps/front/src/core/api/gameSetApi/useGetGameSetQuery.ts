@@ -1,11 +1,15 @@
 import { IGameSet } from '@tennis-stats/types';
 import { useQuery } from 'react-query';
+import { ITourPageState } from '../../store';
 import axiosFetcher from '../axios/fetcher';
 import { TQueryOptions } from '../types';
-import { ITourPageState } from '../../../pages/tour/TourPage.state';
 
 
-function useGetGameSetQuery(tourPageState: ITourPageState, refetchIntervalMs?: number, options?: TQueryOptions<IGameSet>) {
+function useGetGameSetQuery(
+  tourPageState: ITourPageState,
+  refetchIntervalMs?: number,
+  options?: TQueryOptions<IGameSet>
+) {
   const { selectedMatch, selectedGameSet } = tourPageState;
 
   return useQuery(

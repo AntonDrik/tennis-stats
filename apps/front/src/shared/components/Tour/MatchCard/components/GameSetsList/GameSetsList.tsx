@@ -10,29 +10,31 @@ import Styled from './GameSetsList.styles';
 interface IProps {
   gameSetList: IGameSet[];
   renderMenuCell?: (gameSet: IGameSet) => ReactElement | null;
+  onClick?: (set: IGameSet) => void;
 }
 
 
-function GameSetsList({ gameSetList, renderMenuCell }: IProps) {
+function GameSetsList(props: IProps) {
 
   const permissions = usePermissions();
 
   const getMenuCell = (set: IGameSet): ReactElement | null => {
-    if (!renderMenuCell) {
+    if (!props.renderMenuCell) {
       return null;
     }
 
-    return renderMenuCell(set);
+    return props.renderMenuCell(set);
   };
 
   return (
     <Box>
       {
-        gameSetList.map((set) => (
+        props.gameSetList.map((set) => (
           <Styled.Row
             key={set.id}
             direction={'row'}
             status={set.status}
+            onClick={() => props.onClick?.(set)}
           >
             <Box width={'80px'}>
               <Typography variant={'overline'}>{set.number} Сет</Typography>

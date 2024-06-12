@@ -1,13 +1,13 @@
 import Button from '@mui/material/Button';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
-import { useFinishGameSetMutation } from '../../../../../core/api';
-import { tourPageStateAtom } from '../../../TourPage.state';
+import { useEditGameSetScoreMutation, useFinishGameSetMutation } from '../../../../core/api';
+import { ITourPageState } from '../../../../core/store';
 import { isValidScoreAtom, scoreAtom } from '../ScoreBlock/state/Score.state';
-import useEditGameSetScoreMutation from '../../../../../core/api/gameSetApi/useEditGameSetScoreMutation';
 
 
 interface IProps {
+  tourPageState: ITourPageState;
   editMode?: boolean;
   onSuccess: () => void;
 }
@@ -16,10 +16,9 @@ function FinishButton(props: IProps) {
 
   const score = useAtomValue(scoreAtom);
   const isValidScore = useAtomValue(isValidScoreAtom);
-  const tourPageState = useAtomValue(tourPageStateAtom);
 
-  const finishGameSet = useFinishGameSetMutation(tourPageState);
-  const editGameSetScore = useEditGameSetScoreMutation(tourPageState);
+  const finishGameSet = useFinishGameSetMutation(props.tourPageState);
+  const editGameSetScore = useEditGameSetScoreMutation(props.tourPageState);
 
   const handleFinishClick = () => {
 

@@ -4,11 +4,12 @@ import { GameSet, Player, Tour } from '@tennis-stats/entities';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { DataSource, EntityManager } from 'typeorm';
 import {
-  GameSetFinishedException, GameSetNotFoundException,
+  GameSetFinishedException,
+  GameSetNotFoundException,
   UserNotFoundException
 } from '../../../../../../common/exceptions';
 import settle from '../../../../../../common/utils/settle';
-import { UsersRepository } from '../../../../../users';
+import PlayersService from '../../../../../players/players.service';
 import GameSetRepository from './game-set.repository';
 
 
@@ -18,15 +19,17 @@ class GameSetService {
   constructor(
     private dataSource: DataSource,
     private repository: GameSetRepository,
-    private usersRepository: UsersRepository
-  ) {
-  }
+    private playersService: PlayersService
+  ) {}
 
   public createEntities(usersIds: number[], setsCount: number): Promise<GameSet[]> {
     const promises = Array.from({ length: setsCount }, async (_, i) => {
 
-      const player1Entity = await this.usersRepository.getPlayerEntity(usersIds[0]);
-      const player2Entity = await this.usersRepository.getPlayerEntity(usersIds[1]);
+      // const player1Entity = await this.usersRepository.getPlayerEntity(usersIds[0]);
+      // const player2Entity = await this.usersRepository.getPlayerEntity(usersIds[1]);
+      const player1Entity = await this.playersService.getPlayerEntity(usersIds[0])
+      const player2Entity = await this.playersService.getPlayerEntity(usersIds[1])
+
 
       if (!player1Entity || !player2Entity) {
         throw new UserNotFoundException();

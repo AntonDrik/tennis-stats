@@ -2,7 +2,7 @@ import { GameSetScoreDto } from '@tennis-stats/dto';
 import { IGameSet } from '@tennis-stats/types';
 import { useMutation, useQueryClient } from 'react-query';
 import axiosFetcher from '../axios/fetcher';
-import { ITourPageState } from '../../../pages/tour/TourPage.state';
+import { ITourPageState } from '../../store';
 
 
 function useEditGameSetScoreMutation(tourState: ITourPageState) {

@@ -3,17 +3,18 @@ import { TScore } from '@tennis-stats/types';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useGetGameSetQuery } from '../../../../../core/api';
-import { VerticalNumberInput } from '../../../../../shared/components';
-import { tourPageStateAtom } from '../../../TourPage.state';
+import { useGetGameSetQuery } from '../../../../core/api';
+import { ITourPageState } from '../../../../core/store';
+import { VerticalNumberInput } from '../../index';
+import MiddleControls from './components/MiddleControls/MiddleControls';
+import PlayerLabel from './components/PlayerLabel/PlayerLabel';
+import Styled from './ScoreBlock.styles';
 import { scoreAtom } from './state/Score.state';
 import { incrementServeAtom, serveAtom } from './state/Serve.state';
-import PlayerLabel from './components/PlayerLabel/PlayerLabel';
-import MiddleControls from './components/MiddleControls/MiddleControls';
-import Styled from './ScoreBlock.styles';
 
 
 interface IProps {
+  tourPageState: ITourPageState;
   interactive?: boolean;
   refetchIntervalMs?: number;
   onChange?: (score: [TScore, TScore]) => void;
@@ -23,22 +24,21 @@ function ScoreBlock(props: IProps) {
 
   const serve = useAtomValue(serveAtom);
   const [score, setScore] = useAtom(scoreAtom);
-  const tourPageState = useAtomValue(tourPageStateAtom);
   const incrementServe = useSetAtom(incrementServeAtom);
 
   const [isReverted, setIsReverted] = useState(false);
   const [value1, setValue1] = useState<TScore>(0);
   const [value2, setValue2] = useState<TScore>(0);
 
-  const isPlayer1Server = Boolean(props.interactive && serve.player === 1);
-  const isPlayer2Server = Boolean(props.interactive && serve.player === 2);
+  const isPlayer1Serve = Boolean(props.interactive && serve.player === 1);
+  const isPlayer2Serve = Boolean(props.interactive && serve.player === 2);
 
   const { data: gameSet } = useGetGameSetQuery(
-    tourPageState,
+    props.tourPageState,
     props.refetchIntervalMs
   );
 
-  const handleChangeInput = (type: 'player1' | 'player2', value: number | undefined) => {
+  const handleChangeInput = (type: 'player1' | 'player2', value: number) => {
     if (!Number.isFinite(value)) {
       return;
     }
@@ -71,20 +71,15 @@ function ScoreBlock(props: IProps) {
   return (
     <Stack direction={isReverted ? 'row-reverse' : 'row'} justifyContent={'space-evenly'}>
 
-      <Styled.SectionWrapper gap={3} $selected={isPlayer1Server}>
+      <Styled.SectionWrapper gap={2} $selected={isPlayer1Serve}>
         <PlayerLabel player={gameSet?.player1} number={1} />
 
         <VerticalNumberInput
           value={value1}
           min={0}
           max={20}
-          inputMode={'none'}
-          onChange={(e, value) => {
-            if (e.type === 'blur') {
-              return;
-            }
-
-            handleChangeInput('player1', value);
+          onChange={(value) => {
+            handleChangeInput('player1', value as number);
           }}
         />
       </Styled.SectionWrapper>
@@ -94,20 +89,15 @@ function ScoreBlock(props: IProps) {
         onRevertClick={() => setIsReverted(!isReverted)}
       />
 
-      <Styled.SectionWrapper gap={3} $selected={isPlayer2Server}>
+      <Styled.SectionWrapper gap={2} $selected={isPlayer2Serve}>
         <PlayerLabel player={gameSet?.player2} number={2} />
 
         <VerticalNumberInput
           value={value2}
           min={0}
           max={20}
-          inputMode={'numeric'}
-          onChange={(e, value) => {
-            if (e.type === 'blur') {
-              return;
-            }
-
-            handleChangeInput('player2', value);
+          onChange={(value) => {
+            handleChangeInput('player2', value as number);
           }}
         />
       </Styled.SectionWrapper>

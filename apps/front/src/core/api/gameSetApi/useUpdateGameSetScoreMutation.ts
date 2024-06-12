@@ -1,8 +1,8 @@
 import { GameSetScoreDto } from '@tennis-stats/dto';
 import { IGameSet } from '@tennis-stats/types';
 import { useMutation } from 'react-query';
+import { ITourPageState } from '../../store';
 import axiosFetcher from '../axios/fetcher';
-import { ITourPageState } from '../../../pages/tour/TourPage.state';
 
 
 function useUpdateGameSetScoreMutation(tourState: ITourPageState) {

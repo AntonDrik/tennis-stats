@@ -1,35 +1,25 @@
-import { useSetAtom } from 'jotai';
-import { MouseEvent, useState } from 'react';
-import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { EGameSetStatus, IGameSet, IMatch } from '@tennis-stats/types';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import { EGameSetStatus } from '@tennis-stats/types';
+import { useAtomValue } from 'jotai';
+import { MouseEvent, useState } from 'react';
+import { tourPageStateAtom } from '../../../../core/store';
 
 import CancelSetMenuItem from './components/CancelSetMenuItem/CancelSetMenuItem';
 import FinishSetMenuItem from './components/FinishSetMenuItem/FinishSetMenuItem';
 import StartSetMenuItem from './components/StartSetMenuItem/StartSetMenuItem';
-import { tourPageStateAtom } from '../../TourPage.state';
 
 
-interface IProps {
-  match: IMatch;
-  gameSet: IGameSet;
-}
+function ReadyGameSetMenu() {
 
-function ReadyGameSetMenu({ match, gameSet }: IProps) {
-
-  const setTourPageState = useSetAtom(tourPageStateAtom);
+  const tourPageState = useAtomValue(tourPageStateAtom);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const isOpen = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setTourPageState({
-      selectedMatch: match,
-      selectedGameSet: gameSet
-    });
-
     setAnchorEl(event.currentTarget);
   };
 
@@ -52,7 +42,7 @@ function ReadyGameSetMenu({ match, gameSet }: IProps) {
         <StartSetMenuItem onClick={handleClose} />
 
         {
-          gameSet.status !== EGameSetStatus.IN_PROCESS &&
+          tourPageState.selectedGameSet?.status !== EGameSetStatus.IN_PROCESS &&
           <FinishSetMenuItem onClick={handleClose} />
         }
 

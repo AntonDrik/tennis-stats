@@ -4,10 +4,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
+import { useNavigate } from 'react-router-dom';
 import { useStartGameSetMutation } from '../../../../../../core/api';
-import { useModal } from '../../../../../../shared/components';
-import InProcessGameSetModal from '../../../../modals/InProcessGameSetModal/InProcessGameSetModal';
-import { tourPageStateAtom } from '../../../../TourPage.state';
+import { tourPageStateAtom } from '../../../../../../core/store';
+import { appRoutes } from '../../../../../../routes/routes.constant';
 
 
 interface IProps {
@@ -16,30 +16,26 @@ interface IProps {
 
 function StartSetMenuItem({ onClick }: IProps) {
 
-  const { selectedMatch, selectedGameSet } = useAtomValue(tourPageStateAtom);
+  const tourPageState = useAtomValue(tourPageStateAtom);
 
-  const startGameSet = useStartGameSetMutation(selectedMatch?.id, selectedGameSet?.id);
+  const startGameSet = useStartGameSetMutation(tourPageState);
 
-  const modal = useModal();
+  const navigate = useNavigate();
 
-  const isInProcess = selectedGameSet?.status === EGameSetStatus.IN_PROCESS;
-
-  const openModal = () => {
-    modal.open(<InProcessGameSetModal />, { maxWidth: 'sm' });
-  };
+  const isInProcess = tourPageState.selectedGameSet?.status === EGameSetStatus.IN_PROCESS;
 
   const handleClick = () => {
     onClick();
 
     if (isInProcess) {
-      openModal();
+      navigate(appRoutes.GAME_PROCESS);
 
       return;
     }
 
     startGameSet
       .mutateAsync()
-      .then(openModal);
+      .then(() => navigate(appRoutes.GAME_PROCESS));
   };
 
   return (

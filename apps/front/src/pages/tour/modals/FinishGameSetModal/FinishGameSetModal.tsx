@@ -1,20 +1,22 @@
 import DialogContent from '@mui/material/DialogContent';
+import { useAtomValue, useSetAtom } from 'jotai';
 import * as React from 'react';
 import { useIsMutating } from 'react-query';
-import { Spinner, useModal } from '../../../../shared/components';
+import { tourPageStateAtom } from '../../../../core/store';
 
-import FinishButton from '../components/FinishButton/FinishButton';
+import { Spinner, useModal } from '../../../../shared/components';
+import FinishButton from '../../../../shared/components/GameSet/FinishButton/FinishButton';
+import ScoreBlock from '../../../../shared/components/GameSet/ScoreBlock/ScoreBlock';
+import { resetServeAtom } from '../../../../shared/components/GameSet/ScoreBlock/state/Serve.state';
 import ModalHeader from '../components/Header/Header';
-import ScoreBlock from '../components/ScoreBlock/ScoreBlock';
-import { useSetAtom } from 'jotai';
-import { resetServeAtom } from '../components/ScoreBlock/state/Serve.state';
 
 
 function FinishGameSetModal() {
 
-  const clearServe = useSetAtom(resetServeAtom);
-
   const isMutating = useIsMutating(['finish-game-set']);
+
+  const clearServe = useSetAtom(resetServeAtom);
+  const tourPageState = useAtomValue(tourPageStateAtom);
 
   const modal = useModal();
 
@@ -30,9 +32,12 @@ function FinishGameSetModal() {
       <ModalHeader title={(set) => `Завершить сет № ${set?.number}`} />
 
       <DialogContent>
-        <ScoreBlock />
+        <ScoreBlock tourPageState={tourPageState} />
 
-        <FinishButton onSuccess={handleSuccessFinish} />
+        <FinishButton
+          tourPageState={tourPageState}
+          onSuccess={handleSuccessFinish}
+        />
       </DialogContent>
     </>
   );

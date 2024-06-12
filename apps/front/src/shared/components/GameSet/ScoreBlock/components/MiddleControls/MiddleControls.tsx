@@ -1,9 +1,9 @@
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import { Box, IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import Stack from '@mui/material/Stack';
-import * as React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
+import * as React from 'react';
 import { randomizeServeAtom, serveAtom } from '../../state/Serve.state';
 
 import Styled from './MiddleControls.styles';

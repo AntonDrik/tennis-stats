@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { EGameSetStatus, IMatch } from '@tennis-stats/types';
 import Styled from './MatchCardHeader.styles';
-import RatingPopover from '../../../RatingPopover/RatingPopover';
+import { RatingDeltaPopover } from '../../../RatingDelta';
 
 
 interface IProps {
@@ -28,7 +28,7 @@ function MatchCardHeader({ match }: IProps) {
         </Typography>
       </Styled.TextWrapper>
 
-      {isActive && <RatingPopover match={match} />}
+      {isActive && <RatingDeltaPopover match={match} />}
     </Styled.Wrapper>
   );
 

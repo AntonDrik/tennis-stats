@@ -1,16 +1,20 @@
 import DialogContent from '@mui/material/DialogContent';
+import { useAtomValue } from 'jotai';
 import * as React from 'react';
 import { useIsMutating } from 'react-query';
-import { Spinner, useModal } from '../../../../shared/components';
+import { tourPageStateAtom } from '../../../../core/store';
 
-import FinishButton from '../components/FinishButton/FinishButton';
+import { Spinner, useModal } from '../../../../shared/components';
+import FinishButton from '../../../../shared/components/GameSet/FinishButton/FinishButton';
+import ScoreBlock from '../../../../shared/components/GameSet/ScoreBlock/ScoreBlock';
 import ModalHeader from '../components/Header/Header';
-import ScoreBlock from '../components/ScoreBlock/ScoreBlock';
 
 
 function EditGameSetModal() {
 
   const isMutating = useIsMutating(['update-game-set-score']);
+
+  const tourPageState = useAtomValue(tourPageStateAtom);
 
   const modal = useModal();
 
@@ -21,9 +25,13 @@ function EditGameSetModal() {
       <ModalHeader title={(set) => `Редактировать счет для сета № ${set?.number}`} />
 
       <DialogContent>
-        <ScoreBlock />
+        <ScoreBlock tourPageState={tourPageState} />
 
-        <FinishButton editMode onSuccess={modal.close} />
+        <FinishButton
+          editMode
+          tourPageState={tourPageState}
+          onSuccess={modal.close}
+        />
       </DialogContent>
     </>
   );

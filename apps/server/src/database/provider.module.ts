@@ -18,7 +18,7 @@ import { EnvConfigModule, IEnvVariables } from '../config/env'
                     logging: false,
                     timezone: 'Z',
                     retryAttempts: 1,
-                    synchronize: false
+                    synchronize: process.env.NODE_ENV === 'development'
                 }
             }
         })

@@ -1,14 +1,14 @@
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { EGameSetStatus } from '@tennis-stats/types';
 import { useAtomValue, useSetAtom } from 'jotai';
 
 import { useFinishGameSetMutation } from '../../../../../../core/api';
+import { tourPageStateAtom } from '../../../../../../core/store';
+import { resetServeAtom } from '../../../../../../shared/components/GameSet/ScoreBlock/state/Serve.state';
 import { useConfirmModal } from '../../../../../../shared/components/Modals';
-import { tourPageStateAtom } from '../../../../TourPage.state';
-import { resetServeAtom } from '../../../../modals/components/ScoreBlock/state/Serve.state';
 
 
 interface IProps {

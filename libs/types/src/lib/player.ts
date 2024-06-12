@@ -6,10 +6,10 @@ type TScore = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 1
 type TScoreCaption = `${TScore} | ${TScore}`
 
 interface IPlayer {
-    id: number
-    user: IUser
-    score: TScore
-    isWinner: boolean
+  id: number;
+  user: IUser;
+  score: TScore;
+  isWinner: boolean;
 }
 
-export { IPlayer, TScore, TScoreCaption }
+export { IPlayer, TScore, TScoreCaption };

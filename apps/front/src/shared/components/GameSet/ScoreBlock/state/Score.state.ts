@@ -16,7 +16,14 @@ const isValidScoreAtom = atom(
   }
 );
 
+const isDopsScoreAtom = atom((get) => {
+  const score = get(scoreAtom);
+
+  return score[0] + score[1] > 19
+})
+
 export {
   scoreAtom,
+  isDopsScoreAtom,
   isValidScoreAtom
 };

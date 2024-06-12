@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { FinishGameSetDto, GameSetScoreDto } from '@tennis-stats/dto';
+import { FinishGameSetDto, GameSetScoreDto, UpdateMatchStatisticDto } from '@tennis-stats/dto';
 import { GameSet } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { Permissions } from '../../../../auth/decorators';
@@ -63,6 +63,13 @@ class MatchController {
     @Body() dto: GameSetScoreDto
   ) {
     return this.gameSetService.editScore(setId, dto);
+  }
+
+  @Put('/update-stat')
+  updateStat(
+    @Body() dto: UpdateMatchStatisticDto
+  ) {
+    return this.matchService.updateStat(dto)
   }
 }
 

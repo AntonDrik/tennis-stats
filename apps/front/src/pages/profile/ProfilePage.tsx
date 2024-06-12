@@ -13,7 +13,7 @@ import WinPercentCard from './components/WinPercentCard/WinPercentCard';
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
 import { useSetAtom } from 'jotai';
-import { resetServeAtom } from '../tour/modals/components/ScoreBlock/state/Serve.state';
+import { resetServeAtom } from '../../shared/components/GameSet/ScoreBlock/state/Serve.state';
 import { useBackButton } from '../../layouts/MainLayout';
 
 
