@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { join } from 'path'
-import { EnvConfigModule } from '../config/env'
+import { EnvConfigModule, IEnvVariables } from '../config/env'
 
 
 @Module({
@@ -11,10 +10,10 @@ import { EnvConfigModule } from '../config/env'
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: () => {
+            useFactory: (configService: ConfigService<IEnvVariables>) => {
                 return {
-                    type: 'sqlite',
-                    database: `${join(__dirname)}/assets/DB.sqlite`,
+                    type: 'mariadb',
+                    url: configService.get('DB_URL'),
                     autoLoadEntities: true,
                     logging: false,
                     timezone: 'Z',

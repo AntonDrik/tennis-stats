@@ -1,13 +1,23 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Tour } from '@tennis-stats/entities'
-import { ToursService } from './tours.service'
-import { ToursController } from './tours.controller'
+import { MatchModule } from './modules/match'
+import { MatchOrderModule } from '../match-order'
+import ToursRepository from './tours.repository'
+import ToursService from './tours.service'
+import ToursController from './tours.controller'
 
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Tour])],
+    imports: [
+        TypeOrmModule.forFeature([Tour]),
+        MatchModule,
+        MatchOrderModule
+    ],
     controllers: [ToursController],
-    providers: [ToursService],
+    providers: [ToursService, ToursRepository],
+    exports: [ToursRepository]
 })
-export default class ToursModule {}
+class ToursModule {}
+
+export default ToursModule

@@ -1,16 +1,29 @@
+import { IMatch } from './match'
 import { IPlayer } from './player'
-import { ITour } from './tour'
 
 
+enum EGameSetStatus {
+    PENDING = 'PENDING',
+    READY_TO_START = 'READY_TO_START',
+    IN_PROCESS = 'IN_PROCESS',
+    FINISHED = 'FINISHED',
+    CANCELED = 'CANCELED'
+}
 
 interface IGameSet {
     id: number
-    tour: ITour
+    match: IMatch
+    // Номер сета
+    number: number
     player1: IPlayer
     player2: IPlayer
-    // Стоит отказаться от этой переменной. Можно её вычислять динамически на основе player1 - player2
-    winner: IPlayer
-    time: Date
+    startDate: Date | null
+    endDate: Date
+    status: EGameSetStatus
+    isLastInMatch: boolean
+    
+    duration: string
+    isFinished: boolean
 }
 
-export { IGameSet }
+export { IGameSet, EGameSetStatus }

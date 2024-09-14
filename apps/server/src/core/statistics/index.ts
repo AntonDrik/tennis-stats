@@ -1,0 +1,1 @@
+export {default as StatisticModule} from './statistic.module'

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { User } from '@tennis-stats/entities'
+import { Permission, User, UserAuth } from '@tennis-stats/entities'
+import { EPermission } from '@tennis-stats/types'
 import { Repository } from 'typeorm'
-import { TSeedUser, users } from './data'
+import { ISeedUser, users } from './data'
 
 
 @Injectable()
@@ -10,7 +11,7 @@ export class UserSeederService {
     
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        private readonly userRepository: Repository<User>
     ) {}
     
     public create(): Array<Promise<User | null>> {
@@ -31,11 +32,27 @@ export class UserSeederService {
         )
     }
     
-    private async getEntity(seedUser: TSeedUser) {
+    private async getEntity(seedUser: ISeedUser) {
+        const auth = new UserAuth()
+        auth.login = seedUser.auth.login
+        auth.password = seedUser.auth.password
+        auth.refreshToken = seedUser.auth.refreshToken
+        
         const user = new User()
         user.firstName = seedUser.firstName
         user.lastName = seedUser.lastName
-        user.age = seedUser.age
+        user.auth = auth
+        user.permissions = this.getPermissionEntities(seedUser.permissions)
+        
         return user
+    }
+    
+    private getPermissionEntities(permissions: EPermission[]) {
+        return permissions.map((permission) => {
+            const entity = new Permission()
+            entity.value = permission
+            
+            return entity
+        })
     }
 }

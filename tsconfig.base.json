@@ -16,7 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@tennis-stats/entities": ["libs/entities/src/index.ts"],
-      "@tennis-stats/types": ["libs/types/src/index.ts"]
+      "@tennis-stats/types": ["libs/types/src/index.ts"],
+      "@tennis-stats/dto": ["libs/dto/src/index.ts"],
+      "@tennis-stats/helpers": ["libs/helpers/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
