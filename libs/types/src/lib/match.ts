@@ -1,5 +1,4 @@
 import { IGameSet } from './game-set';
-import { IPlayerStat } from './player-stats';
 import { ITour } from './tour';
 import { IUser } from './user';
 
@@ -13,13 +12,13 @@ interface IMatch {
   tour: ITour;
   user1: IUser;
   user2: IUser;
+  number: number;
   gameSets: IGameSet[];
-  stats: IPlayerStat[];
   totalScore: IMatchScore;
 }
 
 type TMatchRatingDelta = {
-  [key in string]: { userName: string, delta: string }[]
-}
+  [key in string]: { userName: string; delta: string }[];
+};
 
 export { IMatch, IMatchScore, TMatchRatingDelta };

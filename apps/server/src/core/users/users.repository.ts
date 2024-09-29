@@ -4,10 +4,8 @@ import { DataSource, Equal, In } from 'typeorm';
 import { UserNotFoundException } from '../../common/exceptions';
 import { BaseRepository } from '../../common/utils';
 
-
 @Injectable()
 class UsersRepository extends BaseRepository<User> {
-
   constructor(dataSource: DataSource) {
     super(User, dataSource);
   }
@@ -17,9 +15,9 @@ class UsersRepository extends BaseRepository<User> {
       relations: ['auth'],
       where: {
         auth: {
-          refreshToken: Equal(token)
-        }
-      }
+          refreshToken: Equal(token),
+        },
+      },
     });
   }
 
@@ -27,8 +25,8 @@ class UsersRepository extends BaseRepository<User> {
     return this.findOne({
       relations: ['auth'],
       where: {
-        auth: { login }
-      }
+        auth: { login },
+      },
     });
   }
 
@@ -42,12 +40,21 @@ class UsersRepository extends BaseRepository<User> {
     return user;
   }
 
-  public getByIds(ids: number[]) {
-    return this.findBy({
-      id: In(ids)
-    });
+  public async findByNickname(nickname: string): Promise<User> {
+    const user = await this.findOneBy({ nickname });
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
   }
 
+  public findByIds(ids: number[]) {
+    return this.findBy({
+      id: In(ids),
+    });
+  }
 }
 
 export default UsersRepository;

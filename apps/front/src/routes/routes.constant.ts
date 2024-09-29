@@ -3,19 +3,18 @@ const appRoutes = {
 
   USERS: '/users',
 
-  TOURS_LIST: '/tours',
+  TOURNAMENTS: '/tournaments',
 
-  TOUR_BY_ID: (id?: number) => id ? `/tours/${id}` : '/tours/:id',
+  TOURNAMENT_BY_ID: (id?: number) =>
+    id ? `/tournaments/${id}` : '/tournaments/:id',
+
+  TOURNAMENT_REGISTRATION: '/tournaments/registration',
 
   GAME_PROCESS: '/game-process',
 
   STATS: '/stats',
 
-  MATCH_ORDER: '/match-order',
-
-  PROFILE: (id?: number) => id ? `/profile/${id}` : 'profile/:id'
+  PROFILE: (id?: number) => (id ? `/profile/${id}` : 'profile/:id'),
 };
 
-export {
-  appRoutes
-};
+export { appRoutes };

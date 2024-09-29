@@ -1,11 +1,8 @@
-import { IsNumber } from 'class-validator'
-
+import { IsNumber } from 'class-validator';
 
 class IdListDto {
-    
-    @IsNumber({}, { each: true })
-    id: number[]
-    
+  @IsNumber({}, { each: true })
+  id: number[];
 }
 
-export default IdListDto
+export default IdListDto;

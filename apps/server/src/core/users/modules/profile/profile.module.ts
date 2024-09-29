@@ -1,19 +1,15 @@
-import { Module } from '@nestjs/common/decorators'
-import { MatchModule } from '../../../tours/modules/match'
+import { Module } from '@nestjs/common/decorators';
+import { MatchModule } from '../../../match';
 
-import { UsersModule } from '../../index'
-import ProfileController from './profile.controller'
-import ProfileService from './profile.service'
-
+import { UsersModule } from '../../index';
+import ProfileController from './profile.controller';
+import ProfileService from './profile.service';
 
 @Module({
-    imports: [
-        UsersModule,
-        MatchModule
-    ],
-    controllers: [ProfileController],
-    providers: [ProfileService]
+  imports: [UsersModule, MatchModule],
+  controllers: [ProfileController],
+  providers: [ProfileService],
 })
 class ProfileModule {}
 
-export default ProfileModule
+export default ProfileModule;

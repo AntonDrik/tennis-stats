@@ -2,26 +2,28 @@ import { GameSetScoreDto } from '@tennis-stats/dto';
 import { IGameSet } from '@tennis-stats/types';
 import { useMutation, useQueryClient } from 'react-query';
 import axiosFetcher from '../axios/fetcher';
-import { ITourPageState } from '../../store';
+import { ITournamentState } from '../../store';
 
-
-function useEditGameSetScoreMutation(tourState: ITourPageState) {
-
-  const { selectedMatch, selectedGameSet } = tourState;
+function useEditGameSetScoreMutation(tournamentState: ITournamentState) {
   const queryClient = useQueryClient();
+
+  const tournamentId = tournamentState.selectedTournament?.id;
+  const tourId = tournamentState.selectedTour?.id;
+  const matchId = tournamentState.selectedMatch?.id;
+  const gameSetId = tournamentState.selectedGameSet?.id;
 
   return useMutation(
     ['edit-game-set-score'],
     (dto: GameSetScoreDto) => {
       return axiosFetcher.put<IGameSet, GameSetScoreDto>(
-        `/match/${selectedMatch?.id}/game-set/${selectedGameSet?.id}/edit-score`,
+        `tournaments/${tournamentId}/tours/${tourId}/match/${matchId}/game-set/${gameSetId}/edit-score`,
         dto
       );
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: 'get-tour' });
-      }
+        void queryClient.invalidateQueries({ queryKey: 'get-tournament' });
+      },
     }
   );
 }

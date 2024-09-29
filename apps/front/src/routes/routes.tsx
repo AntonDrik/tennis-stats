@@ -4,29 +4,27 @@ import {
   createRoutesFromElements,
   Navigate,
   Route,
-  RouterProvider
+  RouterProvider,
 } from 'react-router-dom';
 import {
   StatsPage,
   UsersPage,
-  TourPage,
-  ToursPage,
-  MatchOrderPage,
   AuthPage,
   ProfilePage,
-  GameProcessPage
+  GameProcessPage,
+  TournamentsPage,
+  TournamentRegistrationPage,
 } from '../pages';
+import TournamentPage from '../pages/tournament/TournamentPage';
 import AuthRoute from './AuthRoute';
 import MainRoute from './MainRoute';
 import { appRoutes } from './routes.constant';
 
-
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path={'/'}>
-
-      <Route index element={<Navigate to={appRoutes.TOURS_LIST} />} />
-      <Route path='*' element={<Navigate to={appRoutes.TOURS_LIST} />} />
+      <Route index element={<Navigate to={appRoutes.TOURNAMENTS} />} />
+      <Route path="*" element={<Navigate to={appRoutes.TOURNAMENTS} />} />
 
       <Route element={<AuthRoute />}>
         <Route path={appRoutes.LOGIN} element={<AuthPage />} />
@@ -37,16 +35,22 @@ const routes = createBrowserRouter(
 
         <Route path={appRoutes.STATS} element={<StatsPage />} />
 
-        <Route path={appRoutes.TOURS_LIST} element={<ToursPage />} />
-        <Route path={appRoutes.TOUR_BY_ID()} element={<TourPage />} />
+        <Route path={appRoutes.TOURNAMENTS} element={<TournamentsPage />} />
+
+        <Route
+          path={appRoutes.TOURNAMENT_REGISTRATION}
+          element={<TournamentRegistrationPage />}
+        />
+
+        <Route
+          path={appRoutes.TOURNAMENT_BY_ID()}
+          element={<TournamentPage />}
+        />
 
         <Route path={appRoutes.GAME_PROCESS} element={<GameProcessPage />} />
 
-        <Route path={appRoutes.MATCH_ORDER} element={<MatchOrderPage />} />
-
         <Route path={appRoutes.PROFILE()} element={<ProfilePage />} />
       </Route>
-
     </Route>
   )
 );
@@ -55,7 +59,6 @@ function AppRoutes(): ReactElement {
   return <RouterProvider router={routes} />;
 }
 
-export {
-  AppRoutes,
-  routes
-};
+export { AppRoutes };
+
+export default routes;

@@ -6,9 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import EditSetMenuItem from './components/EditSetMenuItem/EditSetMenuItem';
 
-
 function FinishedGameSetMenu() {
-
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const isOpen = Boolean(anchorEl);
 
@@ -35,9 +33,7 @@ function FinishedGameSetMenu() {
         <EditSetMenuItem onClick={handleClose} />
       </Menu>
     </Box>
-
   );
-
 }
 
 export default FinishedGameSetMenu;

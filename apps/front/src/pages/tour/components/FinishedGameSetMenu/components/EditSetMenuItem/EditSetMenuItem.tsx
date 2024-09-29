@@ -3,15 +3,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useModal } from '../../../../../../shared/components';
-import EditGameSetModal from '../../../../modals/EditGameSetModal/EditGameSetModal';
-
+import EditGameSetModal from '../../../../../../shared/components/GameSet/modals/EditGameSetModal/EditGameSetModal';
 
 interface IProps {
   onClick: () => void;
 }
 
 function EditSetMenuItem({ onClick }: IProps) {
-
   const modal = useModal();
 
   const handleClick = () => {
@@ -29,8 +27,6 @@ function EditSetMenuItem({ onClick }: IProps) {
       <Typography>Редактировать счет</Typography>
     </MenuItem>
   );
-
 }
-
 
 export default EditSetMenuItem;

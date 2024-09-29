@@ -1,31 +1,26 @@
 import { IUser } from '@tennis-stats/types';
 import {
-  AfterLoad,
   BaseEntity,
   Column,
   Entity,
-  JoinColumn, JoinTable,
+  JoinColumn,
+  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RatingHistory } from './rating-history.entity';
 import { UserAuth } from './user-auth.entity';
 import { Permission } from './permission.entity';
 
-
 @Entity()
 export class User extends BaseEntity implements IUser {
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { nullable: false })
-  firstName: string;
-
-  @Column('varchar', { nullable: false })
-  lastName: string;
+  @Column('varchar', { nullable: false, unique: true })
+  nickname: string;
 
   @Column('varchar', { default: '#E0E1E6' })
   color: string;
@@ -41,22 +36,8 @@ export class User extends BaseEntity implements IUser {
   @JoinColumn()
   auth?: UserAuth;
 
-  @OneToMany(
-    () => RatingHistory,
-    ratingHistory => ratingHistory.user,
-    { cascade: true }
-  )
+  @OneToMany(() => RatingHistory, (ratingHistory) => ratingHistory.user, {
+    cascade: true,
+  })
   ratingHistory?: RatingHistory[];
-
-  /**
-   * Computed
-   */
-  fullName: string;
-  shortFullName: string;
-
-  @AfterLoad()
-  private loadVariables(): void {
-    this.fullName = `${this.firstName} ${this.lastName}`;
-    this.shortFullName = `${this.lastName} ${this.firstName.substring(0, 1)}.`;
-  }
 }

@@ -11,49 +11,41 @@ import RatingChart from './components/RatingChart/RatingChart';
 import Stack from '@mui/material/Stack/Stack';
 import WinPercentCard from './components/WinPercentCard/WinPercentCard';
 import Box from '@mui/material/Box';
-import { Button } from '@mui/material';
-import { useSetAtom } from 'jotai';
-import { resetServeAtom } from '../../shared/components/GameSet/ScoreBlock/state/Serve.state';
 import { useBackButton } from '../../layouts/MainLayout';
 
-
 type TProfileParams = {
-  id: string
-}
+  id: string;
+};
 
 function ProfilePage() {
   const params = useParams<TProfileParams>();
 
   const navigate = useNavigate();
 
-  const resetServe = useSetAtom(resetServeAtom);
-
   const { data: profile } = useProfileInfoQuery(params?.id ?? 0);
 
   useBackButton({
     title: 'Назад',
-    link: () => navigate(-1)
+    link: () => navigate(-1),
   });
 
   return (
     <React.Fragment>
       <Typography variant={'h1'} align={'center'} mb={4}>
-        {profile?.user.fullName}
+        {profile?.user.nickname}
       </Typography>
 
       <Stack spacing={3} p={4}>
-        {
-          profile?.user &&
+        {profile?.user && (
           <InfoSection
             title={`Личный рейтинг (${Math.round(profile.user.rating)})`}
             icon={<StarsIcon color={'warning'} />}
           >
             <RatingChart user={profile.user} />
           </InfoSection>
-        }
+        )}
 
-        {
-          profile &&
+        {profile && (
           <InfoSection
             title={'Статистика'}
             icon={<AnalyticsIcon color={'info'} />}
@@ -65,29 +57,13 @@ function ProfilePage() {
             >
               <WinPercentCard {...profile.winPercent} />
 
-              <MiniCard
-                label={'Количество игр'}
-                value={profile.gamesCount}
-              />
+              <MiniCard label={'Количество игр'} value={profile.gamesCount} />
             </Box>
-
           </InfoSection>
-        }
-
-        {
-          profile &&
-          <InfoSection
-            title={'Настройки'}
-            icon={<AnalyticsIcon color={'info'} />}
-          >
-            <Button variant={'contained'} onClick={resetServe}>Сбросить состояние подач</Button>
-          </InfoSection>
-        }
+        )}
       </Stack>
-
     </React.Fragment>
   );
-
 }
 
 export default ProfilePage;

@@ -1,9 +1,11 @@
-export * from './lib/date'
-export { default as uniqueCombinations } from './lib/uniqueCombinations'
-export { default as shuffleArray } from './lib/shuffleArray'
-export { default as getRatingDelta } from './lib/rating-formula'
-export { arrayToObject } from './lib/array-to-object'
-export { default as upperFirstLetter } from './lib/upper-first-letter'
-export { default as mapToArray } from './lib/map-to-array'
-export { default as maxInCollection } from './lib/max-in-collection'
-export { default as avgOfSet } from './lib/avg-of-set'
+export * from './lib/date';
+export { default as uniqueCombinations } from './lib/unique-combinations';
+export { default as getRatingDelta } from './lib/rating-formula';
+export { arrayToObject } from './lib/array-to-object';
+export { default as mapToArray } from './lib/map-to-array';
+export { default as maxInCollection } from './lib/max-in-collection';
+export { default as avgOfSet } from './lib/avg-of-set';
+export { default as arrayIntersections } from './lib/array-intersections';
+export { default as createArray } from './lib/create-array';
+export { default as allSynchronously } from './lib/all-synchronously';
+export { default as getRoundInfo } from './lib/get-round-info';

@@ -1,27 +1,29 @@
-import { FinishGameSetDto } from '@tennis-stats/dto';
+import { GameSetScoreDto } from '@tennis-stats/dto';
 import { IGameSet } from '@tennis-stats/types';
 import { useMutation, useQueryClient } from 'react-query';
-import { ITourPageState } from '../../store';
+import { ITournamentState } from '../../store';
 import axiosFetcher from '../axios/fetcher';
 
-
-function useFinishGameSetMutation(tourState: ITourPageState) {
-
-  const { selectedMatch, selectedGameSet } = tourState;
+function useFinishGameSetMutation(tournamentState: ITournamentState) {
   const queryClient = useQueryClient();
+
+  const tournamentId = tournamentState.selectedTournament?.id;
+  const tourId = tournamentState.selectedTour?.id;
+  const matchId = tournamentState.selectedMatch?.id;
+  const gameSetId = tournamentState.selectedGameSet?.id;
 
   return useMutation(
     ['finish-game-set'],
-    (dto: FinishGameSetDto) => {
-      return axiosFetcher.post<IGameSet, FinishGameSetDto>(
-        `/match/${selectedMatch?.id}/game-set/${selectedGameSet?.id}/finish`,
+    (dto: GameSetScoreDto) => {
+      return axiosFetcher.post<IGameSet, GameSetScoreDto>(
+        `tournaments/${tournamentId}/tours/${tourId}/match/${matchId}/game-set/${gameSetId}/finish`,
         dto
       );
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries({ queryKey: 'get-tour' });
-      }
+        void queryClient.invalidateQueries({ queryKey: 'get-tournament' });
+      },
     }
   );
 }

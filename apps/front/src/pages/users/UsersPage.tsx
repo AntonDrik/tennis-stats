@@ -9,7 +9,7 @@ import {
   Typography,
   Paper,
   Stack,
-  Button
+  Button,
 } from '@mui/material';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { useNavigate } from 'react-router-dom';
@@ -19,17 +19,15 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { appRoutes } from '../../routes/routes.constant';
 import { useModal } from '../../shared/components';
-import usePermissions from '../../shared/hooks/usePermissions';
+import useUserPermissions from '../../shared/hooks/useUserPermissions';
 import CreateUserModal from './modals/CreateUserModal/CreateUserModal';
 
-
 export default function UsersPage() {
-
   const { data: usersList } = useUsersQuery();
 
   const modal = useModal();
   const navigate = useNavigate();
-  const permissions = usePermissions();
+  const permissions = useUserPermissions();
 
   const handleNewUserClick = () => {
     modal.open(<CreateUserModal />);
@@ -56,9 +54,8 @@ export default function UsersPage() {
   return (
     <Box>
       <Stack direction={'row'} alignItems={'center'} mb={2} gap={2}>
-        <Typography variant='h4'>Пользователи</Typography>
-        {
-          permissions.canCreateUser &&
+        <Typography variant="h4">Пользователи</Typography>
+        {permissions.canCreateUser && (
           <Button
             variant={'contained'}
             color={'success'}
@@ -68,50 +65,50 @@ export default function UsersPage() {
           >
             <AddIcon />
           </Button>
-        }
+        )}
       </Stack>
 
-      {
-        usersList &&
+      {usersList && (
         <TableContainer component={Paper}>
-          <Table aria-label='simple table'>
+          <Table aria-label="simple table" size={'small'}>
             <TableHead>
               <TableRow>
-                <TableCell>Имя</TableCell>
-                <TableCell>Фамилия</TableCell>
+                <TableCell>Никнейм</TableCell>
                 <TableCell>Рейтинг</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {
-                usersList.map((user) => {
-                  const ratingInfo = getRatingInfo(user);
+              {usersList.map((user) => {
+                const ratingInfo = getRatingInfo(user);
 
-                  return (
-                    <TableRow
-                      key={user.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
-                      onClick={() => handleRowClick(user)}
-                    >
-                      <TableCell align='left'>{user.firstName}</TableCell>
-                      <TableCell align='left'>{user.lastName}</TableCell>
-                      <TableCell align='left'>
-                        <Stack direction={'row'} alignItems={'center'} sx={{ color: ratingInfo.color }}>
-                          {Math.round(user.rating)} ({user.ratingDiff})
-                          {ratingInfo.icon}
-                        </Stack>
-
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              }
+                return (
+                  <TableRow
+                    key={user.id}
+                    sx={{
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => handleRowClick(user)}
+                  >
+                    <TableCell align="left">{user.nickname}</TableCell>
+                    <TableCell align="left">
+                      <Stack
+                        direction={'row'}
+                        alignItems={'center'}
+                        sx={{ color: ratingInfo.color }}
+                      >
+                        {Math.round(user.rating)} ({user.ratingDiff})
+                        {ratingInfo.icon}
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
-      }
+      )}
     </Box>
   );
-
 }

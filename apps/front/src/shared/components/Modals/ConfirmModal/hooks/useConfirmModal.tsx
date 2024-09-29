@@ -1,39 +1,37 @@
 import { useModal } from '../../core';
 import ConfirmModal from '../ConfirmModal';
 
-
 interface IProps {
   title: string;
   confirmTitle: string;
   denyTitle: string;
 }
 
-function useConfirmModal({ title, confirmTitle, denyTitle }: IProps) {
-
+function useConfirmModal(props: IProps) {
   const modal = useModal();
 
   return (onSuccess: () => void) => {
     modal.open(
       <ConfirmModal
-        title={title}
+        title={props.title}
         confirmButton={{
-          caption: confirmTitle,
+          caption: props.confirmTitle,
           onClick: () => {
             onSuccess();
             modal.close();
           },
           props: {
             color: 'error',
-            variant: 'contained'
-          }
+            variant: 'contained',
+          },
         }}
         denyButton={{
-          caption: denyTitle,
+          caption: props.denyTitle,
           onClick: () => modal.close(),
           props: {
             color: 'inherit',
-            variant: 'contained'
-          }
+            variant: 'contained',
+          },
         }}
       />,
       { maxWidth: 'sm' }

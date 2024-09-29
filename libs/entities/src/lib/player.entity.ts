@@ -1,13 +1,16 @@
 import { IPlayer, TScore } from '@tennis-stats/types';
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { PlayerStat } from './player-stats.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { User } from './user.entity';
 
-
 @Entity()
 export class Player extends BaseEntity implements IPlayer {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,5 +22,4 @@ export class Player extends BaseEntity implements IPlayer {
 
   @Column('boolean', { default: false })
   isWinner: boolean;
-
 }

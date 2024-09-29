@@ -1,38 +1,38 @@
-import { ITour } from '@tennis-stats/types';
-import { AfterLoad, BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ETourType, ITour, TPlayOffStage } from '@tennis-stats/types';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Match } from './match.entity';
-
+import { Tournament } from './tournament.entity';
 
 @Entity()
 export class Tour extends BaseEntity implements ITour {
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('datetime', { nullable: true })
-  date: Date;
+  @ManyToOne(() => Tournament, { orphanedRowAction: 'delete' })
+  tournament: Tournament;
+
+  @Column('varchar', { nullable: false })
+  type: ETourType;
 
   @Column('varchar', { nullable: false })
   setsCount: number;
 
-  @OneToMany(() => Match, match => match.tour, { eager: true, cascade: true })
+  @OneToMany(() => Match, (match) => match.tour, {
+    eager: true,
+    cascade: true,
+  })
   matches: Match[];
 
-  isActive: boolean;
+  @Column('int', { nullable: true })
+  number?: number;
 
-
-  @AfterLoad()
-  public loadVariables() {
-    if (!this.matches) {
-      this.isActive = false;
-
-      return;
-    }
-
-    const gameSets = this.matches.map((match) => match?.gameSets ?? []).flat();
-    const isFinishedAllGameSets = gameSets.every((gameSet) => gameSet.isFinished);
-
-    this.isActive = !isFinishedAllGameSets;
-  }
-
+  @Column('varchar', { nullable: true })
+  playOffStage?: TPlayOffStage;
 }

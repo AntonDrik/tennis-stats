@@ -2,8 +2,6 @@ import React, { ReactNode, useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Helmet } from 'react-helmet';
 import ErrorFallback from '../ErrorFallback/error-fallback';
-import { Box } from '@mui/material';
-
 
 interface IProps {
   title: string;
@@ -12,7 +10,6 @@ interface IProps {
 }
 
 function Page({ title, scrollTop = false, children }: IProps): JSX.Element {
-
   useEffect(() => {
     if (scrollTop) {
       document.querySelector('#content-container')?.scrollTo(0, 0);
@@ -21,7 +18,7 @@ function Page({ title, scrollTop = false, children }: IProps): JSX.Element {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Helmet titleTemplate='%s | Tennis stats'>
+      <Helmet titleTemplate="%s | Tennis stats">
         <title>{title}</title>
       </Helmet>
       {children}

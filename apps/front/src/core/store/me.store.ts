@@ -1,24 +1,13 @@
-import { IUser } from '@tennis-stats/types'
-import { atom, createStore } from 'jotai'
+import { IUser } from '@tennis-stats/types';
+import { atom, createStore } from 'jotai';
 
+const meStore = createStore();
+const meAtom = atom<IUser | null>(null);
 
-const meStore = createStore()
-const meAtom = atom<IUser | null>(null)
-
-meStore.set(meAtom, null)
-
+meStore.set(meAtom, null);
 
 function updateMeStore(user: IUser | null) {
-    if (!user) {
-        meStore.set(meAtom, null)
-        return
-    }
-    
-    meStore.set(meAtom, user)
+  meStore.set(meAtom, user ?? null);
 }
 
-export {
-    meStore,
-    meAtom,
-    updateMeStore
-}
+export { meStore, meAtom, updateMeStore };

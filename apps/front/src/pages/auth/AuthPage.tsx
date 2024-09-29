@@ -1,64 +1,41 @@
-import Button from '@mui/material/Button'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import useLoginMutation from '../../core/api/authApi/useLoginMutation'
-import { updateMeStore } from '../../core/store'
-import { appRoutes } from '../../routes/routes.constant'
+import { useAtom } from 'jotai';
+import * as React from 'react';
+import { SyntheticEvent } from 'react';
+import TabContent from '../../shared/components/TabContent/TabContent';
 
-import Styled from './AuthPage.styles'
+import Registration from './components/Registration/Registration';
+import Login from './components/Login/Login';
 
+import Styled from './AuthPage.styles';
+import { authPageSelectedTabAtom } from './state/AuthPage.state';
 
 function AuthPage() {
-    const navigate = useNavigate()
-    
-    const auth = useLoginMutation()
-    
-    const [login, setLogin] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    
-    const handleClick = () => {
-        auth.mutateAsync({ login, password })
-            .then((response) => {
-                if (!response.user) {
-                    return
-                }
-                
-                updateMeStore(response.user)
-                navigate(appRoutes.TOURS_LIST)
-            })
-    }
-    
-    return (
-        <Styled.Card gap={2}>
-            <Typography variant={'h2'} mb={2}>Авторизация</Typography>
-            
-            <TextField
-                placeholder={'Введите логин'}
-                value={login}
-                onChange={(e) => setLogin(e.target.value as string)}
-            />
-            
-            <TextField
-                placeholder={'Введите пароль'}
-                value={password}
-                type={'password'}
-                onChange={(e) => setPassword(e.target.value as string)}
-            />
-            
-            <Box mt={2}>
-                <Button
-                    fullWidth
-                    variant={'contained'}
-                    onClick={handleClick}
-                >Войти</Button>
-            </Box>
-        </Styled.Card>
-    )
-    
-    
+  const [selectedTab, setSelectedTab] = useAtom(authPageSelectedTabAtom);
+
+  const handleTabChange = (event: SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  };
+
+  return (
+    <Styled.Card>
+      <Styled.AntTabs
+        value={selectedTab}
+        onChange={handleTabChange}
+        aria-label="basic tabs example"
+      >
+        <Styled.AntTab label="Авторизация" />
+        <Styled.AntTab label="Регистрация" />
+      </Styled.AntTabs>
+
+      <TabContent value={selectedTab} index={0}>
+        <Login />
+      </TabContent>
+
+      <TabContent value={selectedTab} index={1}>
+        <Registration />
+      </TabContent>
+    </Styled.Card>
+  );
 }
 
-export default AuthPage
+export default AuthPage;

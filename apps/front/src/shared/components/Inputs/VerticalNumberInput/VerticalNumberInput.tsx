@@ -15,7 +15,6 @@ interface IProps extends Omit<NumberInputProps, 'onChange'> {
 }
 
 const VerticalNumberInput = (props: IProps) => {
-
   const incrementClick = () => {
     const newValue = (props.value ?? 0) + 1;
 
@@ -62,13 +61,13 @@ const VerticalNumberInput = (props: IProps) => {
   return (
     <Stack gap={1.5} alignItems={'center'} sx={props.wrapperSx}>
       <Styled.StyledButton $styles={props.buttonStyle} onClick={incrementClick}>
-        <AddIcon fontSize='small' />
+        <AddIcon fontSize="small" />
       </Styled.StyledButton>
 
       {getInput()}
 
       <Styled.StyledButton $styles={props.buttonStyle} onClick={decrementClick}>
-        <RemoveIcon fontSize='small' />
+        <RemoveIcon fontSize="small" />
       </Styled.StyledButton>
     </Stack>
   );

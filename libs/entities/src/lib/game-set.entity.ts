@@ -1,69 +1,60 @@
-import { secondsWithTwoDigits } from '@tennis-stats/helpers'
-import { EGameSetStatus, IGameSet, TScoreCaption } from '@tennis-stats/types'
-import intervalToDuration from 'date-fns/intervalToDuration'
+import { IGameSet, TScoreCaption } from '@tennis-stats/types';
 import {
-    AfterLoad,
-    BaseEntity,
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm'
-import { Match } from './match.entity'
+  AfterLoad,
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Match } from './match.entity';
 
-import { Player } from './player.entity'
-
+import { Player } from './player.entity';
 
 @Entity()
 export class GameSet extends BaseEntity implements IGameSet {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @ManyToOne(() => Match, { orphanedRowAction: 'delete', onDelete: 'CASCADE' })
+  match: Match;
 
-    @ManyToOne(() => Match)
-    match: Match
+  @Column('int', { nullable: false })
+  number: number;
 
-    @Column('int', { nullable: false })
-    number: number
+  @OneToOne(() => Player, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  @JoinColumn()
+  player1: Player;
 
-    @OneToOne(() => Player, { eager: true, cascade: true })
-    @JoinColumn()
-    player1: Player
+  @OneToOne(() => Player, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  @JoinColumn()
+  player2: Player;
 
-    @OneToOne(() => Player, { eager: true, cascade: true })
-    @JoinColumn()
-    player2: Player
+  @Column('datetime', { nullable: true })
+  startDate: Date;
 
-    @Column('datetime', { nullable: true })
-    startDate: Date
+  @Column('datetime', { nullable: true })
+  endDate: Date;
 
-    @Column('datetime', { nullable: true })
-    endDate: Date
+  @Column('boolean', { nullable: false, default: false })
+  isFinished: boolean;
 
-    @Column('varchar', { default: EGameSetStatus.PENDING })
-    status: EGameSetStatus
+  scoreCaption: TScoreCaption;
 
-    @Column('boolean', { default: false })
-    isLastInMatch: boolean
-
-    duration: string
-    isFinished: boolean
-    scoreCaption: TScoreCaption
-
-    @AfterLoad()
-    loadVariables() {
-        if (this.startDate && this.endDate) {
-            const duration = intervalToDuration({ start: this.startDate, end: this.endDate })
-            const seconds = secondsWithTwoDigits(duration.seconds)
-
-            this.duration = `${duration.minutes}:${seconds}`
-        }
-
-        this.isFinished = [EGameSetStatus.FINISHED, EGameSetStatus.CANCELED].includes(this.status)
-
-        this.scoreCaption = `${this.player1?.score} | ${this.player2?.score}`
-    }
-
+  @AfterLoad()
+  loadVariables() {
+    this.scoreCaption = `${this.player1?.score} | ${this.player2?.score}`;
+  }
 }

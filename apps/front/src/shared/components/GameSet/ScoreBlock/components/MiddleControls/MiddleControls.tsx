@@ -1,51 +1,16 @@
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import { Box, IconButton } from '@mui/material';
+import { Box } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
-import { useAtomValue, useSetAtom } from 'jotai';
 import * as React from 'react';
-import { randomizeServeAtom, serveAtom } from '../../state/Serve.state';
 
-import Styled from './MiddleControls.styles';
-
-interface IProps {
-  interactive?: boolean;
-  onRevertClick: () => void;
-}
-
-function MiddleControls(props: IProps) {
-
-  const serve = useAtomValue(serveAtom);
-  const randomize = useSetAtom(randomizeServeAtom);
-
+function MiddleControls() {
   return (
     <Stack alignItems={'center'}>
-      {
-        !serve.player && props.interactive &&
-        <Styled.RandomIconButton
-          color={'info'}
-          $animate={serve.animate}
-          onClick={randomize}
-        />
-      }
-
       <Box flex={1}>
-        <Divider
-          orientation={'vertical'}
-          variant='middle'
-          sx={{ my: 0 }}
-        >
-          {
-            props.interactive &&
-            <IconButton size={'small'} onClick={props.onRevertClick}>
-              <SyncAltIcon fontSize={'small'} />
-            </IconButton>
-          }
-        </Divider>
+        <Divider orientation={'vertical'} variant="middle" sx={{ my: 0 }} />
       </Box>
     </Stack>
   );
-
 }
 
 export default MiddleControls;

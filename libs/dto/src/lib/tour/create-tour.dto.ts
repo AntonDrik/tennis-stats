@@ -1,22 +1,14 @@
-import { ArrayMaxSize, ArrayMinSize, IsISO8601, IsNumber, Max, Min } from 'class-validator'
-import { IsOddNumber } from '../custom-decorators/is-odd-numbers'
-
+import { ETourGenerator } from '@tennis-stats/types';
+import { IsIn, IsNumber, Max, Min } from 'class-validator';
 
 class CreateTourDto {
-    
-    @IsISO8601()
-    date: string
-    
-    @IsOddNumber({message: 'Только нечетные числа'})
-    @Max(5, { message: 'Максимум 5 сетов' })
-    @Min(1, { message: 'Минимум 1 сет' })
-    setsCount: number
-    
-    @IsNumber({}, { each: true })
-    @ArrayMaxSize(10, { message: 'Максимум 10 игроков' })
-    @ArrayMinSize(2, { message: 'Минимум 2 игрока' })
-    usersIds: number[]
-    
+  @IsNumber()
+  @Max(5, { message: 'Максимум 5 сетов' })
+  @Min(1, { message: 'Минимум 1 сет' })
+  setsCount: number;
+
+  @IsIn([ETourGenerator.RANDOM])
+  pairsGenerator: ETourGenerator;
 }
 
-export default CreateTourDto
+export default CreateTourDto;
