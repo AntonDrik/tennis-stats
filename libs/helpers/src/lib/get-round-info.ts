@@ -1,16 +1,8 @@
-import { TPlayOffStage } from '@tennis-stats/types';
+import { TPlayOffRound } from '@tennis-stats/types';
 
-const allRounds: TPlayOffStage[] = [
-  '1/64',
-  '1/32',
-  '1/16',
-  '1/8',
-  '1/4',
-  '1/2',
-  '1/1',
-];
+const allRounds: TPlayOffRound[] = ['1/64', '1/32', '1/16', '1/8', '1/4', '1/2', '1/1'];
 
-function getRoundInfo(round: TPlayOffStage) {
+function getRoundInfo(round: TPlayOffRound) {
   const secondValue = round.split('/')[1];
 
   const usersCount = Number(secondValue) * 2;

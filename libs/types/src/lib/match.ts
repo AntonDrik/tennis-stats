@@ -14,7 +14,11 @@ interface IMatch {
   user2: IUser;
   number: number;
   gameSets: IGameSet[];
+  isPlayoff: boolean;
+
+  // computed
   totalScore: IMatchScore;
+  isFinished: boolean;
 }
 
 type TMatchRatingDelta = {

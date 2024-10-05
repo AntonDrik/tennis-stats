@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tournament } from '@tennis-stats/entities';
 import { MatchModule } from '../match';
+import RatingModule from '../rating/rating.module';
 import { TourModule } from '../tours';
 import { UsersModule } from '../users';
 import OpenedTournamentController from './controllers/opened-tournament.controller';
@@ -18,6 +19,7 @@ import TournamentsService from './services/tournaments.service';
     UsersModule,
     TourModule,
     MatchModule,
+    RatingModule,
   ],
   controllers: [OpenedTournamentController, TournamentsController],
   providers: [

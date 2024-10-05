@@ -6,7 +6,7 @@ import {
   ETourGenerator,
   ETournamentStatus,
   ETourType,
-  TPlayOffStage,
+  TPlayOffRound,
 } from '@tennis-stats/types';
 import { InvalidPlayoffTypeException } from '../../../common/exceptions/playoff.exceptions';
 import { MatchService } from '../../match';
@@ -28,21 +28,17 @@ class PlayoffService {
   async createPlayoff(dto: CreatePlayoffDto) {
     const activeUsers = await this.usersService.getUsersForPlayoff(dto);
     const tournament = await this.tournamentRepository.findByStatus(
-      ETournamentStatus.ACTIVE,
+      [ETournamentStatus.ACTIVE],
       'Не найден турнир с активным статусом'
     );
 
-    if (dto.round === 'all') {
+    if (!dto.round) {
       throw new InvalidPlayoffTypeException();
     }
 
     const nextRounds = getRoundInfo(dto.round).nextRounds;
 
-    const firstTour = await this.createFirstTour(
-      activeUsers,
-      dto.setsCount,
-      dto.round
-    );
+    const firstTour = await this.createFirstTour(activeUsers, dto.setsCount, dto.round);
 
     const restTours = await this.createRestTours(dto.setsCount, nextRounds);
 
@@ -54,14 +50,12 @@ class PlayoffService {
 
   async removePlayoff() {
     const tournament = await this.tournamentRepository.findByStatus(
-      ETournamentStatus.PLAYOFF,
+      [ETournamentStatus.PLAYOFF],
       'Турнир с активным плейофф не найден'
     );
 
     tournament.status = ETournamentStatus.ACTIVE;
-    tournament.tours = tournament.tours.filter(
-      (tour) => tour.type === ETourType.SIMPLE
-    );
+    tournament.tours = tournament.tours.filter((tour) => tour.type === ETourType.SIMPLE);
 
     await tournament.save();
   }
@@ -69,21 +63,17 @@ class PlayoffService {
   private async createFirstTour(
     activeUsers: User[],
     setsCount: number,
-    stage: TPlayOffStage
+    stage: TPlayOffRound
   ) {
     const matches = await this.matchService.createMatches(activeUsers, {
       setsCount,
       pairsGenerator: ETourGenerator.RANDOM,
     });
 
-    return this.toursRepository.createPlayOffTourEntity(
-      setsCount,
-      stage,
-      matches
-    );
+    return this.toursRepository.createPlayOffTourEntity(setsCount, stage, matches);
   }
 
-  private createRestTours(setsCount: number, restRounds: TPlayOffStage[]) {
+  private createRestTours(setsCount: number, restRounds: TPlayOffRound[]) {
     return allSynchronously(
       restRounds.map((round) => async () => {
         const matches = await this.matchService.createMatchesForPlayoffRound(
@@ -91,11 +81,7 @@ class PlayoffService {
           setsCount
         );
 
-        return this.toursRepository.createPlayOffTourEntity(
-          setsCount,
-          round,
-          matches
-        );
+        return this.toursRepository.createPlayOffTourEntity(setsCount, round, matches);
       })
     );
   }

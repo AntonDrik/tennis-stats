@@ -12,4 +12,3 @@ export * from './lib/permissions';
 export * from './lib/tournament';
 export * from './lib/nested-pats';
 export * from './lib/leaderboard';
-export * from './lib/playoff';

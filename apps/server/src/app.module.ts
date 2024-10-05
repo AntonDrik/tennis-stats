@@ -6,7 +6,7 @@ import { TournamentsModule } from './core/tournaments';
 import { SeederModule, SqliteProviderModule } from './database';
 import { EnvConfigModule } from './config/env';
 import { StatisticModule } from './core/statistics';
-import { RatingHistoryModule } from './core/rating-history';
+import { RatingHistoryModule } from './core/rating';
 import { UsersModule } from './core/users';
 import { MatchModule } from './core/match';
 import { TourModule } from './core/tours';

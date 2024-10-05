@@ -23,7 +23,7 @@ class GetTournamentsQuery {
 
   @IsOptional()
   @IsIn(tournamentStatus)
-  status?: ETournamentStatus;
+  status?: ETournamentStatus[];
 }
 
 export default GetTournamentsQuery;

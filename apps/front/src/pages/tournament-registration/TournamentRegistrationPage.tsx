@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { useMemo } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -17,6 +17,7 @@ import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner, useModal } from '../../shared/components';
 import { useConfirmModal } from '../../shared/components/Modals';
 import { useUserPermissions } from '../../shared/hooks';
+import { tabsAtom } from '../tournament/state/Tabs.state';
 import TournamentRegistrationHeader from './components/Header/Header';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import AddUsersToTournamentModal from './modals/AddUserModal/AddUserModal';
@@ -24,6 +25,7 @@ import StartTournamentModal from './modals/StartTournamentModal/StartTournamentM
 
 function TournamentRegistrationPage() {
   const me = useAtomValue(meAtom);
+  const setTournamentTab = useSetAtom(tabsAtom);
 
   const openedTournament = useGetOpenedTournamentQuery();
   const registerOnTournament = useRegisterUserOnTournamentMutation();
@@ -72,6 +74,7 @@ function TournamentRegistrationPage() {
       <StartTournamentModal
         registeredUsers={usersList}
         onSuccess={(tournamentId) => {
+          setTournamentTab(0);
           navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
         }}
       />,
@@ -103,20 +106,10 @@ function TournamentRegistrationPage() {
           registeredUsersCount={usersList.length}
         />
 
-        <Box
-          display={'flex'}
-          justifyContent={'flex-start'}
-          flexWrap={'wrap'}
-          gap={2}
-          mb={2}
-        >
+        <Box display={'flex'} justifyContent={'flex-start'} flexWrap={'wrap'} gap={2} mb={2}>
           {permissions.canCrudTournament && (
             <React.Fragment>
-              <Button
-                variant={'contained'}
-                color={'success'}
-                onClick={openStartTournamentModal}
-              >
+              <Button variant={'contained'} color={'success'} onClick={openStartTournamentModal}>
                 <PlayArrowIcon sx={{ mr: 1 }} />
                 Запустить турнир
               </Button>
@@ -135,20 +128,13 @@ function TournamentRegistrationPage() {
           )}
 
           {isRegistered && (
-            <Button
-              variant={'contained'}
-              color={'error'}
-              onClick={unregisterSelf}
-            >
+            <Button variant={'contained'} color={'error'} onClick={unregisterSelf}>
               Отменить регистрацию
             </Button>
           )}
         </Box>
 
-        <RegistrationTable
-          isAdmin={permissions.canCrudTournament}
-          usersList={usersList}
-        />
+        <RegistrationTable isAdmin={permissions.canCrudTournament} usersList={usersList} />
       </Box>
     </Page>
   );

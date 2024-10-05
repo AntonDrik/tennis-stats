@@ -34,7 +34,7 @@ class UsersRepository extends BaseRepository<User> {
     const user = await this.findOneBy({ id });
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundException(id);
     }
 
     return user;
@@ -44,7 +44,7 @@ class UsersRepository extends BaseRepository<User> {
     const user = await this.findOneBy({ nickname });
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundException(nickname);
     }
 
     return user;

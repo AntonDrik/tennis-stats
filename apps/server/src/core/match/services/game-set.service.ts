@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { GameSetScoreDto } from '@tennis-stats/dto';
-import { GameSet, Match, Player } from '@tennis-stats/entities';
+import { GameSet, Match, Player, User } from '@tennis-stats/entities';
 import { allSynchronously, createArray } from '@tennis-stats/helpers';
+import { TPlayOffRound } from '@tennis-stats/types';
 import { DataSource, EntityManager } from 'typeorm';
 import {
   GameSetFinishedException,
-  GameSetNotFoundException,
+  MatchNotFinishedException,
   UserNotFoundException,
 } from '../../../common/exceptions';
 import { UsersService } from '../../users';
-import GameSetRepository from '../repositories/game-set.repository';
+import getNextPlayoffMatchId from '../helpers/getNextPlayoffMatchId';
 import { IPair } from '../interfaces/pair.interface';
+import GameSetRepository from '../repositories/game-set.repository';
 
 @Injectable()
 class GameSetService {
@@ -20,7 +22,7 @@ class GameSetService {
     private usersService: UsersService
   ) {}
 
-  public async createGameSet(number: number, pair?: IPair) {
+  public async createGameSet(number: number, pair?: IPair): Promise<GameSet> {
     if (!pair) {
       return this.repository.createEntity(number);
     }
@@ -35,10 +37,7 @@ class GameSetService {
     return this.repository.createEntity(number, player1, player2);
   }
 
-  public async createGameSets(
-    setsCount: number,
-    pair?: IPair
-  ): Promise<GameSet[]> {
+  public async createGameSets(setsCount: number, pair?: IPair): Promise<GameSet[]> {
     return allSynchronously(
       createArray(setsCount).map((i) => async () => {
         return await this.createGameSet(i + 1, pair);
@@ -49,22 +48,14 @@ class GameSetService {
   public async finishGameSet(
     match: Match,
     gameSet: GameSet,
-    dto: GameSetScoreDto,
-    transactionManager?: EntityManager
+    dto: GameSetScoreDto
   ): Promise<GameSet> {
     if (gameSet.isFinished) {
       throw new GameSetFinishedException();
     }
 
     await this.repository.withTransaction(async (manager) => {
-      await manager.update(
-        GameSet,
-        { id: gameSet.id },
-        {
-          isFinished: true,
-          endDate: new Date(),
-        }
-      );
+      await manager.update(GameSet, gameSet.id, { isFinished: true });
 
       await manager.update(
         Player,
@@ -84,22 +75,19 @@ class GameSetService {
         }
       );
 
-      const updatedMatch = await manager.findOneBy(Match, { id: match.id });
-
-      if (!updatedMatch?.getWinnerLooser() && updatedMatch?.isFinished) {
-        await this.addGameSetToMatch(updatedMatch, manager);
-      }
-    }, transactionManager);
+      await this.handleMatchAfterFinish(match.id, manager);
+    });
 
     return gameSet;
   }
 
-  public async editScore(
+  public async editGameSet(
+    match: Match,
     gameSet: GameSet,
     dto: GameSetScoreDto
   ): Promise<GameSet> {
-    if (!gameSet) {
-      throw new GameSetNotFoundException();
+    if (!match.isFinished) {
+      throw new MatchNotFinishedException();
     }
 
     gameSet.player1.score = dto.player1Score;
@@ -115,6 +103,30 @@ class GameSetService {
     return gameSet;
   }
 
+  private async handleMatchAfterFinish(matchId: number, manager: EntityManager) {
+    const updatedMatch = await manager.findOne(Match, {
+      where: { id: matchId },
+      order: { id: 'ASC' },
+      relations: ['tour'],
+    });
+
+    if (!updatedMatch?.isFinished) {
+      return;
+    }
+
+    const winnerLooser = updatedMatch.getWinnerLooser();
+
+    if (!winnerLooser) {
+      await this.addGameSetToMatch(updatedMatch, manager);
+
+      return;
+    }
+
+    if (updatedMatch.tour.playOffStage) {
+      await this.setPlayoffMatchWinner(updatedMatch, winnerLooser.winner, manager);
+    }
+  }
+
   private async addGameSetToMatch(match: Match, manager: EntityManager) {
     const pair: IPair = {
       user1: match.user1,
@@ -125,6 +137,44 @@ class GameSetService {
     match.gameSets.push(gameSet);
 
     await manager.save(Match, match);
+  }
+
+  private async setPlayoffMatchWinner(
+    match: Match,
+    winner: User,
+    manager: EntityManager
+  ) {
+    const round = match.tour.playOffStage as TPlayOffRound;
+    const nextMatchId = getNextPlayoffMatchId(match, round);
+    const isUpdateUser1 = !Number.isInteger(match.number / 2);
+
+    const nextMatch = await manager.findOne(Match, {
+      where: { id: nextMatchId },
+      relations: ['gameSets'],
+    });
+
+    if (!nextMatch) {
+      return;
+    }
+
+    await manager.update(
+      Match,
+      { id: nextMatchId },
+      {
+        ...(isUpdateUser1 ? { user1: winner } : { user2: winner }),
+      }
+    );
+
+    const player = await this.usersService.createPlayer(winner.id);
+
+    nextMatch.gameSets = nextMatch.gameSets.map((gameSet) => {
+      return GameSet.create({
+        ...gameSet,
+        ...(isUpdateUser1 ? { player1: player } : { player2: player }),
+      });
+    });
+
+    await manager.save(nextMatch.gameSets);
   }
 }
 

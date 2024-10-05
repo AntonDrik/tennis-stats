@@ -17,18 +17,19 @@ const Container = styled(Stack)<{ $isOpened: boolean }>(
     },
   },
   ({ $isOpened }) => ({
-    height: $isOpened ? '183px' : '71px',
+    height: $isOpened ? '183px' : '72px',
   })
 );
 
 const Row = styled(Stack)({
   alignItems: 'center',
   paddingLeft: '12px',
-  paddingRight: '12px',
 });
 
 const Username = styled(Typography)({
   flex: 1,
+  whiteSpace: 'nowrap',
+  marginRight: 12,
 });
 
 const ScoreContainer = styled(Stack)({
@@ -65,6 +66,12 @@ const SetScore = styled(Box)<{ $isWin?: boolean }>(
   })
 );
 
+const Divider = styled(Box)({
+  height: 2,
+  backgroundColor: '#fff',
+  borderColor: '#fff',
+});
+
 export default {
   Container,
   Row,
@@ -72,4 +79,5 @@ export default {
   SetScore,
   ScoreContainer,
   Username,
+  Divider,
 };

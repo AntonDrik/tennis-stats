@@ -12,10 +12,18 @@ import { TournamentNotFoundException } from '../../../common/exceptions';
 export class TournamentPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
-  transform(value: number): Promise<Tournament | null> {
-    const tournament = this.entity
-      .getRepository(Tournament)
-      .findOneBy({ id: value });
+  async transform(value: number): Promise<Tournament | null> {
+    const tournament = await this.entity.getRepository(Tournament).findOne({
+      where: { id: value },
+      order: {
+        tours: {
+          id: 'ASC',
+          matches: {
+            id: 'ASC',
+          },
+        },
+      },
+    });
 
     if (!tournament) {
       throw new TournamentNotFoundException();

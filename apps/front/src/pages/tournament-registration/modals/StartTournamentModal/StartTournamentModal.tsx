@@ -17,14 +17,9 @@ import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
 import { StartTournamentDto } from '@tennis-stats/dto';
 import { ETourGenerator, IUser } from '@tennis-stats/types';
-import {
-  Controller,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form';
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import useStartTournamentMutation from '../../../../core/api/tournamentApi/useStartTournamentMutation';
+import { useStartTournamentMutation } from '../../../../core/api';
 import { AndroidSwitch, useModal } from '../../../../shared/components';
 import { GroupBox } from '../../../../shared/components/GroupBox/GroupBox';
 
@@ -80,9 +75,7 @@ function StartTournamentModal(props: IProps) {
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(submit)}>
-          <DialogContent
-            sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}
-          >
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <GroupBox caption={'Глобальные настройки'} bgcolor={'white'}>
               <Controller
                 name="handleRating"
@@ -90,9 +83,7 @@ function StartTournamentModal(props: IProps) {
                 render={({ field: { onChange, value } }) => (
                   <FormControlLabel
                     label="Считать рейтинг"
-                    control={
-                      <AndroidSwitch checked={value} onChange={onChange} />
-                    }
+                    control={<AndroidSwitch checked={value} onChange={onChange} />}
                   />
                 )}
               />
@@ -102,10 +93,7 @@ function StartTournamentModal(props: IProps) {
               <Stack gap={2}>
                 {toursControl.fields.map((field, index) => (
                   <React.Fragment key={`tour-${index}`}>
-                    <Styled.TourRow
-                      key={field.id}
-                      mb={isLastRow(index) ? 2 : 0}
-                    >
+                    <Styled.TourRow key={field.id} mb={isLastRow(index) ? 2 : 0}>
                       <Typography textAlign={'start'} minWidth={65}>
                         Тур № {index + 1}
                       </Typography>

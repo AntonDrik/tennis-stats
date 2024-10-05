@@ -1,9 +1,6 @@
 import Button from '@mui/material/Button';
 import { useAtomValue } from 'jotai';
-import {
-  useEditGameSetScoreMutation,
-  useFinishGameSetMutation,
-} from '../../../../core/api';
+import { useEditGameSetMutation, useFinishGameSetMutation } from '../../../../core/api';
 import { ITournamentState } from '../../../../core/store';
 import { isValidScoreAtom, scoreAtom } from '../ScoreBlock/state/Score.state';
 
@@ -18,7 +15,7 @@ function FinishButton(props: IProps) {
   const isValidScore = useAtomValue(isValidScoreAtom);
 
   const finishGameSet = useFinishGameSetMutation(props.tournamentState);
-  const editGameSetScore = useEditGameSetScoreMutation(props.tournamentState);
+  const editGameSetScore = useEditGameSetMutation(props.tournamentState);
 
   const handleFinishClick = () => {
     if (!props.editMode) {

@@ -3,10 +3,7 @@ import { UpsertTournamentDto, GetTournamentsQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { ETournamentStatus } from '@tennis-stats/types';
 import { DataSource, Repository } from 'typeorm';
-import {
-  OpenedTournamentNotFoundException,
-  TournamentNotFoundException,
-} from '../../../common/exceptions';
+import { TournamentNotFoundException } from '../../../common/exceptions';
 
 @Injectable()
 class TournamentsRepository extends Repository<Tournament> {
@@ -25,7 +22,7 @@ class TournamentsRepository extends Repository<Tournament> {
   }
 
   public async findByStatus(
-    status: ETournamentStatus,
+    status: ETournamentStatus[],
     error?: string
   ): Promise<Tournament> {
     const tournaments = await this.findTournamentsByQuery({
@@ -50,9 +47,7 @@ class TournamentsRepository extends Repository<Tournament> {
     return tournamentsList?.[0];
   }
 
-  public findTournamentsByQuery(
-    query: GetTournamentsQuery
-  ): Promise<Tournament[]> {
+  public findTournamentsByQuery(query: GetTournamentsQuery): Promise<Tournament[]> {
     const builder = this.createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.tours', 'tours')
       .leftJoinAndSelect('tournament.registeredUsers', 'registeredUsers')
@@ -74,7 +69,7 @@ class TournamentsRepository extends Repository<Tournament> {
     }
 
     if (query.status) {
-      builder.where('tournament.status = :status', { status: query.status });
+      builder.where('tournament.status IN(:...status)', { status: query.status });
     }
 
     return builder.getMany();

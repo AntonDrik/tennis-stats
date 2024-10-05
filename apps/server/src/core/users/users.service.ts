@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
-import { Match, Player, Tour, User } from '@tennis-stats/entities';
-import { getRatingDelta } from '@tennis-stats/helpers';
-import { IUserWithRatingDiff, TPlayoffRounds } from '@tennis-stats/types';
-import { DataSource, EntityManager } from 'typeorm';
-import {
-  MatchNotFoundException,
-  TournamentNotFoundException,
-} from '../../common/exceptions';
-import { RatingHistoryService } from '../rating-history';
+import { Player } from '@tennis-stats/entities';
+import { IUserWithRatingDiff } from '@tennis-stats/types';
+import { DataSource } from 'typeorm';
+import { RatingHistoryService } from '../rating';
 import UsersRepository from './users.repository';
 
 @Injectable()
@@ -23,14 +18,9 @@ class UsersService {
     const users = await this.repository.find();
 
     const promise = users.map(async (user) => {
-      const ratingDiff = await this.ratingHistoryService
-        .getRatingDiff(user)
-        .catch(() => null);
+      const ratingDiff = await this.ratingHistoryService.getDailyRatingDiff(user);
 
-      return {
-        ...user,
-        ratingDiff: ratingDiff ?? '+0',
-      };
+      return { ...user, ratingDiff };
     });
 
     return Promise.all(promise);
@@ -73,60 +63,6 @@ class UsersService {
     player.score = 0;
 
     return player;
-  }
-
-  public async updateRating(
-    tour: Tour | null,
-    match: Match | null,
-    transactionManager?: EntityManager
-  ) {
-    if (!tour) {
-      throw new TournamentNotFoundException();
-    }
-
-    if (!match) {
-      throw new MatchNotFoundException();
-    }
-
-    const players = match.getWinnerLooser();
-
-    if (!players) {
-      return;
-    }
-
-    const { winner, looser } = players;
-
-    const delta = getRatingDelta(
-      winner.rating,
-      looser.rating,
-      tour,
-      match.totalScore
-    );
-
-    await this.repository.withTransaction(async (manager) => {
-      await manager.update(
-        User,
-        { id: winner.id },
-        {
-          rating: winner.rating + delta,
-        }
-      );
-
-      await manager.update(
-        User,
-        { id: looser.id },
-        {
-          rating: looser.rating - delta,
-        }
-      );
-
-      // const allUsers = await manager.find(User);
-      // await this.ratingHistoryService.makeSnapshot(
-      //   allUsers,
-      //   match.tour.date,
-      //   manager
-      // );
-    }, transactionManager);
   }
 }
 

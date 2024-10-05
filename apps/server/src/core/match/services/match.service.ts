@@ -7,7 +7,7 @@ import {
   getRatingDelta,
   getRoundInfo,
 } from '@tennis-stats/helpers';
-import { TMatchRatingDelta, TPlayOffStage } from '@tennis-stats/types';
+import { TMatchRatingDelta, TPlayOffRound } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
 import { UsersRepository, UsersService } from '../../users';
@@ -27,14 +27,8 @@ class MatchService {
     private pairsGeneratorService: PairsGeneratorService
   ) {}
 
-  public async createMatches(
-    users: User[],
-    tourDto: CreateTourDto
-  ): Promise<Match[]> {
-    const pairs = this.pairsGeneratorService.generatePairs(
-      users,
-      tourDto.pairsGenerator
-    );
+  public async createMatches(users: User[], tourDto: CreateTourDto): Promise<Match[]> {
+    const pairs = this.pairsGeneratorService.generatePairs(users, tourDto.pairsGenerator);
 
     return allSynchronously(
       pairs.map((pair, index) => async () => {
@@ -54,10 +48,7 @@ class MatchService {
     );
   }
 
-  public async createMatchesForPlayoffRound(
-    round: TPlayOffStage,
-    setsCount: number
-  ) {
+  public async createMatchesForPlayoffRound(round: TPlayOffRound, setsCount: number) {
     const roundInfo = getRoundInfo(round);
 
     return allSynchronously(
@@ -66,6 +57,7 @@ class MatchService {
 
         const match = new Match();
         match.number = index + 1;
+        match.isPlayoff = true;
         match.gameSets = gameSets;
 
         return match;
@@ -102,34 +94,34 @@ class MatchService {
       throw new TournamentNotFoundException();
     }
 
-    const availableScores = getAllScoresForMatch(tour.setsCount);
+    // const availableScores = getAllScoresForMatch(tour.setsCount);
     const result: TMatchRatingDelta = {};
-    const { user1, user2 } = match;
+    // const { user1, user2 } = match;
 
-    availableScores.forEach((score) => {
-      const minScore = Math.min(...score);
-      const maxScore = Math.max(...score);
-
-      const deltaIfUser1Win = getRatingDelta(user1.rating, user2.rating, tour, {
-        user1: maxScore,
-        user2: minScore,
-      });
-
-      const deltaIfUser2Win = getRatingDelta(user2.rating, user1.rating, tour, {
-        user1: minScore,
-        user2: maxScore,
-      });
-
-      result[`${maxScore}-${minScore}`] = [
-        { userName: user1.nickname, delta: `+${deltaIfUser1Win}` },
-        { userName: user2.nickname, delta: `-${deltaIfUser1Win}` },
-      ];
-
-      result[`${minScore}-${maxScore}`] = [
-        { userName: user1.nickname, delta: `-${deltaIfUser2Win}` },
-        { userName: user2.nickname, delta: `+${deltaIfUser2Win}` },
-      ];
-    });
+    // availableScores.forEach((score) => {
+    //   const minScore = Math.min(...score);
+    //   const maxScore = Math.max(...score);
+    //
+    //   const deltaIfUser1Win = getRatingDelta(user1.rating, user2.rating, tour, {
+    //     user1: maxScore,
+    //     user2: minScore,
+    //   });
+    //
+    //   const deltaIfUser2Win = getRatingDelta(user2.rating, user1.rating, tour, {
+    //     user1: minScore,
+    //     user2: maxScore,
+    //   });
+    //
+    //   result[`${maxScore}-${minScore}`] = [
+    //     { userName: user1.nickname, delta: `+${deltaIfUser1Win}` },
+    //     { userName: user2.nickname, delta: `-${deltaIfUser1Win}` },
+    //   ];
+    //
+    //   result[`${minScore}-${maxScore}`] = [
+    //     { userName: user1.nickname, delta: `-${deltaIfUser2Win}` },
+    //     { userName: user2.nickname, delta: `+${deltaIfUser2Win}` },
+    //   ];
+    // });
 
     return result;
   }

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import axiosFetcher from '../axios/fetcher';
 import { ITournamentState } from '../../store';
 
-function useEditGameSetScoreMutation(tournamentState: ITournamentState) {
+function useEditGameSetMutation(tournamentState: ITournamentState) {
   const queryClient = useQueryClient();
 
   const tournamentId = tournamentState.selectedTournament?.id;
@@ -16,7 +16,7 @@ function useEditGameSetScoreMutation(tournamentState: ITournamentState) {
     ['edit-game-set-score'],
     (dto: GameSetScoreDto) => {
       return axiosFetcher.put<IGameSet, GameSetScoreDto>(
-        `tournaments/${tournamentId}/tours/${tourId}/match/${matchId}/game-set/${gameSetId}/edit-score`,
+        `tournaments/${tournamentId}/tours/${tourId}/match/${matchId}/game-set/${gameSetId}/edit`,
         dto
       );
     },
@@ -28,4 +28,4 @@ function useEditGameSetScoreMutation(tournamentState: ITournamentState) {
   );
 }
 
-export default useEditGameSetScoreMutation;
+export default useEditGameSetMutation;

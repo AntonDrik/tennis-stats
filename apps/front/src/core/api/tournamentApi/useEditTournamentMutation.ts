@@ -3,16 +3,13 @@ import { ITournament } from '@tennis-stats/types';
 import { useMutation, useQueryClient } from 'react-query';
 import axiosFetcher from '../axios/fetcher';
 
-function useUpdateTournamentMutation() {
+function useEditTournamentMutation() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ['update-tournament'],
+    ['edit-tournament'],
     (dto: UpsertTournamentDto) =>
-      axiosFetcher.put<ITournament, UpsertTournamentDto>(
-        '/tournaments/opened/update',
-        dto
-      ),
+      axiosFetcher.put<ITournament, UpsertTournamentDto>('/tournaments/opened/edit', dto),
     {
       onSuccess: () => {
         void queryClient.invalidateQueries({ queryKey: 'get-tournaments' });
@@ -21,4 +18,4 @@ function useUpdateTournamentMutation() {
   );
 }
 
-export default useUpdateTournamentMutation;
+export default useEditTournamentMutation;

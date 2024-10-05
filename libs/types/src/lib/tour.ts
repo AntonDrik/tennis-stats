@@ -9,7 +9,7 @@ enum ETourGenerator {
   RANDOM,
 }
 
-type TPlayOffStage = '1/64' | '1/32' | '1/16' | '1/8' | '1/4' | '1/2' | '1/1';
+type TPlayOffRound = '1/64' | '1/32' | '1/16' | '1/8' | '1/4' | '1/2' | '1/1';
 
 interface ITour {
   id: number;
@@ -17,7 +17,7 @@ interface ITour {
   matches: IMatch[];
   type: ETourType;
   number?: number;
-  playOffStage?: TPlayOffStage;
+  playOffStage?: TPlayOffRound;
 }
 
-export { ITour, ETourGenerator, TPlayOffStage, ETourType };
+export { ITour, ETourGenerator, TPlayOffRound, ETourType };

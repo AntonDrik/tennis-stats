@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai';
-import { MouseEvent } from 'react';
+import React, { MouseEvent } from 'react';
 import { Stack, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { IGameSet, IMatch } from '@tennis-stats/types';
@@ -12,19 +12,25 @@ import Styled from './MatchCard.styles';
 
 interface IProps {
   match: IMatch;
+  isPlayoffCard?: boolean;
 }
 
-function MatchCard({ match }: IProps) {
+function MatchCard({ match, isPlayoffCard }: IProps) {
   const updateTournamentState = useSetAtom(updateTournamentAtom);
 
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
 
   const modal = useModal();
 
+  const isEmptyMatch = !match.user1 || !match.user2;
   const isPlayer1Winner = match.totalScore.user1 > match.totalScore.user2;
   const isPlayer2Winner = match.totalScore.user2 > match.totalScore.user1;
 
   const toggleSettings = () => {
+    if (isPlayoffCard) {
+      return;
+    }
+
     setIsSettingsOpened(!isSettingsOpened);
 
     updateTournamentState({ selectedMatch: match });
@@ -33,59 +39,63 @@ function MatchCard({ match }: IProps) {
   const setScore = (e: MouseEvent, gameSet: IGameSet) => {
     e.stopPropagation();
 
+    if (isEmptyMatch) {
+      return;
+    }
+
     updateTournamentState({ selectedMatch: match, selectedGameSet: gameSet });
 
-    modal.open(
-      gameSet.endDate ? <EditGameSetModal /> : <FinishGameSetModal />,
-      { maxWidth: 'sm', fullWidth: true }
-    );
+    modal.open(gameSet.isFinished ? <EditGameSetModal /> : <FinishGameSetModal />, {
+      maxWidth: 'sm',
+      fullWidth: true,
+    });
   };
 
   return (
     <Styled.Container $isOpened={isSettingsOpened} onClick={toggleSettings}>
       <Styled.Row direction={'row'}>
         <Stack flex={1}>
-          <Styled.Username variant={'h4'} textTransform={'uppercase'} mb={0.5}>
-            {match.user1.nickname}
+          <Styled.Username variant={'body1'} textTransform={'uppercase'} mb={0.5}>
+            {match.user1?.nickname ?? 'Не определено'}
           </Styled.Username>
 
-          <Divider color={'#8EC8F6'} sx={{ ml: '-12px' }} />
+          <Styled.Divider sx={{ ml: '-12px' }} />
 
-          <Styled.Username variant={'h4'} textTransform={'uppercase'} mt={0.5}>
-            {match.user2.nickname}
+          <Styled.Username variant={'body1'} textTransform={'uppercase'} mt={0.5}>
+            {match.user2?.nickname ?? 'Не определено'}
           </Styled.Username>
         </Stack>
 
-        <Stack direction={'row'} gap={1.5}>
+        <Stack direction={'row'}>
           <Stack>
             <Styled.MatchScore $isWin={isPlayer1Winner}>
               <Typography fontWeight={600}>{match.totalScore.user1}</Typography>
             </Styled.MatchScore>
 
-            <Divider color={'#8EC8F6'} />
+            <Styled.Divider />
 
             <Styled.MatchScore $isWin={isPlayer2Winner}>
               <Typography fontWeight={600}>{match.totalScore.user2}</Typography>
             </Styled.MatchScore>
           </Stack>
 
-          <Stack direction={'row'}>
+          <Stack
+            direction={'row'}
+            sx={{ borderRight: isPlayoffCard ? '4px solid #53709b' : 'none' }}
+          >
             {match.gameSets.map((gameSet) => (
-              <Styled.ScoreContainer key={gameSet.id}>
-                <Styled.SetScore
-                  $isWin={gameSet.player1.isWinner}
-                  onClick={(e: MouseEvent) => setScore(e, gameSet)}
-                >
-                  <Typography>{gameSet.player1.score}</Typography>
+              <Styled.ScoreContainer
+                key={gameSet.id}
+                onClick={(e: MouseEvent) => setScore(e, gameSet)}
+              >
+                <Styled.SetScore $isWin={gameSet.player1?.isWinner}>
+                  <Typography>{gameSet.player1?.score ?? 0}</Typography>
                 </Styled.SetScore>
 
-                <Divider color={'#8EC8F6'} sx={{ mx: '-12px' }} />
+                <Styled.Divider />
 
-                <Styled.SetScore
-                  $isWin={gameSet.player2.isWinner}
-                  onClick={(e: MouseEvent) => setScore(e, gameSet)}
-                >
-                  <Typography>{gameSet.player2.score}</Typography>
+                <Styled.SetScore $isWin={gameSet.player2?.isWinner}>
+                  <Typography>{gameSet.player2?.score ?? 0}</Typography>
                 </Styled.SetScore>
               </Styled.ScoreContainer>
             ))}
@@ -93,11 +103,15 @@ function MatchCard({ match }: IProps) {
         </Stack>
       </Styled.Row>
 
-      <Divider color={'#8EC8F6'} sx={{ mt: 2 }}>
-        Настройки
-      </Divider>
+      {!isPlayoffCard && (
+        <React.Fragment>
+          <Divider color={'#8EC8F6'} sx={{ mt: 2 }}>
+            Настройки
+          </Divider>
 
-      <MatchCardControls />
+          <MatchCardControls />
+        </React.Fragment>
+      )}
     </Styled.Container>
   );
 }

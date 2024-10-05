@@ -12,6 +12,11 @@ import { GameSet } from './game-set.entity';
 import { Tour } from './tour.entity';
 import { User } from './user.entity';
 
+export interface IWinnerLooser {
+  winner: User;
+  looser: User;
+}
+
 @Entity()
 export class Match extends BaseEntity implements IMatch {
   @PrimaryGeneratedColumn()
@@ -29,6 +34,9 @@ export class Match extends BaseEntity implements IMatch {
   @Column('int')
   number: number;
 
+  @Column('boolean', { default: false })
+  isPlayoff: boolean;
+
   @OneToMany(() => GameSet, (gameSet) => gameSet.match, {
     eager: true,
     cascade: true,
@@ -41,6 +49,9 @@ export class Match extends BaseEntity implements IMatch {
   };
 
   isFinished: boolean;
+
+  // Флаг указывающий на то, что матч не должен быть засчитан. (Игра с Халявой)
+  isFictive: boolean;
 
   @AfterLoad()
   loadVariables() {
@@ -56,9 +67,12 @@ export class Match extends BaseEntity implements IMatch {
     });
 
     this.isFinished = gameSets.every((gameSet) => gameSet.isFinished);
+
+    this.isFictive =
+      this.user1?.nickname === 'Халява' || this.user2?.nickname === 'Халява';
   }
 
-  public getWinnerLooser() {
+  public getWinnerLooser(): IWinnerLooser | null {
     const isWinnerUser1 = this.totalScore.user1 > this.totalScore.user2;
 
     if (this.totalScore.user1 === this.totalScore.user2) {

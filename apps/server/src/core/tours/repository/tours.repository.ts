@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTourDto } from '@tennis-stats/dto';
 import { Match, Tour, Tournament } from '@tennis-stats/entities';
-import { ETourType, TPlayOffStage } from '@tennis-stats/types';
+import { ETourType, TPlayOffRound } from '@tennis-stats/types';
 import { DataSource, Repository } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
 
@@ -21,11 +21,7 @@ class ToursRepository extends Repository<Tour> {
     return tour as Tour;
   }
 
-  public createSimpleTourEntity(
-    dto: CreateTourDto,
-    number: number,
-    matchEntities: Match[]
-  ): Tour {
+  public createSimpleTourEntity(dto: CreateTourDto, number: number, matchEntities: Match[]): Tour {
     const tour = new Tour();
 
     tour.type = ETourType.SIMPLE;
@@ -36,11 +32,7 @@ class ToursRepository extends Repository<Tour> {
     return tour;
   }
 
-  public createPlayOffTourEntity(
-    setsCount: number,
-    stage: TPlayOffStage,
-    matchEntities: Match[]
-  ): Tour {
+  public createPlayOffTourEntity(setsCount: number, stage: TPlayOffRound, matchEntities: Match[]): Tour {
     const tour = new Tour();
 
     tour.type = ETourType.PLAY_OFF;

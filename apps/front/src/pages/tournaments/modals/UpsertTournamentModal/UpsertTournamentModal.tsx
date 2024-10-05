@@ -7,15 +7,12 @@ import { UpsertTournamentDto } from '@tennis-stats/dto';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { toast } from 'react-hot-toast';
-import {
-  useCreateTournamentMutation,
-  useUpdateTournamentMutation,
-} from '../../../../core/api';
+import { useCreateTournamentMutation, useEditTournamentMutation } from '../../../../core/api';
 import { Spinner, useModal } from '../../../../shared/components';
 
 function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
   const createTournament = useCreateTournamentMutation();
-  const updateTournament = useUpdateTournamentMutation();
+  const updateTournament = useEditTournamentMutation();
 
   const modal = useModal();
 
@@ -53,9 +50,7 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
     <>
       {isLoading && <Spinner />}
 
-      <DialogTitle>
-        {!isUpdateModel ? 'Создать' : 'Изменить'} турнир
-      </DialogTitle>
+      <DialogTitle>{!isUpdateModel ? 'Создать' : 'Изменить'} турнир</DialogTitle>
 
       <Stack p={2}>
         <TextField
@@ -71,9 +66,7 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
 
         <Box mt={2}>
           <Button fullWidth variant={'contained'} onClick={submit}>
-            {!isUpdateModel
-              ? 'Создать турнир и начать регистрацию'
-              : 'Изменить турнир'}
+            {!isUpdateModel ? 'Создать турнир и начать регистрацию' : 'Изменить турнир'}
           </Button>
         </Box>
       </Stack>

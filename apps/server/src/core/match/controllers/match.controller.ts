@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
 import { GameSetScoreDto, SwapUserDto } from '@tennis-stats/dto';
 import { GameSet, Match } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
@@ -35,7 +27,7 @@ class MatchController {
 
   @Post('/:matchId/game-set/:setId/finish')
   @Permissions([EPermission.GAME_SET_CRUD])
-  async finishGameSet(
+  finishGameSet(
     @MatchById() match: Match,
     @GameSetById() gameSet: GameSet,
     @Body() dto: GameSetScoreDto
@@ -43,10 +35,14 @@ class MatchController {
     return this.gameSetService.finishGameSet(match, gameSet, dto);
   }
 
-  @Put('/:matchId/game-set/:setId/edit-score')
+  @Put('/:matchId/game-set/:setId/edit')
   @Permissions([EPermission.GAME_SET_CRUD])
-  editScore(@GameSetById() gameSet: GameSet, @Body() dto: GameSetScoreDto) {
-    return this.gameSetService.editScore(gameSet, dto);
+  editGameSet(
+    @MatchById() match: Match,
+    @GameSetById() gameSet: GameSet,
+    @Body() dto: GameSetScoreDto
+  ) {
+    return this.gameSetService.editGameSet(match, gameSet, dto);
   }
 
   @Patch('/:matchId/swap-user')

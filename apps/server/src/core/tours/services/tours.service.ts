@@ -18,10 +18,7 @@ class ToursService {
     private matchService: MatchService
   ) {}
 
-  public async addTourForTournament(
-    tournament: Tournament,
-    dto: CreateTourDto
-  ) {
+  public async addTourForTournament(tournament: Tournament, dto: CreateTourDto) {
     if (tournament.status !== ETournamentStatus.ACTIVE) {
       throw new UnableAddTourException();
     }
@@ -30,11 +27,7 @@ class ToursService {
     const lastTourNumber = tournament.lastTourNumber + 1;
 
     const matches = await this.matchService.createMatches(tournamentUsers, dto);
-    const tour = this.repository.createSimpleTourEntity(
-      dto,
-      lastTourNumber,
-      matches
-    );
+    const tour = this.repository.createSimpleTourEntity(dto, lastTourNumber, matches);
 
     tournament.tours.push(tour);
     await tournament.save();

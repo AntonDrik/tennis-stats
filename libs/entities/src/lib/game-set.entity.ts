@@ -42,12 +42,6 @@ export class GameSet extends BaseEntity implements IGameSet {
   @JoinColumn()
   player2: Player;
 
-  @Column('datetime', { nullable: true })
-  startDate: Date;
-
-  @Column('datetime', { nullable: true })
-  endDate: Date;
-
   @Column('boolean', { nullable: false, default: false })
   isFinished: boolean;
 

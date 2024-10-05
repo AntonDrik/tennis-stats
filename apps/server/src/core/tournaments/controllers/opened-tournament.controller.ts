@@ -44,10 +44,10 @@ class OpenedTournamentController {
   @Post('/finish')
   @Permissions([EPermission.TOURNAMENT_CRUD])
   finishTournament() {
-    throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
+    return this.openedTournamentService.finishTournament();
   }
 
-  @Put('/update')
+  @Put('/edit')
   @Permissions([EPermission.TOURNAMENT_CRUD])
   editOpenedTournament(@Body() dto: UpsertTournamentDto) {
     return this.openedTournamentService.editTournament(dto);

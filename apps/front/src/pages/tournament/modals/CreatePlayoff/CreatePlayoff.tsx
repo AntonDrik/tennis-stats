@@ -14,10 +14,7 @@ import { IUser } from '@tennis-stats/types';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import {
-  useCreatePlayoffMutation,
-  useGetLeaderboardQuery,
-} from '../../../../core/api';
+import { useCreatePlayoffMutation, useGetLeaderboardQuery } from '../../../../core/api';
 import { useModal } from '../../../../shared/components';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 import { getTextFieldError } from '../../../../utils';
@@ -106,16 +103,12 @@ function CreatePlayoff(props: IProps) {
                 <ToggleButtonGroup size="small" fullWidth {...field}>
                   <ToggleButton value="1/8" disabled={!isValidRound('1/8')}>
                     1/8
-                    {!isValidRound('1/8') && (
-                      <Styled.Hint>Мало игроков</Styled.Hint>
-                    )}
+                    {!isValidRound('1/8') && <Styled.Hint>Мало игроков</Styled.Hint>}
                   </ToggleButton>
 
                   <ToggleButton value="1/4" disabled={!isValidRound('1/4')}>
                     1/4
-                    {!isValidRound('1/4') && (
-                      <Styled.Hint>Мало игроков</Styled.Hint>
-                    )}
+                    {!isValidRound('1/4') && <Styled.Hint>Мало игроков</Styled.Hint>}
                   </ToggleButton>
                 </ToggleButtonGroup>
               )}
@@ -133,11 +126,7 @@ function CreatePlayoff(props: IProps) {
         </DialogContent>
 
         <DialogActions>
-          <Button
-            type={'submit'}
-            variant={'contained'}
-            disabled={!form.formState.isValid}
-          >
+          <Button type={'submit'} variant={'contained'} disabled={!form.formState.isValid}>
             Создать
           </Button>
         </DialogActions>

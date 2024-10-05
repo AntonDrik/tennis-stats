@@ -6,9 +6,14 @@ import { ETournamentStatus, ITournament } from '@tennis-stats/types';
 import { useAtomValue, useSetAtom } from 'jotai';
 import React from 'react';
 import { toast } from 'react-hot-toast';
-import { useRemoveTourMutation } from '../../../../core/api';
-import useRemovePlayoffMutation from '../../../../core/api/tournamentApi/useRemovePlayoffMutation';
+import { useNavigate } from 'react-router-dom';
+import {
+  useRemoveTourMutation,
+  useFinishTournamentMutation,
+  useRemovePlayoffMutation,
+} from '../../../../core/api';
 import { tournamentAtom } from '../../../../core/store';
+import { appRoutes } from '../../../../routes/routes.constant';
 import { useModal } from '../../../../shared/components';
 import { useConfirmModal } from '../../../../shared/components/Modals';
 import { useUserPermissions } from '../../../../shared/hooks';
@@ -27,9 +32,11 @@ function TournamentControlPanel({ tournament }: IProps) {
 
   const removeTourMutation = useRemoveTourMutation(tournamentState);
   const removePlayoffMutation = useRemovePlayoffMutation();
+  const finishTournamentMutation = useFinishTournamentMutation();
 
   const modal = useModal();
   const permissions = useUserPermissions();
+  const navigate = useNavigate();
 
   const isPlayoffStage = tournament.status === ETournamentStatus.PLAYOFF;
 
@@ -64,6 +71,7 @@ function TournamentControlPanel({ tournament }: IProps) {
     removePlayoffConfirmModal(() => {
       removePlayoffMutation.mutateAsync().then(() => {
         toast.success('Плейофф успешно удален');
+        setTabsState(0);
       });
     });
   };
@@ -74,6 +82,13 @@ function TournamentControlPanel({ tournament }: IProps) {
         toast.success('Турнир успешно удален');
         setTabsState(0);
       });
+    });
+  };
+
+  const finishTournament = () => {
+    finishTournamentMutation.mutateAsync().then(() => {
+      toast.success('Турнир завершен. Рейтинг пересчитан');
+      navigate(appRoutes.TOURNAMENTS);
     });
   };
 
@@ -93,11 +108,7 @@ function TournamentControlPanel({ tournament }: IProps) {
           >
             {tournament.status !== ETournamentStatus.PLAYOFF && (
               <Stack direction={'row'} gap={1}>
-                <Button
-                  variant={'contained'}
-                  size={'small'}
-                  onClick={openNewTourModal}
-                >
+                <Button variant={'contained'} size={'small'} onClick={openNewTourModal}>
                   Добавить тур
                 </Button>
 
@@ -115,11 +126,7 @@ function TournamentControlPanel({ tournament }: IProps) {
             )}
 
             <Stack direction={'row'} gap={1}>
-              <Button
-                variant={'contained'}
-                size={'small'}
-                onClick={openLeaderboard}
-              >
+              <Button variant={'contained'} size={'small'} onClick={openLeaderboard}>
                 Таблица лидеров
               </Button>
 
@@ -127,11 +134,18 @@ function TournamentControlPanel({ tournament }: IProps) {
                 variant={'contained'}
                 size={'small'}
                 color={!isPlayoffStage ? 'primary' : 'error'}
-                onClick={
-                  !isPlayoffStage ? openCreatePlayoffModal : removePlayoff
-                }
+                onClick={!isPlayoffStage ? openCreatePlayoffModal : removePlayoff}
               >
                 {!isPlayoffStage ? 'Начать плейофф' : 'Удалить плейофф'}
+              </Button>
+
+              <Button
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
+                onClick={finishTournament}
+              >
+                Завершить турнир
               </Button>
             </Stack>
           </Stack>

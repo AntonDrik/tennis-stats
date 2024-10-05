@@ -8,8 +8,6 @@ interface IGameSet {
   number: number;
   player1: IPlayer;
   player2: IPlayer;
-  startDate: Date | null;
-  endDate: Date;
   isFinished: boolean;
 }
 

@@ -1,19 +1,16 @@
-import { IMatchScore, ITour, IUser } from '@tennis-stats/types';
-import mapToArray from './map-to-array';
+import { IMatchScore } from '@tennis-stats/types';
 
 function getRatingDelta(
   winnerRating: number,
   looserRating: number,
-  tour: ITour,
+  tournamentAvgRating: number,
   matchScore: IMatchScore
 ): number {
-  const tourMultiplier = getTourMultiplier(tour);
+  const tourMultiplier = getTournamentMultiplier(tournamentAvgRating);
   const scoreMultiplier = getScoreMultiplier(matchScore);
 
   const delta =
-    ((100 - (winnerRating - looserRating)) / 10) *
-    tourMultiplier *
-    scoreMultiplier;
+    ((100 - (winnerRating - looserRating)) / 10) * tourMultiplier * scoreMultiplier;
 
   return Math.round(delta);
 }
@@ -36,35 +33,24 @@ function getScoreMultiplier(matchScore: IMatchScore): number {
   return 1;
 }
 
-function getTourMultiplier(tour: ITour): number {
-  const tourPlayers = new Map<number, IUser>();
-
-  tour.matches.forEach((item) => {
-    tourPlayers.set(item.user1.id, item.user1);
-    tourPlayers.set(item.user2.id, item.user2);
-  });
-
-  const tourAvgRating =
-    mapToArray(tourPlayers).reduce((acc, curr) => acc + curr.rating, 0) /
-    tourPlayers.size;
-
-  if (tourAvgRating < 250) {
+function getTournamentMultiplier(tournamentAvgRating: number): number {
+  if (tournamentAvgRating < 250) {
     return 0.2;
   }
 
-  if (tourAvgRating >= 250 && tourAvgRating < 350) {
+  if (tournamentAvgRating >= 250 && tournamentAvgRating < 350) {
     return 0.25;
   }
 
-  if (tourAvgRating >= 350 && tourAvgRating < 450) {
+  if (tournamentAvgRating >= 350 && tournamentAvgRating < 450) {
     return 0.3;
   }
 
-  if (tourAvgRating >= 450 && tourAvgRating < 550) {
+  if (tournamentAvgRating >= 450 && tournamentAvgRating < 550) {
     return 0.35;
   }
 
-  if (tourAvgRating > 550) {
+  if (tournamentAvgRating > 550) {
     return 0.4;
   }
 

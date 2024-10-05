@@ -1,6 +1,6 @@
 import { ETournamentStatus } from '@tennis-stats/types';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useGetTournamentQuery } from '../../core/api';
 import { updateTournamentAtom } from '../../core/store';
@@ -26,7 +26,9 @@ function TournamentPage() {
   const tabsState = useAtomValue(tabsAtom);
   const updateTournamentState = useSetAtom(updateTournamentAtom);
 
-  const isPlayoffStage = data?.status === ETournamentStatus.PLAYOFF;
+  const isPlayoffStage = useMemo(() => {
+    return data?.tours.some((tour) => tour.playOffStage);
+  }, [data]);
 
   useBackButton({
     title: 'К списку Турниров',
@@ -83,7 +85,11 @@ function TournamentPage() {
         </TabContent>
       ))}
 
-      <TabContent index={-1} value={tabsState} sxProps={{ px: 0, py: 2 }}>
+      <TabContent
+        index={-1}
+        value={tabsState}
+        sxProps={{ px: 0, py: 2, height: '80%', overflow: 'auto' }}
+      >
         <PlayoffTab tournament={data} />
       </TabContent>
     </Page>

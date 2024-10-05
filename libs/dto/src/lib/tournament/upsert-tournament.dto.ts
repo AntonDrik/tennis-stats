@@ -1,7 +1,7 @@
 import { Max, Min } from 'class-validator';
 
 class UpsertTournamentDto {
-  @Max(30, { message: 'Максимум 30 игроков' })
+  @Max(32, { message: 'Максимум 32 игроков' })
   @Min(2, { message: 'Минимум 2 игрока' })
   playersCount: number;
 }
