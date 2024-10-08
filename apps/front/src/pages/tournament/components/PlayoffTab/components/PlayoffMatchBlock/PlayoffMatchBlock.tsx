@@ -1,5 +1,5 @@
 import { IMatch } from '@tennis-stats/types';
-import MatchCard from '../../../../../../shared/components/MatchCard/MatchCard';
+import MatchCard from '../../../../../../shared/components/Tournament/MatchCard/MatchCard';
 import Styled from './PlayoffMatchBlock.styles';
 
 interface IProps {

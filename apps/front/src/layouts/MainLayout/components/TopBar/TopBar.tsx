@@ -1,49 +1,66 @@
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu'
-import Stack from '@mui/material/Stack';
-import { useAtomValue, useSetAtom } from 'jotai'
-import { changeSidebarAtom, sidebarAtom } from '../Sidebar/Sidebar.state'
-import ProfileAvatar from './components/Avatar/Avatar'
-import BackButton from './components/BackButton/BackButton'
-import Styled from './TopBar.styles'
-
+import { Flex, IconButton } from '@radix-ui/themes';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useCallback, useEffect } from 'react';
+import { BurgerIcon, CloseIcon } from '../../../../shared/svg-icons';
+import { Logo } from '../../../../shared/svg-icons';
+import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
+import ProfileAvatar from './components/Avatar/Avatar';
+import BackButton from './components/BackButton/BackButton';
+import Styled from './TopBar.styles';
 
 function TopBar() {
-    
-    const sidebar = useAtomValue(sidebarAtom)
-    const toggleSidebar = useSetAtom(changeSidebarAtom)
-    
-    const getIcon = () => {
-        if (sidebar.isOpen) {
-            return <CloseIcon htmlColor={'#374150'}/>
-        }
-        
-        return <MenuIcon htmlColor={'#374150'}/>
+  const mainLayoutState = useAtomValue(mainLayoutAtom);
+  const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
+
+  const getIcon = useCallback(() => {
+    if (mainLayoutState.isOpenedMenu) {
+      return <CloseIcon fill={'var(--sage-12)'} />;
     }
-    
-    const handleClick = () => {
-        if (sidebar.isOpen) {
-            toggleSidebar(false)
-            
-            return
-        }
-        
-        toggleSidebar(true)
+
+    return <BurgerIcon fill={'var(--sage-12)'} />;
+  }, [mainLayoutState.isOpenedMenu]);
+
+  const handleClick = () => {
+    if (mainLayoutState.isOpenedMenu) {
+      updateMainLayoutState({ isOpenedMenu: false });
+
+      return;
     }
-    
-    return (
-        <Styled.Wrapper>
-            <Styled.BurgerButton onClick={handleClick}>
-                {getIcon()}
-            </Styled.BurgerButton>
-            
-            <Stack direction={'row'} spacing={2}>
-                <BackButton/>
-                <ProfileAvatar/>
-            </Stack>
-        </Styled.Wrapper>
-    )
-    
+
+    updateMainLayoutState({ isOpenedMenu: true });
+  };
+
+  const handleScroll = () => {
+    updateMainLayoutState({ isFixedTop: Boolean(window.scrollY) });
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <Styled.Wrapper $isFixed={mainLayoutState.isFixedTop}>
+      <Flex gap={'2'} align={'center'}>
+        {mainLayoutState.isHiddenMenu && (
+          <IconButton variant="soft" size={'3'} onClick={handleClick}>
+            {getIcon()}
+          </IconButton>
+        )}
+
+        {!mainLayoutState.isHiddenMenu && <Logo fill={'var(--blue-12)'} />}
+      </Flex>
+
+      <Flex direction={'row'} gap={'5'}>
+        <BackButton />
+
+        <ProfileAvatar />
+      </Flex>
+    </Styled.Wrapper>
+  );
 }
 
-export default TopBar
+export default TopBar;

@@ -1,7 +1,7 @@
 import { RegistrationDto } from '@tennis-stats/dto';
 import { useSetAtom } from 'jotai';
 import * as React from 'react';
-import RegistrationForm from '../../../../shared/components/Auth/RegistrationForm/RegistrationForm';
+import { RegistrationForm } from '../../../../shared/components/Auth';
 import { toast } from 'react-hot-toast';
 import {
   authPageSelectedTabAtom,
@@ -16,7 +16,7 @@ function Registration() {
     toast.success('Вы успешно зарегистрировались');
 
     setRegistrationForm(form);
-    setSelectedTab(0);
+    setSelectedTab('login');
   };
 
   return (

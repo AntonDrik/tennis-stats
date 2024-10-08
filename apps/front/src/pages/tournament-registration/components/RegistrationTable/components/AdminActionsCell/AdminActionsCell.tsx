@@ -1,38 +1,38 @@
-import { Stack } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Flex, IconButton } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
 import { toast } from 'react-hot-toast';
-import { useUnregisterUserFromTournamentMutation } from '../../../../../../core/api';
+import { useLeaveTournamentMutation } from '../../../../../../core/api';
 import { useConfirmModal } from '../../../../../../shared/components/Modals';
+import { TrashIcon } from '../../../../../../shared/svg-icons';
 
 interface IProps {
   user: IUser;
 }
 
 function AdminActionsCell(props: IProps) {
-  const unregisterFromTournament = useUnregisterUserFromTournamentMutation();
+  const leaveTournament = useLeaveTournamentMutation();
 
   const confirm = useConfirmModal({
-    title: 'Вы действительно хотите удалить пользователя из турнира?',
-    confirmTitle: 'Удалить',
+    title: `${props.user.nickname}`,
+    description: 'Вы действительно хотите убрать пользователя из турнира?',
+    confirmTitle: 'Отменить регистрацию',
     denyTitle: 'Назад',
   });
 
   const handleClick = () => {
     confirm(() => {
-      unregisterFromTournament.mutateAsync({ id: props.user.id }).then(() => {
+      leaveTournament.mutateAsync({ id: props.user.id }).then(() => {
         toast.success('Вы успешно удалили пользователя из турнира');
       });
     });
   };
 
   return (
-    <Stack direction={'row'} gap={6} justifyContent={'center'}>
-      <IconButton onClick={handleClick}>
-        <DeleteForeverIcon color={'error'} />
+    <Flex gap={'4'} justify={'center'}>
+      <IconButton variant={'soft'} color={'red'} size={'2'} onClick={handleClick}>
+        <TrashIcon />
       </IconButton>
-    </Stack>
+    </Flex>
   );
 }
 

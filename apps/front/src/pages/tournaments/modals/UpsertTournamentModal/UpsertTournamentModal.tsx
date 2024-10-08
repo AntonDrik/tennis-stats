@@ -1,14 +1,13 @@
-import { Stack } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import { UpsertTournamentDto } from '@tennis-stats/dto';
-import { useEffect, useState } from 'react';
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useCreateTournamentMutation, useEditTournamentMutation } from '../../../../core/api';
-import { Spinner, useModal } from '../../../../shared/components';
+import { Button, Dialog, Flex, Spinner } from '@radix-ui/themes';
+import { UpsertTournamentDto } from '@tennis-stats/dto';
+import {
+  useCreateTournamentMutation,
+  useEditTournamentMutation,
+} from '../../../../core/api';
+import { TextField, useModal } from '../../../../shared/components';
 
 function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
   const createTournament = useCreateTournamentMutation();
@@ -47,15 +46,13 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
   }, [isUpdateModel]);
 
   return (
-    <>
-      {isLoading && <Spinner />}
+    <Dialog.Content maxWidth="350px">
+      <Dialog.Title>{!isUpdateModel ? 'Создать' : 'Изменить'} турнир</Dialog.Title>
 
-      <DialogTitle>{!isUpdateModel ? 'Создать' : 'Изменить'} турнир</DialogTitle>
-
-      <Stack p={2}>
+      <Flex direction={'column'} gap={'4'}>
         <TextField
-          fullWidth
           type={'number'}
+          size={'3'}
           label={'Количество участников'}
           placeholder={'Количество участников'}
           value={playersCount}
@@ -64,13 +61,13 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
           onChange={(e) => setPlayersCount(Number(e.target.value))}
         />
 
-        <Box mt={2}>
-          <Button fullWidth variant={'contained'} onClick={submit}>
-            {!isUpdateModel ? 'Создать турнир и начать регистрацию' : 'Изменить турнир'}
-          </Button>
-        </Box>
-      </Stack>
-    </>
+        <Button size={'3'} onClick={submit} disabled={isLoading}>
+          <Spinner loading={isLoading} />
+
+          {!isUpdateModel ? 'Создать турнир' : 'Изменить турнир'}
+        </Button>
+      </Flex>
+    </Dialog.Content>
   );
 }
 

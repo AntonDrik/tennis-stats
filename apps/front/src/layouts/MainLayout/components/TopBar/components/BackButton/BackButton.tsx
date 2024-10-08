@@ -1,10 +1,10 @@
+import { Button } from '@radix-ui/themes';
 import { useAtomValue } from 'jotai';
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { ChevronLeftIcon } from '../../../../../../shared/svg-icons';
 
 import { backButtonAtom } from './BackButton.state';
-
 
 function BackButton() {
   const navigate = useNavigate();
@@ -25,17 +25,12 @@ function BackButton() {
   }
 
   return (
-    <Button
-      variant={'outlined'}
-      startIcon={<ArrowBackIosIcon />}
-      sx={{ lineHeight: '25px' }}
-      onClick={handleClick}
-    >
+    <Button variant={'outline'} size={'3'} onClick={handleClick}>
+      <ChevronLeftIcon />
+
       {state.title}
     </Button>
   );
-
 }
 
-
-export default BackButton;
+export default memo(BackButton);

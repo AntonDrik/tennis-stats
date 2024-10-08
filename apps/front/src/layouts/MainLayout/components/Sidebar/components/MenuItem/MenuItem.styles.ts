@@ -1,50 +1,15 @@
-import { Box, Typography } from '@mui/material'
-import styled from 'styled-components'
-import theme from '../../../../../../theme/theme'
+import { Button as RadixButton } from '@radix-ui/themes';
+import styled from 'styled-components';
 
+const Button = styled(RadixButton)({
+  justifyContent: 'flex-start',
+  height: '3rem',
+  cursor: 'pointer',
+  margin: 0,
 
-interface IWrapperProps {
-    $isSelected: boolean
-}
-
-const Wrapper = styled(Box)<IWrapperProps>(
-    {
-        display: 'flex',
-        alignItems: 'center',
-        height: '3rem',
-        marginTop: '0.5rem',
-        paddingLeft: '0.75rem',
-        paddingRight: '0.75rem',
-        borderRadius: '0.25rem',
-        width: '100%',
-        cursor: 'pointer',
-        position: 'relative'
-    },
-    ({ $isSelected }) => ({
-        backgroundColor: $isSelected ? theme.palette.primary.main : 'inherit',
-        
-        '&:hover': {
-            backgroundColor: theme.palette.primary[$isSelected ? 'main' : 'light']
-        }
-    })
-)
-
-const IconWrapper = styled(Box)({
-    display: 'flex',
-    alignItems: 'center',
-    marginRight: 10
-})
-
-const Link = styled(Typography)({
-    marginLeft: 'marginLeft: 0.5rem',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
-    fontWeight: 500,
-    whiteSpace: 'nowrap'
-})
+  padding: '0 0.75rem',
+});
 
 export default {
-    Wrapper,
-    Link,
-    IconWrapper
-}
+  Button,
+};

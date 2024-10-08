@@ -5,10 +5,7 @@ import { User, UserAuth } from '@tennis-stats/entities';
 import { IAuthResponse, ITokenPayload, IUser } from '@tennis-stats/types';
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import {
-  InvalidCredentialsException,
-  UserExistException,
-} from '../common/exceptions';
+import { InvalidCredentialsException, UserExistException } from '../common/exceptions';
 import { UsersAuthRepository, UsersRepository } from '../core/users';
 import {
   refreshCookieOptions,
@@ -27,20 +24,14 @@ class AuthService {
     private jwtService: JwtService
   ) {}
 
-  public async login(
-    dto: LoginDto,
-    response: Response
-  ): Promise<IAuthResponse> {
+  public async login(dto: LoginDto, response: Response): Promise<IAuthResponse> {
     const user = await this.usersRepository.findByLogin(dto.login);
 
     if (!user || !user.auth) {
       throw new InvalidCredentialsException();
     }
 
-    const isValidPassword = await bcrypt.compare(
-      dto.password,
-      user.auth.password
-    );
+    const isValidPassword = await bcrypt.compare(dto.password, user.auth.password);
 
     if (!isValidPassword) {
       throw new InvalidCredentialsException();
@@ -63,7 +54,6 @@ class AuthService {
     const user = new User();
     user.nickname = dto.nickname;
     user.rating = dto.rating;
-    user.color = dto.color;
     user.auth = auth;
 
     await user.save();
@@ -71,9 +61,7 @@ class AuthService {
 
   public async logout(request: Request, response: Response): Promise<boolean> {
     const accessToken = request.cookies[ACCESS_COOKIE_NAME];
-    const payload = (await this.jwtService.decode(
-      accessToken
-    )) as ITokenPayload;
+    const payload = (await this.jwtService.decode(accessToken)) as ITokenPayload;
 
     await this.userAuthRepository.updateRefreshToken(payload?.userId, null);
 
@@ -89,10 +77,7 @@ class AuthService {
     return true;
   }
 
-  public async setJwtCookie(
-    user: IUser,
-    response: Response
-  ): Promise<IAuthResponse> {
+  public async setJwtCookie(user: IUser, response: Response): Promise<IAuthResponse> {
     const tokenPayload: ITokenPayload = { userId: user.id };
     const access_token = this.jwtService.sign(tokenPayload, {
       expiresIn: ACCESS_COOKIE_LIFE_TIME,

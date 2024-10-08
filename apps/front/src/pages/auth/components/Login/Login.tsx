@@ -1,13 +1,13 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+import { Button, Flex } from '@radix-ui/themes';
+import { Spinner } from '@radix-ui/themes';
 import { useAtomValue } from 'jotai';
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useLoginMutation from '../../../../core/api/authApi/useLoginMutation';
+import useLoginMutation from '../../../../core/api/auth/useLoginMutation';
 import { updateMeStore } from '../../../../core/store';
 import { appRoutes } from '../../../../routes/routes.constant';
+import { TextField } from '../../../../shared/components';
 import { registrationFormAtom } from '../../state/AuthPage.state';
 
 function Login() {
@@ -39,26 +39,29 @@ function Login() {
   }, [registrationForm]);
 
   return (
-    <Stack gap={2}>
+    <Flex direction={'column'} gap={'4'}>
       <TextField
-        placeholder={'Введите логин'}
+        size={'3'}
+        label={'Логин'}
+        placeholder="Введите логин"
         value={login}
         onChange={(e) => setLogin(e.target.value as string)}
       />
 
       <TextField
-        placeholder={'Введите пароль'}
+        size={'3'}
+        label={'Пароль'}
+        placeholder="Введите пароль"
         value={password}
         type={'password'}
         onChange={(e) => setPassword(e.target.value as string)}
       />
 
-      <Box mt={2}>
-        <Button fullWidth variant={'contained'} onClick={handleClick}>
-          Войти
-        </Button>
-      </Box>
-    </Stack>
+      <Button mt={'3'} size={'3'} disabled={auth.isLoading} onClick={handleClick}>
+        <Spinner loading={auth.isLoading} />
+        Войти
+      </Button>
+    </Flex>
   );
 }
 

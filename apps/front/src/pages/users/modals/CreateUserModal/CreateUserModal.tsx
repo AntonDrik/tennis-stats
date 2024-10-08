@@ -1,5 +1,4 @@
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Dialog } from '@radix-ui/themes';
 import * as React from 'react';
 import { useModal } from '../../../../shared/components';
 import RegistrationForm from '../../../../shared/components/Auth/RegistrationForm/RegistrationForm';
@@ -10,18 +9,16 @@ function CreateUserModal() {
   const handleSuccessCreate = () => modal.close();
 
   return (
-    <>
-      <DialogTitle align={'center'}>Создание пользователя</DialogTitle>
+    <Dialog.Content>
+      <Dialog.Title>Создание пользователя</Dialog.Title>
 
-      <DialogContent>
-        <RegistrationForm
-          reloadUsers
-          buttonText={'Создать пользователя'}
-          skipRatingInput={false}
-          onSuccess={handleSuccessCreate}
-        />
-      </DialogContent>
-    </>
+      <RegistrationForm
+        reloadUsers
+        buttonText={'Создать пользователя'}
+        skipRatingInput={false}
+        onSuccess={handleSuccessCreate}
+      />
+    </Dialog.Content>
   );
 }
 

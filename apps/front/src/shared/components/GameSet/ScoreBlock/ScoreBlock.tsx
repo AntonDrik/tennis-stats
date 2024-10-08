@@ -1,13 +1,12 @@
-import Stack from '@mui/material/Stack';
+import { Box, Flex, Separator } from '@radix-ui/themes';
 import { TScore } from '@tennis-stats/types';
 import { useAtom } from 'jotai';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useGetGameSetQuery } from '../../../../core/api';
 import { ITournamentState } from '../../../../core/store';
-import { VerticalNumberInput } from '../../index';
-import MiddleControls from './components/MiddleControls/MiddleControls';
 import PlayerLabel from './components/PlayerLabel/PlayerLabel';
+import ScoreSelector from './components/ScoreSelector/ScoreSelector';
 import Styled from './ScoreBlock.styles';
 import { scoreAtom } from './state/Score.state';
 
@@ -30,9 +29,7 @@ function ScoreBlock(props: IProps) {
     }
 
     const newScore =
-      type === 'player1'
-        ? [value as TScore, score[1]]
-        : [score[0], value as TScore];
+      type === 'player1' ? [value as TScore, score[1]] : [score[0], value as TScore];
 
     setScore(newScore as [TScore, TScore]);
     props.onChange?.(newScore as [TScore, TScore]);
@@ -52,35 +49,33 @@ function ScoreBlock(props: IProps) {
   }, [score]);
 
   return (
-    <Stack direction={'row'} justifyContent={'space-evenly'}>
-      <Styled.SectionWrapper gap={2}>
+    <Flex>
+      <Styled.SectionWrapper gap={'2'} pr={'4'}>
         <PlayerLabel player={gameSet?.player1} number={1} />
 
-        <VerticalNumberInput
+        <ScoreSelector
           value={value1}
-          min={0}
-          max={20}
           onChange={(value) => {
-            handleChangeInput('player1', value as number);
+            handleChangeInput('player1', value);
           }}
         />
       </Styled.SectionWrapper>
 
-      <MiddleControls />
+      <Box>
+        <Separator orientation="vertical" size={'4'} style={{ width: 2 }} />
+      </Box>
 
-      <Styled.SectionWrapper gap={2}>
+      <Styled.SectionWrapper gap={'2'} pl={'4'}>
         <PlayerLabel player={gameSet?.player2} number={2} />
 
-        <VerticalNumberInput
+        <ScoreSelector
           value={value2}
-          min={0}
-          max={20}
           onChange={(value) => {
-            handleChangeInput('player2', value as number);
+            handleChangeInput('player2', value);
           }}
         />
       </Styled.SectionWrapper>
-    </Stack>
+    </Flex>
   );
 }
 

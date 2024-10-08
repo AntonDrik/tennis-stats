@@ -1,3 +1,4 @@
+import { ScrollArea } from '@radix-ui/themes';
 import { ETourType, ITour, ITournament } from '@tennis-stats/types';
 import { useMemo } from 'react';
 import PlayoffMatchBlock from './components/PlayoffMatchBlock/PlayoffMatchBlock';
@@ -15,24 +16,26 @@ function PlayoffTab(props: IProps) {
   }, [props.tournament.tours]);
 
   return (
-    <Styled.Container>
-      {playoffTours.map((tour, index) => (
-        <Styled.Column
-          key={`playoff-tour-${tour.id}`}
-          $isLast={index === playoffTours.length - 1}
-        >
-          {tour.matches.map((match) => (
-            <PlayoffMatchBlock
-              key={`playoff-match-${match.id}`}
-              match={match}
-              roundNumber={index + 1}
-              isFirst={!index}
-              isLast={index === playoffTours.length - 1}
-            />
-          ))}
-        </Styled.Column>
-      ))}
-    </Styled.Container>
+    <ScrollArea scrollbars="horizontal" style={{ maxWidth: '100%' }}>
+      <Styled.Container>
+        {playoffTours.map((tour, index) => (
+          <Styled.Column
+            key={`playoff-tour-${tour.id}`}
+            $isLast={index === playoffTours.length - 1}
+          >
+            {tour.matches.map((match) => (
+              <PlayoffMatchBlock
+                key={`playoff-match-${match.id}`}
+                match={match}
+                roundNumber={index + 1}
+                isFirst={!index}
+                isLast={index === playoffTours.length - 1}
+              />
+            ))}
+          </Styled.Column>
+        ))}
+      </Styled.Container>
+    </ScrollArea>
   );
 }
 

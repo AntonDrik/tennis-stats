@@ -1,4 +1,4 @@
-import { Chip } from '@mui/material';
+import { Badge } from '@radix-ui/themes';
 import { ETournamentStatus, ITournament } from '@tennis-stats/types';
 import { useCallback } from 'react';
 
@@ -9,22 +9,18 @@ interface IProps {
 function TournamentStatusChip({ tournament }: IProps) {
   const getStatusChip = useCallback(() => {
     if (tournament.status === ETournamentStatus.REGISTRATION) {
-      return <Chip label={'Регистрация'} color={'warning'} size={'small'} />;
+      return <Badge color="orange">Регистрация</Badge>;
     }
 
     if (tournament.status === ETournamentStatus.PLAYOFF) {
-      return <Chip label={'Плейофф'} color={'primary'} size={'small'} />;
+      return <Badge color="purple">Плейофф</Badge>;
     }
 
     if (tournament.status === ETournamentStatus.ACTIVE) {
-      return <Chip label={'Активный'} color={'info'} size={'small'} />;
+      return <Badge color="blue">Активный</Badge>;
     }
 
-    if (tournament.status === ETournamentStatus.CANCELLED) {
-      return <Chip label={'Отменён'} color={'error'} size={'small'} />;
-    }
-
-    return <Chip label={'Завершен'} color={'success'} size={'small'} />;
+    return <Badge color="green">Завершен</Badge>;
   }, [tournament.status]);
 
   return getStatusChip();

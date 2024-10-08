@@ -1,10 +1,7 @@
 import { EPermission, IUser, IUserAuth } from '@tennis-stats/types';
 
 export interface ISeedUser
-  extends Omit<
-    IUser,
-    'id' | 'fullName' | 'shortFullName' | 'auth' | 'permissions'
-  > {
+  extends Omit<IUser, 'id' | 'fullName' | 'shortFullName' | 'auth' | 'permissions'> {
   auth: IUserAuth;
   permissions: EPermission[];
 }
@@ -12,7 +9,6 @@ export interface ISeedUser
 export const users: ISeedUser[] = [
   {
     nickname: 'Халява',
-    color: '#000',
     rating: 100,
     auth: {
       login: 'system_halyava',

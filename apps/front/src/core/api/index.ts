@@ -1,10 +1,11 @@
 export { default as queryClient } from './client/query-client';
 
-export * from './authApi';
-export * from './userApi';
-export * from './tourApi';
-export * from './gameSetApi';
-export * from './matchApi';
-export * from './statisticApi';
-export * from './profileApi';
-export * from './tournamentApi';
+export * from './auth';
+export * from './user';
+export * from './tour';
+export * from './gameSet';
+export * from './match';
+export * from './statistic';
+export * from './profile';
+export * from './tournament';
+export * from './tournament-registration';

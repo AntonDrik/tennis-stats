@@ -1,7 +1,9 @@
 import { RegistrationDto } from '@tennis-stats/dto';
 import { atom } from 'jotai';
 
-const authPageSelectedTabAtom = atom(0);
+export type TAuthTab = 'login' | 'registration';
+
+const authPageSelectedTabAtom = atom<TAuthTab>('login');
 
 const registrationFormAtom = atom<RegistrationDto | null>(null);
 

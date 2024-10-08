@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import loadable from '@loadable/component';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -6,19 +7,18 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom';
-import {
-  StatsPage,
-  UsersPage,
-  AuthPage,
-  ProfilePage,
-  GameProcessPage,
-  TournamentsPage,
-  TournamentRegistrationPage,
-} from '../pages';
-import TournamentPage from '../pages/tournament/TournamentPage';
+
 import AuthRoute from './AuthRoute';
 import MainRoute from './MainRoute';
 import { appRoutes } from './routes.constant';
+
+const AuthPage = loadable(() => import('../pages/auth/AuthPage'));
+const UsersPage = loadable(() => import('../pages/users/UsersPage'));
+const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsPage'));
+const TournamentPage = loadable(() => import('../pages/tournament/TournamentPage'));
+const TournamentRegistrationPage = loadable(
+  () => import('../pages/tournament-registration/TournamentRegistrationPage')
+);
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -33,8 +33,6 @@ const routes = createBrowserRouter(
       <Route element={<MainRoute />}>
         <Route path={appRoutes.USERS} element={<UsersPage />} />
 
-        <Route path={appRoutes.STATS} element={<StatsPage />} />
-
         <Route path={appRoutes.TOURNAMENTS} element={<TournamentsPage />} />
 
         <Route
@@ -42,14 +40,10 @@ const routes = createBrowserRouter(
           element={<TournamentRegistrationPage />}
         />
 
-        <Route
-          path={appRoutes.TOURNAMENT_BY_ID()}
-          element={<TournamentPage />}
-        />
+        <Route path={appRoutes.TOURNAMENT_BY_ID()} element={<TournamentPage />} />
 
-        <Route path={appRoutes.GAME_PROCESS} element={<GameProcessPage />} />
-
-        <Route path={appRoutes.PROFILE()} element={<ProfilePage />} />
+        {/*<Route path={appRoutes.STATS} element={<StatsPage />} />*/}
+        {/*<Route path={appRoutes.PROFILE()} element={<ProfilePage />} />*/}
       </Route>
     </Route>
   )

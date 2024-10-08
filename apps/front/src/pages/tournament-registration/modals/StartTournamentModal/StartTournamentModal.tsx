@@ -1,32 +1,29 @@
-import Divider from '@mui/material/Divider';
+import {
+  Button,
+  Dialog,
+  Flex,
+  Select as RadixSelect,
+  IconButton,
+  Separator,
+  Switch,
+  Text,
+  Spinner,
+} from '@radix-ui/themes';
 import React from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import {
-  DialogActions,
-  DialogContent,
-  FormControlLabel,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
-import AddIcon from '@mui/icons-material/Add';
 import { StartTournamentDto } from '@tennis-stats/dto';
 import { ETourGenerator, IUser } from '@tennis-stats/types';
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useStartTournamentMutation } from '../../../../core/api';
-import { AndroidSwitch, useModal } from '../../../../shared/components';
+import { Select, TextField, useModal } from '../../../../shared/components';
 import { GroupBox } from '../../../../shared/components/GroupBox/GroupBox';
+import { PlusIcon, TrashIcon } from '../../../../shared/svg-icons';
 
 import Styled from './StartTournamentModal.styles';
 
 interface IProps {
-  registeredUsers: IUser[];
+  joinedUsers: IUser[];
   onSuccess?: (tournamentId: number) => void;
 }
 
@@ -38,7 +35,7 @@ function StartTournamentModal(props: IProps) {
   const form = useForm<StartTournamentDto>({
     mode: 'onChange',
     defaultValues: {
-      registeredUsersIds: props.registeredUsers.map((user) => user.id),
+      registeredUsersIds: props.joinedUsers.map((user) => user.id),
       handleRating: true,
       tours: [],
     },
@@ -68,39 +65,42 @@ function StartTournamentModal(props: IProps) {
   };
 
   return (
-    <>
-      <DialogTitle variant={'h3'} textAlign={'center'}>
-        Настройте турнир
-      </DialogTitle>
+    <Dialog.Content maxWidth={'570px'}>
+      <Dialog.Title mb={'6'}>Настройте турнир</Dialog.Title>
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(submit)}>
-          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <GroupBox caption={'Глобальные настройки'} bgcolor={'white'}>
+          <Flex direction={'column'} gap={'5'}>
+            <GroupBox caption={'Глобальные настройки'} bgcolor={'var(--accent-1)'}>
               <Controller
                 name="handleRating"
                 control={form.control}
-                render={({ field: { onChange, value } }) => (
-                  <FormControlLabel
-                    label="Считать рейтинг"
-                    control={<AndroidSwitch checked={value} onChange={onChange} />}
-                  />
+                render={({ field: { onChange } }) => (
+                  <Text as="label" size="2">
+                    <Flex gap="2">
+                      <Switch size="2" defaultChecked onChange={onChange} />
+                      Считать рейтинг
+                    </Flex>
+                  </Text>
                 )}
               />
             </GroupBox>
 
-            <GroupBox caption={'Настройки туров'} bgcolor={'white'} pt={3}>
-              <Stack gap={2}>
+            <GroupBox caption={'Настройки туров'} bgcolor={'var(--accent-1)'}>
+              <Flex direction={'column'} gap={'2'}>
                 {toursControl.fields.map((field, index) => (
                   <React.Fragment key={`tour-${index}`}>
-                    <Styled.TourRow key={field.id} mb={isLastRow(index) ? 2 : 0}>
-                      <Typography textAlign={'start'} minWidth={65}>
+                    <Styled.TourRow
+                      key={field.id}
+                      mb={isLastRow(index) ? '2' : '0'}
+                      gap={'4'}
+                    >
+                      <Text align={'left'} mb={'2'} wrap={'nowrap'}>
                         Тур № {index + 1}
-                      </Typography>
+                      </Text>
 
                       <TextField
-                        fullWidth
-                        size={'small'}
+                        size={'3'}
                         type={'number'}
                         label={'Кол-во сетов'}
                         {...form.register(`tours.${index}.setsCount`, {
@@ -112,47 +112,60 @@ function StartTournamentModal(props: IProps) {
                         name={`tours.${index}.pairsGenerator`}
                         control={form.control}
                         render={({ field }) => (
-                          <TextField
-                            fullWidth
-                            size={'small'}
-                            select
+                          <Select
                             label={'Генерация матчей'}
-                            {...field}
+                            size={'3'}
+                            value={field.value}
+                            onValueChange={field.onChange}
                           >
-                            <MenuItem value={0}>Рандом</MenuItem>
-                          </TextField>
+                            <RadixSelect.Trigger />
+
+                            <RadixSelect.Content>
+                              <RadixSelect.Item value={ETourGenerator.RANDOM}>
+                                Рандом
+                              </RadixSelect.Item>
+                            </RadixSelect.Content>
+                          </Select>
                         )}
                       />
 
-                      <IconButton onClick={() => toursControl.remove(index)}>
-                        <DeleteForeverIcon color={'error'} />
+                      <IconButton
+                        color={'red'}
+                        variant={'soft'}
+                        size={'3'}
+                        mt={'5'}
+                        ml={'4'}
+                        onClick={() => toursControl.remove(index)}
+                      >
+                        <TrashIcon />
                       </IconButton>
                     </Styled.TourRow>
 
-                    {index !== toursControl.fields.length - 1 && <Divider />}
+                    {index !== toursControl.fields.length - 1 && (
+                      <Separator size={'4'} my={'2'} />
+                    )}
                   </React.Fragment>
                 ))}
-              </Stack>
+              </Flex>
 
-              <Button
-                variant={'contained'}
-                color={'success'}
-                sx={{ minWidth: 40, width: 40 }}
-                onClick={addTour}
-              >
-                <AddIcon />
-              </Button>
+              <IconButton variant={'soft'} type={'button'} onClick={addTour}>
+                <PlusIcon />
+              </IconButton>
             </GroupBox>
-          </DialogContent>
 
-          <DialogActions>
-            <Button variant={'contained'} type={'submit'}>
+            <Button
+              variant={'solid'}
+              type={'submit'}
+              style={{ width: 200, alignSelf: 'flex-end' }}
+              disabled={!form.formState.isValid || startTournament.isLoading}
+            >
+              {startTournament.isLoading && <Spinner />}
               Создать турнир
             </Button>
-          </DialogActions>
+          </Flex>
         </form>
       </FormProvider>
-    </>
+    </Dialog.Content>
   );
 }
 

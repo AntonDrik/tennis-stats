@@ -1,12 +1,8 @@
-import { atom } from 'jotai'
-import { IModalState } from './Modal.types'
-
+import { atom } from 'jotai';
+import { IModalState } from './Modal.types';
 
 const modalAtom = atom<IModalState>({
-    component: null,
-    props: null
-})
+  component: null,
+});
 
-export {
-    modalAtom
-}
+export { modalAtom };

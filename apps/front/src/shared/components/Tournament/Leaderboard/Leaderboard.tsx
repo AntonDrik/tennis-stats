@@ -1,20 +1,10 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { IconButton, Table, Text } from '@radix-ui/themes';
 import { ILeaderboardItem, IUser } from '@tennis-stats/types';
+import { TrashIcon } from '../../../svg-icons';
 
 interface IProps {
   leaderboardItems: ILeaderboardItem[] | undefined;
-  tableHeight?: number | string;
+  size?: '1' | '2' | '3';
   onlyTotal?: boolean;
   hideUsersIds?: number[];
   onRemove?: (user: IUser) => void;
@@ -22,80 +12,93 @@ interface IProps {
 
 function Leaderboard(props: IProps) {
   if (!props.leaderboardItems) {
-    return <Typography>Нет данных</Typography>;
+    return <Text>Нет данных</Text>;
   }
 
   return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ height: props.tableHeight }}
-    >
-      <Table stickyHeader size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell width={30} sx={{ px: 1 }} align="center">
-              №
-            </TableCell>
+    <Table.Root variant={'surface'} size={props.size ?? '1'}>
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeaderCell align={'center'}>#</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Игрок</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell align={'center'}>Очки</Table.ColumnHeaderCell>
 
-            <TableCell align="left" sx={{ px: 1 }}>
-              Игрок
-            </TableCell>
+          {!props.onlyTotal && (
+            <Table.ColumnHeaderCell align="center">Г</Table.ColumnHeaderCell>
+          )}
 
-            <TableCell align="center">Очки</TableCell>
+          {!props.onlyTotal && (
+            <Table.ColumnHeaderCell align="center">Побед</Table.ColumnHeaderCell>
+          )}
 
-            {!props.onlyTotal && <TableCell align="center">Г</TableCell>}
+          {props.onRemove && <Table.ColumnHeaderCell>Действия</Table.ColumnHeaderCell>}
+        </Table.Row>
+      </Table.Header>
 
-            {!props.onlyTotal && <TableCell align="center">Побед</TableCell>}
-
-            {props.onRemove && <TableCell />}
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {props.leaderboardItems
-            .filter((item) => !props.hideUsersIds?.includes(item.user.id))
-            .map((item, index) => (
-              <TableRow key={`leaderboard-item-${index}`}>
-                <TableCell align="center" padding={'none'} sx={{ px: 1 }}>
+      <Table.Body>
+        {props.leaderboardItems
+          .filter((item) => !props.hideUsersIds?.includes(item.user.id))
+          .map((item, index) => {
+            return (
+              <Table.Row key={`leaderboard-item-${index}`}>
+                <Table.RowHeaderCell
+                  align={'center'}
+                  style={{ verticalAlign: 'middle' }}
+                  width={'40px'}
+                >
                   {index + 1}
-                </TableCell>
+                </Table.RowHeaderCell>
 
-                <TableCell align="left" sx={{ px: 1 }}>
-                  {item.user.nickname} | {item.user.id}
-                </TableCell>
+                <Table.Cell style={{ verticalAlign: 'middle' }}>
+                  {item.user.nickname}
+                </Table.Cell>
 
-                <TableCell align="center" width={20} sx={{ px: 1 }}>
+                <Table.Cell
+                  style={{ verticalAlign: 'middle' }}
+                  align={'center'}
+                  width={'50px'}
+                >
                   {item.total}
-                </TableCell>
+                </Table.Cell>
 
                 {!props.onlyTotal && (
-                  <TableCell align="center" sx={{ px: 1 }}>
+                  <Table.Cell
+                    style={{ verticalAlign: 'middle' }}
+                    align={'center'}
+                    width={'40px'}
+                  >
                     {item.scoreDiff}
-                  </TableCell>
+                  </Table.Cell>
                 )}
 
                 {!props.onlyTotal && (
-                  <TableCell align="center" sx={{ px: 1 }}>
+                  <Table.Cell
+                    style={{ verticalAlign: 'middle' }}
+                    align={'center'}
+                    width={'60px'}
+                  >
                     {item.wins}
-                  </TableCell>
+                  </Table.Cell>
                 )}
 
                 {props.onRemove && (
-                  <TableCell align="right" width={20} sx={{ pl: 0 }}>
+                  <Table.Cell align="center" width={'20px'}>
                     <IconButton
-                      size={'small'}
+                      type={'button'}
+                      size={'1'}
+                      variant={'surface'}
+                      color={'red'}
                       onClick={() => props.onRemove?.(item.user)}
                     >
-                      <DeleteForeverIcon color={'error'} fontSize={'small'} />
+                      <TrashIcon />
                     </IconButton>
-                  </TableCell>
+                  </Table.Cell>
                 )}
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              </Table.Row>
+            );
+          })}
+      </Table.Body>
+    </Table.Root>
   );
 }
 

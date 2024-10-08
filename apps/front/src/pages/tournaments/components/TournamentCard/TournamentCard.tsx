@@ -1,11 +1,9 @@
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import { Typography } from '@mui/material';
+import { Box, Flex, Separator, Text } from '@radix-ui/themes';
 import { parseISOWithFormat } from '@tennis-stats/helpers';
 import { ETournamentStatus } from '@tennis-stats/types';
-import { MouseEvent } from 'react';
 import { useUserPermissions } from '../../../../shared/hooks';
-import useUpsertTournamentModal from '../../hooks/useUpsertTournamentModal';
+import PlusIcon from '../../../../shared/svg-icons/plus-icon';
+import TournamentDropdownMenu from './components/DropdownMenu/DropdownMenu';
 import TournamentStatusChip from './components/StatusChip/StatusChip';
 
 import Styled from './TournamentCard.styles';
@@ -13,46 +11,38 @@ import { TProps } from './types/TournamentCard.types';
 
 function TournamentCard(props: TProps) {
   const permissions = useUserPermissions();
-  const tournamentModal = useUpsertTournamentModal(
-    props.type === 'data'
-      ? { playersCount: props.tournament.playersCount }
-      : undefined
-  );
-
-  const handleCardClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    tournamentModal.open();
-  };
 
   if (props.type === 'add-new') {
     return (
       <Styled.Card onClick={() => props.onClick?.()}>
-        <AddIcon style={{ fontSize: 40 }} />
+        <Flex align={'center'} justify={'center'} height={'100%'}>
+          <PlusIcon size={3} />
+        </Flex>
       </Styled.Card>
     );
   }
 
-  const showEditButton =
+  const showMenu =
     props.tournament.status === ETournamentStatus.REGISTRATION &&
     permissions.canCrudTournament;
 
   return (
     <Styled.Card onClick={() => props.onClick?.()}>
-      <Styled.CardContent>
-        <Styled.CardHeader>
-          <Typography fontWeight={600}>
+      <Flex align={'center'} justify={'between'}>
+        <Flex align={'center'} gap={'2'}>
+          <Text size="3" weight="bold">
             {parseISOWithFormat(props.tournament.date, 'dd.MM.yyyy')}
-          </Typography>
+          </Text>
 
           <TournamentStatusChip tournament={props.tournament} />
+        </Flex>
 
-          {showEditButton && (
-            <Styled.EditButton onClick={handleCardClick}>
-              <EditIcon />
-            </Styled.EditButton>
-          )}
-        </Styled.CardHeader>
-      </Styled.CardContent>
+        {showMenu && <TournamentDropdownMenu tournament={props.tournament} />}
+      </Flex>
+
+      <Separator my="2" size="4" />
+
+      <Box></Box>
     </Styled.Card>
   );
 }

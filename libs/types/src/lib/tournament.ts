@@ -6,7 +6,6 @@ enum ETournamentStatus {
   ACTIVE = 'ACTIVE',
   PLAYOFF = 'PLAYOFF',
   FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED',
 }
 
 interface ITournament {
@@ -16,6 +15,7 @@ interface ITournament {
   playersCount: number;
   tours: ITour[];
   registeredUsers: IUser[];
+  handleRating: boolean;
 }
 
 export { ITournament, ETournamentStatus };

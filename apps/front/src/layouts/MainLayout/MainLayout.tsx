@@ -1,24 +1,50 @@
-import { Box, Container } from '@mui/material';
-import { ReactElement } from 'react';
+import { Box, Container, Flex } from '@radix-ui/themes';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { ReactElement, useEffect } from 'react';
+import useMediaQuery from '../../shared/hooks/useMediaQuery';
 
 import Sidebar from './components/Sidebar/Sidebar';
 import TopBar from './components/TopBar/TopBar';
-import Styled from './MainLayout.styles';
+import { mainLayoutAtom, updateMainLayoutAtom } from './MainLayout.state';
 
 interface IProps {
   children: ReactElement;
 }
 
-function MainLayout({ children }: IProps) {
+function MainLayout(props: IProps) {
+  const mainLayoutState = useAtomValue(mainLayoutAtom);
+  const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
+
+  const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
+
+  useEffect(() => {
+    updateMainLayoutState({
+      isHiddenMenu: isSmallDevice,
+      isOpenedMenu: false,
+    });
+  }, [isSmallDevice]);
+
   return (
-    <Box display={'flex'}>
+    <Box>
+      {/*<Styled.Gradient />*/}
+
       <TopBar />
 
-      <Sidebar />
+      <Flex>
+        <Sidebar />
 
-      <Container maxWidth={'lg'} sx={{ px: '0px!important' }}>
-        <Styled.Content>{children}</Styled.Content>
-      </Container>
+        <Container
+          size={'4'}
+          style={{
+            flexShrink: 'unset',
+            width: 'calc(100% - 250px)',
+            marginLeft: !isSmallDevice ? 250 : 0,
+            marginTop: mainLayoutState.isFixedTop ? 55 : 0,
+          }}
+        >
+          {props.children}
+        </Container>
+      </Flex>
     </Box>
   );
 }

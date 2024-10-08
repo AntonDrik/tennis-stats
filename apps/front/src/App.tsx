@@ -1,26 +1,26 @@
 import 'reflect-metadata';
-import { Provider } from 'jotai';
+import { useAtomValue } from 'jotai';
 import React, { ReactElement } from 'react';
 import { QueryClientProvider } from 'react-query';
+import '@radix-ui/themes/styles.css';
+import './reset.css';
+import { Theme } from '@radix-ui/themes';
 
 import { queryClient } from './core/api';
-import { meStore } from './core/store';
+import { appearanceAtom } from './core/store/appearance.store';
 import { AppRoutes } from './routes/routes';
 import { ModalContainer, Toaster } from './shared/components';
-import GlobalStyles from './theme/globalStyles';
-import ThemeConfig from './theme/themeConfig';
 
 export default function App(): ReactElement {
+  const appearance = useAtomValue(appearanceAtom);
+
   return (
-    <ThemeConfig>
-      <Provider store={meStore}>
-        <QueryClientProvider client={queryClient}>
-          <GlobalStyles />
-          <AppRoutes />
-          <ModalContainer />
-          <Toaster />
-        </QueryClientProvider>
-      </Provider>
-    </ThemeConfig>
+    <Theme radius={'large'} appearance={appearance}>
+      <QueryClientProvider client={queryClient}>
+        <AppRoutes />
+        <ModalContainer />
+        <Toaster />
+      </QueryClientProvider>
+    </Theme>
   );
 }

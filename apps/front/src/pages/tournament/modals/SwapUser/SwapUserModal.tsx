@@ -1,10 +1,6 @@
-import { DialogActions, DialogContent, Stack } from '@mui/material';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent, useState } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useState } from 'react';
+import { Button, Dialog, Flex, SegmentedControl, Text } from '@radix-ui/themes';
 import * as React from 'react';
 import { toast } from 'react-hot-toast';
 import { useSwapUserOnMatchMutation } from '../../../../core/api';
@@ -21,12 +17,14 @@ function SwapUserModal() {
   const swapUserMutation = useSwapUserOnMatchMutation(tournamentState);
 
   const [newUserId, setNewUserId] = useState<number>();
-  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [currentUserId, setCurrentUserId] = useState<number | null>(
+    selectedMatch?.user1.id ?? null
+  );
 
   const modal = useModal();
 
-  const handleSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    setCurrentUserId(Number(event.target.value));
+  const handleSelect = (value: string) => {
+    setCurrentUserId(Number(value));
   };
 
   const submit = () => {
@@ -47,39 +45,40 @@ function SwapUserModal() {
   };
 
   return (
-    <>
-      <DialogTitle textAlign={'center'}>Заменить игрока</DialogTitle>
+    <Dialog.Content>
+      <Dialog.Title>Заменить игрока</Dialog.Title>
 
-      <DialogContent>
-        <Stack mt={1} gap={3}>
-          <TextField
-            select
-            size={'small'}
-            label={'Выберите пользователя которого хотите заменить'}
-            onChange={handleSelect}
+      <Flex direction={'column'} mt={'1'} gap={'4'}>
+        <Flex direction={'column'} gap={'1'} width={'100%'}>
+          <Text size="2" weight={'medium'}>
+            Выберите пользователя которого хотите заменить
+          </Text>
+
+          <SegmentedControl.Root
+            size={'3'}
+            defaultValue={String(selectedMatch?.user1.id)}
+            onValueChange={handleSelect}
           >
-            <MenuItem value={selectedMatch?.user1.id}>
+            <SegmentedControl.Item value={String(selectedMatch?.user1.id) ?? ''}>
               {selectedMatch?.user1.nickname}
-            </MenuItem>
+            </SegmentedControl.Item>
 
-            <MenuItem value={selectedMatch?.user2.id}>
+            <SegmentedControl.Item value={String(selectedMatch?.user2.id) ?? ''}>
               {selectedMatch?.user2.nickname}
-            </MenuItem>
-          </TextField>
+            </SegmentedControl.Item>
+          </SegmentedControl.Root>
+        </Flex>
 
-          <UsersSelect
-            skipUsers={[selectedMatch?.user1, selectedMatch?.user2]}
-            onChange={(user) => setNewUserId(user.id)}
-          />
-        </Stack>
-      </DialogContent>
+        <UsersSelect
+          skipUsers={[selectedMatch?.user1, selectedMatch?.user2]}
+          onChange={(user) => setNewUserId(user.id)}
+        />
 
-      <DialogActions>
-        <Button variant={'contained'} onClick={submit}>
-          Заменить
-        </Button>
-      </DialogActions>
-    </>
+        <Flex justify={'end'}>
+          <Button onClick={submit}>Заменить</Button>
+        </Flex>
+      </Flex>
+    </Dialog.Content>
   );
 }
 

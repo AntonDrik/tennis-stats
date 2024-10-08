@@ -1,21 +1,18 @@
-import { ReactElement } from 'react'
-import Styled from './AuthLayout.styles'
-
+import { ReactElement } from 'react';
+import Styled from './AuthLayout.styles';
 
 interface IProps {
-    children: ReactElement
+  children: ReactElement;
 }
 
 function AuthLayout({ children }: IProps) {
-    
-    return (
-        
-        <Styled.Wrapper>
-            {children}
-        </Styled.Wrapper>
-    
-    )
-    
+  return (
+    <Styled.Wrapper>
+      <Styled.Gradient />
+
+      {children}
+    </Styled.Wrapper>
+  );
 }
 
-export default AuthLayout
+export default AuthLayout;

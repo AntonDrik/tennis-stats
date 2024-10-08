@@ -1,37 +1,34 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import {
-  DialogActions,
-  DialogContent,
-  Stack,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@mui/material';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
+  Box,
+  Button,
+  Dialog,
+  Flex,
+  ScrollArea,
+  SegmentedControl,
+  Spinner,
+  Text,
+} from '@radix-ui/themes';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { IUser } from '@tennis-stats/types';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useCreatePlayoffMutation, useGetLeaderboardQuery } from '../../../../core/api';
-import { useModal } from '../../../../shared/components';
+import { TextField, useModal } from '../../../../shared/components';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 import { getTextFieldError } from '../../../../utils';
-import Styled from './CreatePlayoff.styles';
 import usePlayoffActiveUsers from './hooks/usePlayoffActiveUsers';
-import usePlayoffRoundValidator from './hooks/usePlayoffRoundValidator';
 
 interface IProps {
   tournamentId: number;
 }
 
 function CreatePlayoff(props: IProps) {
-  const leaderboard = useGetLeaderboardQuery(props.tournamentId);
   const createPlayoffMutation = useCreatePlayoffMutation();
+  const leaderboard = useGetLeaderboardQuery(props.tournamentId);
 
   const [removedUsersIds, setRemovedUsersIds] = useState<number[]>([]);
-  const [isOpenLeaderboard, setIsOpenLeaderboard] = useState<boolean>(false);
 
   const form = useForm<CreatePlayoffDto>({
     mode: 'all',
@@ -44,15 +41,12 @@ function CreatePlayoff(props: IProps) {
 
   const modal = useModal();
   const activeUsers = usePlayoffActiveUsers(leaderboard.data, removedUsersIds);
-  const isValidRound = usePlayoffRoundValidator(activeUsers);
 
   const removeUserFromLeaderboard = (user: IUser) => {
     setRemovedUsersIds((prev) => [...prev, user.id]);
   };
 
   const submit = (form: CreatePlayoffDto) => {
-    console.log(form);
-
     createPlayoffMutation.mutateAsync(form).then(() => {
       toast.success('Плейофф успешно создан');
       modal.close();
@@ -65,73 +59,67 @@ function CreatePlayoff(props: IProps) {
       activeUsers.map((user) => user.id),
       { shouldValidate: true }
     );
-  }, [activeUsers]);
+  }, [activeUsers, form]);
 
   return (
-    <React.Fragment>
-      <DialogTitle align={'center'}>Создать плейофф</DialogTitle>
+    <Dialog.Content>
+      <Dialog.Title>Создать плейофф</Dialog.Title>
 
       <form onSubmit={form.handleSubmit(submit)}>
-        <DialogContent sx={{ pt: 0 }}>
-          <Styled.LeaderboardContainer $isOpen={isOpenLeaderboard}>
-            <Styled.LeaderboardButton
-              $isOpen={isOpenLeaderboard}
-              color={'primary'}
-              variant={'contained'}
-              size={'small'}
-              fullWidth
-              onClick={() => setIsOpenLeaderboard(!isOpenLeaderboard)}
-            >
+        <Flex direction={'column'} gap={'4'} mt={'6'}>
+          <Flex direction={'column'} gap={'1'} mr={'-3'}>
+            <Text size={'2'} weight={'medium'}>
               Таблица лидеров
-              <Styled.Arrow $isOpen={isOpenLeaderboard} />
-            </Styled.LeaderboardButton>
+            </Text>
 
-            <Leaderboard
-              leaderboardItems={leaderboard.data}
-              onlyTotal
-              tableHeight={'calc(100% - 40px)'}
-              hideUsersIds={removedUsersIds}
-              onRemove={removeUserFromLeaderboard}
-            />
-          </Styled.LeaderboardContainer>
+            <ScrollArea scrollbars="vertical" style={{ height: '357px' }}>
+              <Box pr={'3'}>
+                <Leaderboard
+                  leaderboardItems={leaderboard.data}
+                  onlyTotal
+                  hideUsersIds={removedUsersIds}
+                  onRemove={removeUserFromLeaderboard}
+                />
+              </Box>
+            </ScrollArea>
+          </Flex>
 
-          <Stack gap={2} mt={2}>
-            <Controller
-              name={'round'}
-              control={form.control}
-              render={({ field }) => (
-                <ToggleButtonGroup size="small" fullWidth {...field}>
-                  <ToggleButton value="1/8" disabled={!isValidRound('1/8')}>
-                    1/8
-                    {!isValidRound('1/8') && <Styled.Hint>Мало игроков</Styled.Hint>}
-                  </ToggleButton>
+          <TextField
+            type={'number'}
+            size={'3'}
+            label={'Кол-во сетов для матча'}
+            {...form.register('setsCount', { valueAsNumber: true })}
+            {...getTextFieldError(form.formState.errors, 'setsCount')}
+          />
 
-                  <ToggleButton value="1/4" disabled={!isValidRound('1/4')}>
-                    1/4
-                    {!isValidRound('1/4') && <Styled.Hint>Мало игроков</Styled.Hint>}
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              )}
-            />
+          <Controller
+            name={'round'}
+            control={form.control}
+            render={({ field }) => (
+              <SegmentedControl.Root
+                size={'3'}
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <SegmentedControl.Item value="1/8">1/8</SegmentedControl.Item>
+                <SegmentedControl.Item value="1/4">1/4</SegmentedControl.Item>
+              </SegmentedControl.Root>
+            )}
+          />
+        </Flex>
 
-            <TextField
-              fullWidth
-              size={'small'}
-              type={'number'}
-              label={'Кол-во сетов для матча'}
-              {...form.register('setsCount', { valueAsNumber: true })}
-              {...getTextFieldError(form.formState.errors, 'setsCount')}
-            />
-          </Stack>
-        </DialogContent>
-
-        <DialogActions>
-          <Button type={'submit'} variant={'contained'} disabled={!form.formState.isValid}>
+        <Flex justify={'end'} mt={'5'}>
+          <Button
+            variant={'solid'}
+            type={'submit'}
+            disabled={!form.formState.isValid || createPlayoffMutation.isLoading}
+          >
+            {createPlayoffMutation.isLoading && <Spinner />}
             Создать
           </Button>
-        </DialogActions>
+        </Flex>
       </form>
-    </React.Fragment>
+    </Dialog.Content>
   );
 }
 

@@ -3,7 +3,7 @@ import { ITour } from '@tennis-stats/types';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { updateTournamentAtom } from '../../../../core/store';
-import MatchCard from '../../../../shared/components/MatchCard/MatchCard';
+import MatchCard from '../../../../shared/components/Tournament/MatchCard/MatchCard';
 
 interface IProps {
   tour: ITour;

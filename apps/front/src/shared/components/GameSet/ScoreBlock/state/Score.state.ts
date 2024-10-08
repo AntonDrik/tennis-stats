@@ -10,6 +10,10 @@ const isValidScoreAtom = atom((get) => {
     return false;
   }
 
+  if (score[0] + score[1] > 20) {
+    return false;
+  }
+
   return score[0] !== score[1];
 });
 

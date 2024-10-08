@@ -1,40 +1,56 @@
+import { ButtonProps } from '@radix-ui/themes';
 import { useModal } from '../../core';
 import ConfirmModal from '../ConfirmModal';
+import { IConfirmProps } from '../ConfirmModal.tyles';
 
-interface IProps {
+export interface IConfirmModalProps {
   title: string;
   confirmTitle: string;
   denyTitle: string;
+
+  description?: string | null;
+  confirmButtonProps?: IConfirmProps['confirmButton']['props'];
+  denyButtonProps?: IConfirmProps['denyButton']['props'];
 }
 
-function useConfirmModal(props: IProps) {
+function useConfirmModal(props: IConfirmModalProps) {
   const modal = useModal();
 
-  return (onSuccess: () => void) => {
+  const getButtonProps = (
+    buttonType: 'confirmButtonProps' | 'denyButtonProps',
+    defaultValue: ButtonProps,
+    rewriteProps?: Partial<IConfirmModalProps>
+  ) => {
+    return rewriteProps?.[buttonType] || props[buttonType] || defaultValue;
+  };
+
+  return (onSuccess: () => void, rewriteProps?: Partial<IConfirmModalProps>) => {
     modal.open(
       <ConfirmModal
-        title={props.title}
+        title={rewriteProps?.title ?? props.title}
+        description={rewriteProps?.description ?? props.description}
         confirmButton={{
-          caption: props.confirmTitle,
+          caption: rewriteProps?.confirmTitle ?? props.confirmTitle,
           onClick: () => {
             onSuccess();
             modal.close();
           },
-          props: {
-            color: 'error',
-            variant: 'contained',
-          },
+          props: getButtonProps(
+            'confirmButtonProps',
+            { color: 'tomato', variant: 'soft' },
+            rewriteProps
+          ),
         }}
         denyButton={{
-          caption: props.denyTitle,
+          caption: rewriteProps?.denyTitle ?? props.denyTitle,
           onClick: () => modal.close(),
-          props: {
-            color: 'inherit',
-            variant: 'contained',
-          },
+          props: getButtonProps(
+            'denyButtonProps',
+            { color: 'gray', variant: 'soft' },
+            rewriteProps
+          ),
         }}
-      />,
-      { maxWidth: 'sm' }
+      />
     );
   };
 }

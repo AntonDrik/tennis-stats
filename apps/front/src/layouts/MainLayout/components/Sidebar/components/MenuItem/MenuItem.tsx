@@ -1,40 +1,32 @@
-import { useAtomValue } from 'jotai'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Text } from '@radix-ui/themes';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { sidebarAtom } from '../../Sidebar.state'
-import { IMenuLinkItem } from '../../Sidebar.types'
-import Styled from './MenuItem.styles'
-
+import { IMenuLinkItem } from '../../Sidebar.types';
+import Styled from './MenuItem.styles';
 
 function MenuItem({ title, link, icon }: IMenuLinkItem) {
-    const navigate = useNavigate()
-    const location = useLocation()
-    
-    const sidebar = useAtomValue(sidebarAtom)
-    
-    const isSelected = location.pathname.includes(link)
-    
-    const handleClick = () => {
-        navigate(link)
-    }
-    
-    return (
-        <Styled.Wrapper
-            $isSelected={isSelected}
-            onClick={handleClick}
-        >
-            <Styled.IconWrapper>
-                {icon}
-            </Styled.IconWrapper>
-            
-            {
-                sidebar.isOpen &&
-                <Styled.Link>{title}</Styled.Link>
-            }
-        
-        </Styled.Wrapper>
-    )
-    
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isSelected = location.pathname.includes(link);
+
+  const handleClick = () => {
+    navigate(link);
+  };
+
+  return (
+    <Styled.Button
+      variant={'ghost'}
+      data-state={isSelected ? 'open' : null}
+      onClick={handleClick}
+    >
+      {icon}
+
+      <Text size={'3'} ml={'2'} style={{ color: 'var(--sage-12)' }}>
+        {title}
+      </Text>
+    </Styled.Button>
+  );
 }
 
-export default MenuItem
+export default MenuItem;

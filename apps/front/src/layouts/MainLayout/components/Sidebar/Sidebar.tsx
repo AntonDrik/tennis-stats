@@ -1,19 +1,17 @@
-import GroupIcon from '@mui/icons-material/Group';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import Divider from '@mui/material/Divider';
 import { useSetAtom, useAtomValue } from 'jotai';
 import React, { useEffect, useMemo } from 'react';
 import { appRoutes } from '../../../../routes/routes.constant';
+import { DashboardIcon, PersonIcon } from '../../../../shared/svg-icons';
+import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
 
-import { MenuSection, LogoutItem } from './components';
-import { changeSidebarAtom, sidebarAtom } from './Sidebar.state';
+import { MenuSection } from './components';
 import Styled from './Sidebar.styles';
 import { IMenuSection } from './Sidebar.types';
+import { Box } from '@radix-ui/themes';
 
 function SideBar() {
-  const sidebar = useAtomValue(sidebarAtom);
-  const toggleSidebar = useSetAtom(changeSidebarAtom);
+  const mainLayoutState = useAtomValue(mainLayoutAtom);
+  const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
 
   const menuList: IMenuSection[] = useMemo(
     () => [
@@ -23,27 +21,13 @@ function SideBar() {
             type: 'link',
             title: 'Турниры',
             link: appRoutes.TOURNAMENTS,
-            icon: <ListAltIcon htmlColor={'#374150'} />,
-          },
-          {
-            type: 'link',
-            title: 'Статистика',
-            link: appRoutes.STATS,
-            icon: <QueryStatsIcon htmlColor={'#374150'} />,
+            icon: <DashboardIcon fill={'var(--sage-12)'} />,
           },
           {
             type: 'link',
             title: 'Пользователи',
             link: appRoutes.USERS,
-            icon: <GroupIcon htmlColor={'#374150'} />,
-          },
-        ],
-      },
-      {
-        items: [
-          {
-            type: 'component',
-            component: <LogoutItem />,
+            icon: <PersonIcon fill={'var(--sage-12)'} />,
           },
         ],
       },
@@ -52,21 +36,36 @@ function SideBar() {
   );
 
   useEffect(() => {
-    document.body.style.overflow = sidebar.isOpen ? 'hidden' : 'auto';
-  }, [sidebar.isOpen]);
+    if (!mainLayoutState.isHiddenMenu) {
+      return;
+    }
+
+    document.body.style.overflow = mainLayoutState.isOpenedMenu ? 'hidden' : 'auto';
+  }, [mainLayoutState]);
+
+  if (mainLayoutState.isHiddenMenu) {
+    return (
+      <Box>
+        <Styled.Backdrop
+          $isOpen={mainLayoutState.isOpenedMenu}
+          onClick={() => updateMainLayoutState({ isOpenedMenu: false })}
+        />
+
+        <Styled.FixedMenuWrapper $isOpen={mainLayoutState.isOpenedMenu}>
+          {menuList.map((section) => (
+            <MenuSection key={Math.random()} items={section.items} />
+          ))}
+        </Styled.FixedMenuWrapper>
+      </Box>
+    );
+  }
 
   return (
-    <Styled.Backdrop open={sidebar.isOpen} onClick={() => toggleSidebar(false)}>
-      <Styled.MenuWrapper $isOpen={sidebar.isOpen} width={sidebar.width}>
-        {menuList.map((section, index) => (
-          <React.Fragment key={Math.random()}>
-            {index === menuList.length - 1 && <Divider sx={{ mt: 1 }} />}
-
-            <MenuSection key={Math.random()} items={section.items} />
-          </React.Fragment>
-        ))}
-      </Styled.MenuWrapper>
-    </Styled.Backdrop>
+    <Styled.VisibleMenuWrapper>
+      {menuList.map((section) => (
+        <MenuSection key={Math.random()} items={section.items} />
+      ))}
+    </Styled.VisibleMenuWrapper>
   );
 }
 

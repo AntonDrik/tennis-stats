@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Heading } from '@radix-ui/themes';
 import { IPlayer } from '@tennis-stats/types';
 import * as React from 'react';
 
@@ -19,9 +19,9 @@ function PlayerLabel(props: IProps) {
   };
 
   return (
-    <Typography variant={'h5'} align={'center'} sx={{ cursor: 'pointer' }}>
+    <Heading align={'center'} size={'5'}>
       {getLabel()}
-    </Typography>
+    </Heading>
   );
 }
 

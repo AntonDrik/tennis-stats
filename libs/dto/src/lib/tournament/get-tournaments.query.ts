@@ -7,7 +7,6 @@ const tournamentStatus = [
   ETournamentStatus.PLAYOFF,
   ETournamentStatus.REGISTRATION,
   ETournamentStatus.FINISHED,
-  ETournamentStatus.CANCELLED,
 ];
 
 class GetTournamentsQuery {

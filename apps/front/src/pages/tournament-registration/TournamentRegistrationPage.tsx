@@ -1,88 +1,60 @@
-import { useAtomValue, useSetAtom } from 'jotai';
+import { Box, Button, Flex, ScrollArea } from '@radix-ui/themes';
+import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { toast } from 'react-hot-toast';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import {
   useGetOpenedTournamentQuery,
-  useRegisterUserOnTournamentMutation,
-  useUnregisterUserFromTournamentMutation,
+  useJoinTournamentMutation,
+  useLeaveTournamentMutation,
 } from '../../core/api';
 import { meAtom } from '../../core/store';
 import { useBackButton } from '../../layouts/MainLayout';
 import { appRoutes } from '../../routes/routes.constant';
-import { Page, Spinner, useModal } from '../../shared/components';
+import { Page, Spinner } from '../../shared/components';
 import { useConfirmModal } from '../../shared/components/Modals';
 import { useUserPermissions } from '../../shared/hooks';
-import { tabsAtom } from '../tournament/state/Tabs.state';
+import RegistrationAdminMenu from './components/AdminMenu/AdminMenu';
 import TournamentRegistrationHeader from './components/Header/Header';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
-import AddUsersToTournamentModal from './modals/AddUserModal/AddUserModal';
-import StartTournamentModal from './modals/StartTournamentModal/StartTournamentModal';
 
 function TournamentRegistrationPage() {
   const me = useAtomValue(meAtom);
-  const setTournamentTab = useSetAtom(tabsAtom);
 
   const openedTournament = useGetOpenedTournamentQuery();
-  const registerOnTournament = useRegisterUserOnTournamentMutation();
-  const unregisterFromTournament = useUnregisterUserFromTournamentMutation();
+  const joinTournament = useJoinTournamentMutation();
+  const leaveTournament = useLeaveTournamentMutation();
 
-  const modal = useModal();
-  const navigate = useNavigate();
   const permissions = useUserPermissions();
   const confirmUnregister = useConfirmModal({
-    title: 'Вы действительно хотите отменить регистрацию на турнир?',
+    title: 'Отмена регистрации',
+    description: 'Вы действительно хотите отменить регистрацию на турнир?',
     confirmTitle: 'Отменить регистрацию',
     denyTitle: 'Назад',
   });
 
-  const usersList = useMemo(() => {
-    return openedTournament.data?.registeredUsers ?? [];
+  const joinedList = useMemo(() => {
+    return (openedTournament.data?.registeredUsers ?? []).sort(
+      (a, b) => b.rating - a.rating
+    );
   }, [openedTournament.data]);
 
   const isRegistered = useMemo(() => {
-    return Boolean(usersList.find((user) => user.id === me?.id));
-  }, [usersList, me?.id]);
+    return Boolean(joinedList.find((user) => user.id === me?.id));
+  }, [joinedList, me?.id]);
 
-  const registerSelf = () => {
-    registerOnTournament.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
+  const joinTournamentSelf = () => {
+    joinTournament.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
       toast.success('Вы успешно зарегистрировались на турнире');
     });
   };
 
-  const unregisterSelf = () => {
+  const leaveTournamentSelf = () => {
     confirmUnregister(() => {
-      unregisterFromTournament.mutateAsync({ id: me?.id ?? -1 }).then(() => {
+      leaveTournament.mutateAsync({ id: me?.id ?? -1 }).then(() => {
         toast.success('Вы успешно отменили регистрацию на турнире');
       });
     });
-  };
-
-  const openAddUsersModal = () => {
-    modal.open(<AddUsersToTournamentModal />, {
-      maxWidth: 'sm',
-      fullWidth: true,
-    });
-  };
-
-  const openStartTournamentModal = () => {
-    modal.open(
-      <StartTournamentModal
-        registeredUsers={usersList}
-        onSuccess={(tournamentId) => {
-          setTournamentTab(0);
-          navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
-        }}
-      />,
-      {
-        maxWidth: 'sm',
-        fullWidth: true,
-      }
-    );
   };
 
   useBackButton({
@@ -100,42 +72,51 @@ function TournamentRegistrationPage() {
 
   return (
     <Page title={'Регистрация на турнир'}>
-      <Box>
+      <Flex direction={'column'} gap={'4'}>
         <TournamentRegistrationHeader
           tournament={openedTournament.data}
-          registeredUsersCount={usersList.length}
+          registeredUsersCount={joinedList.length}
         />
 
-        <Box display={'flex'} justifyContent={'flex-start'} flexWrap={'wrap'} gap={2} mb={2}>
-          {permissions.canCrudTournament && (
-            <React.Fragment>
-              <Button variant={'contained'} color={'success'} onClick={openStartTournamentModal}>
-                <PlayArrowIcon sx={{ mr: 1 }} />
-                Запустить турнир
-              </Button>
-
-              <Button variant={'contained'} onClick={openAddUsersModal}>
-                <AddIcon sx={{ mr: 1 }} />
-                Добавить пользователей
-              </Button>
-            </React.Fragment>
-          )}
-
+        <Flex justify={'between'}>
           {!isRegistered && (
-            <Button variant={'contained'} onClick={registerSelf}>
+            <Button
+              variant={'solid'}
+              size={'3'}
+              color={'green'}
+              onClick={joinTournamentSelf}
+            >
               Зарегистрироваться
             </Button>
           )}
 
           {isRegistered && (
-            <Button variant={'contained'} color={'error'} onClick={unregisterSelf}>
+            <Button
+              variant={'solid'}
+              size={'3'}
+              color={'red'}
+              onClick={leaveTournamentSelf}
+            >
               Отменить регистрацию
             </Button>
           )}
-        </Box>
 
-        <RegistrationTable isAdmin={permissions.canCrudTournament} usersList={usersList} />
-      </Box>
+          {permissions.canCrudTournament && (
+            <RegistrationAdminMenu joinedUsers={joinedList} />
+          )}
+        </Flex>
+
+        <Box mr={'-3'}>
+          <ScrollArea scrollbars="vertical" style={{ height: 'calc(100vh - 232px)' }}>
+            <Box pr={'3'}>
+              <RegistrationTable
+                isAdmin={permissions.canCrudTournament}
+                usersList={joinedList}
+              />
+            </Box>
+          </ScrollArea>
+        </Box>
+      </Flex>
     </Page>
   );
 }

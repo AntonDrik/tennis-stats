@@ -1,11 +1,11 @@
+import { Flex } from '@radix-ui/themes';
 import styled from 'styled-components';
-import { Stack } from '@mui/material';
 
-const SectionWrapper = styled(Stack)({
+const SectionWrapper = styled(Flex)({
   borderRadius: 8,
   flex: 1,
   justifyContent: 'space-between',
-  padding: '4px 8px 8px 8px',
+  flexDirection: 'column',
 });
 
 export default {

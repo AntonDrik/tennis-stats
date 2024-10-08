@@ -1,6 +1,5 @@
-import { Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import { ETournamentStatus, ITournament } from '@tennis-stats/types';
+import { Box, Heading } from '@radix-ui/themes';
+import { ITournament } from '@tennis-stats/types';
 import { useNavigate } from 'react-router-dom';
 import { useGetTournamentsListQuery } from '../../core/api';
 import { appRoutes } from '../../routes/routes.constant';
@@ -21,11 +20,6 @@ function TournamentsPage() {
   });
 
   const navigateToTournament = (tournament: ITournament) => {
-    if (tournament.status === ETournamentStatus.REGISTRATION) {
-      navigate(appRoutes.TOURNAMENT_REGISTRATION);
-
-      return;
-    }
     navigate(appRoutes.TOURNAMENT_BY_ID(tournament.id));
   };
 
@@ -33,21 +27,18 @@ function TournamentsPage() {
     <Page title={'Все турниры'}>
       {isLoading && <Spinner />}
 
-      <Box display={'flex'} justifyContent={'center'} mb={2}>
-        <Typography variant={'h2'} fontWeight={600}>
+      <Box mb={'2'}>
+        <Heading align={'center'} size={'7'} mb={'2'}>
           Список всех турниров
-        </Typography>
+        </Heading>
       </Box>
 
       <Styled.Grid>
         {permissions.canCrudTournament && (
-          <TournamentCard
-            type={'add-new'}
-            onClick={() => tournamentModal.open()}
-          />
+          <TournamentCard type={'add-new'} onClick={() => tournamentModal.open()} />
         )}
 
-        {tournamentsList?.reverse().map((tournament) => (
+        {tournamentsList?.map((tournament) => (
           <TournamentCard
             key={`tournament-${tournament.id}`}
             type={'data'}

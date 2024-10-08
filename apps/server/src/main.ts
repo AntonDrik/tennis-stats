@@ -13,39 +13,40 @@ import { SeederService } from './database';
 const logger = new LoggerService('Nest');
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger,
-    abortOnError: true,
-    cors: {
-      origin: true,
-      credentials: true,
-    },
-  });
+  try {
+    const app = await NestFactory.create(AppModule, {
+      logger,
+      abortOnError: true,
+      cors: {
+        origin: true,
+        credentials: true,
+      },
+    });
 
-  const reflector = app.get(Reflector);
-  const httpAdapter = app.get(HttpAdapterHost);
-  const configService = app.get(ConfigService) as ConfigService<IEnvVariables>;
-  const seederService = app.get(SeederService);
-  await seederService.seed();
+    const reflector = app.get(Reflector);
+    const httpAdapter = app.get(HttpAdapterHost);
+    const configService = app.get(ConfigService) as ConfigService<IEnvVariables>;
+    const seederService = app.get(SeederService);
+    await seederService.seed();
 
-  app.setGlobalPrefix('api');
-  app.use(cookieParser());
+    app.setGlobalPrefix('api');
+    app.use(cookieParser());
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
-  app.useGlobalFilters(new GlobalExceptionsFilter(httpAdapter, logger));
+    app.useGlobalFilters(new GlobalExceptionsFilter(httpAdapter, logger));
 
-  app.useGlobalGuards(
-    new LoggedInGuard(reflector),
-    new PermissionsGuard(reflector)
-  );
+    app.useGlobalGuards(new LoggedInGuard(reflector), new PermissionsGuard(reflector));
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  const port = configService.get('PORT');
-  await app.listen(port);
+    const port = configService.get('PORT');
+    await app.listen(port);
 
-  logger.app(`Application is running on: http://localhost:${port}`);
+    logger.app(`Application is running on: http://localhost:${port}`);
+  } catch (err) {
+    logger.error(`ERR: ${err}`);
+  }
 }
 
 bootstrap().catch((err) => {
@@ -57,3 +58,7 @@ process.on('uncaughtException', function (error) {
 });
 
 process.on('warning', (e) => console.warn(e.stack));
+
+process.on('unhandledRejection', function (err) {
+  logger.error(`unhandledRejection: ${err}`);
+});

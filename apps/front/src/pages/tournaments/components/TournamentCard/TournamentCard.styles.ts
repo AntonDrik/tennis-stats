@@ -1,36 +1,19 @@
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
+import { Card as RadixCard } from '@radix-ui/themes';
 import styled from 'styled-components';
 
-const Card = styled('div')({
+const Card = styled(RadixCard)({
   width: '100%',
   aspectRatio: '1 / 1',
-  borderRadius: '12px',
   cursor: 'pointer',
-  backgroundColor: '#ACD8FC',
-  border: '1px solid #5EB1EF',
-
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  overflow: 'hidden',
+  backgroundColor: 'var(--sage-3)',
+  borderColor: '#DAD9D6',
 
   '&:hover': {
-    backgroundColor: '#8EC8F6',
+    backgroundColor: 'var(--sage-5)',
   },
 });
 
-const CardContent = styled(Box)({
-  display: 'flex',
-  alignItems: 'flex-start',
-
-  width: '100%',
-  height: '100%',
-
-  padding: '6px',
-});
-
-const CardHeader = styled(Box)({
+const CardHeader = styled.div({
   position: 'relative',
   width: '100%',
   textAlign: 'center',
@@ -39,11 +22,4 @@ const CardHeader = styled(Box)({
   borderBottom: '1px solid #5EB1EF',
 });
 
-const EditButton = styled(IconButton)({
-  position: 'absolute',
-  right: 5,
-  top: '50%',
-  transform: 'translateY(-50%)',
-});
-
-export default { Card, CardContent, CardHeader, EditButton };
+export default { Card, CardHeader };

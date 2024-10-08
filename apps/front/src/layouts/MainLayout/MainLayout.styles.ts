@@ -1,16 +1,17 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
-const Content = styled.main(
-    {
-        padding: 18,
-        height: 'calc(100vh - 55px)',
-        display: 'flex',
-        flexFlow: 'column',
-        width: '100%',
-        marginTop: 55
-    }
-)
+const Gradient = styled.div({
+  height: '60vh',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: -1,
+
+  background: 'linear-gradient(to bottom, var(--accent-4), transparent)',
+});
 
 export default {
-    Content
-}
+  Gradient,
+};

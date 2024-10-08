@@ -15,7 +15,7 @@ class UsersService {
   ) {}
 
   public async getAll(): Promise<IUserWithRatingDiff[]> {
-    const users = await this.repository.find();
+    const users = await this.repository.find({ order: { rating: 'DESC' } });
 
     const promise = users.map(async (user) => {
       const ratingDiff = await this.ratingHistoryService.getDailyRatingDiff(user);

@@ -22,9 +22,6 @@ export class User extends BaseEntity implements IUser {
   @Column('varchar', { nullable: false, unique: true })
   nickname: string;
 
-  @Column('varchar', { default: '#E0E1E6' })
-  color: string;
-
   @Column('int', { default: 100 })
   rating: number;
 

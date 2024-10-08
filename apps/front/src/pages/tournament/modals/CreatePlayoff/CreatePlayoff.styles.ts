@@ -1,7 +1,4 @@
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Box, Button } from '@radix-ui/themes';
 import styled from 'styled-components';
 
 const LeaderboardContainer = styled(Box)<{ $isOpen: boolean }>(
@@ -14,16 +11,9 @@ const LeaderboardContainer = styled(Box)<{ $isOpen: boolean }>(
   })
 );
 
-const Hint = styled(Typography)({
-  position: 'absolute',
-  bottom: 1,
-  fontSize: 11,
-  textTransform: 'lowercase',
-  opacity: 0.7,
-});
-
-const Arrow = styled(KeyboardArrowUpIcon)<{ $isOpen: boolean }>(
+const Arrow = styled(Box)<{ $isOpen: boolean }>(
   {
+    display: 'flex',
     position: 'absolute',
     right: 10,
     transition: 'transform .2s ease',
@@ -33,14 +23,13 @@ const Arrow = styled(KeyboardArrowUpIcon)<{ $isOpen: boolean }>(
   })
 );
 
-const LeaderboardButton = styled(Button)<{ $isOpen: boolean }>(
-  {},
-  ({ $isOpen }) => ({})
-);
+const LeaderboardButton = styled(Button)<{ $isOpen: boolean }>({
+  position: 'relative',
+  width: '100%',
+});
 
 export default {
   LeaderboardContainer,
   LeaderboardButton,
-  Hint,
   Arrow,
 };

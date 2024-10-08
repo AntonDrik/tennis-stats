@@ -1,6 +1,5 @@
+import { Box, Dialog, Flex, ScrollArea } from '@radix-ui/themes';
 import React from 'react';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import { useGetLeaderboardQuery } from '../../../../core/api';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 
@@ -12,15 +11,17 @@ function LeaderboardModal(props: IProps) {
   const leaderboard = useGetLeaderboardQuery(props.tournamentId);
 
   return (
-    <React.Fragment>
-      <DialogTitle align={'center'}>Таблица лидеров</DialogTitle>
+    <Dialog.Content>
+      <Dialog.Title align={'center'}>Таблица лидеров</Dialog.Title>
 
-      <DialogContent>
-        {leaderboard.data && (
-          <Leaderboard leaderboardItems={leaderboard.data} />
-        )}
-      </DialogContent>
-    </React.Fragment>
+      <Flex mr={'-3'}>
+        <ScrollArea scrollbars="vertical" style={{ height: 'calc(100vh - 200px)' }}>
+          <Box pr={'3'}>
+            {leaderboard.data && <Leaderboard leaderboardItems={leaderboard.data} />}
+          </Box>
+        </ScrollArea>
+      </Flex>
+    </Dialog.Content>
   );
 }
 

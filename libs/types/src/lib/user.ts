@@ -5,7 +5,6 @@ import { IRatingHistory } from './rating-history';
 interface IUser {
   id: number;
   nickname: string;
-  color: string;
   rating: number;
   permissions: IPermission[];
   ratingHistory?: IRatingHistory[];

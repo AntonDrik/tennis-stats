@@ -1,5 +1,6 @@
-import Button from '@mui/material/Button';
+import { Button, Spinner } from '@radix-ui/themes';
 import { useAtomValue } from 'jotai';
+import { useIsMutating } from 'react-query';
 import { useEditGameSetMutation, useFinishGameSetMutation } from '../../../../core/api';
 import { ITournamentState } from '../../../../core/store';
 import { isValidScoreAtom, scoreAtom } from '../ScoreBlock/state/Score.state';
@@ -16,6 +17,8 @@ function FinishButton(props: IProps) {
 
   const finishGameSet = useFinishGameSetMutation(props.tournamentState);
   const editGameSetScore = useEditGameSetMutation(props.tournamentState);
+
+  const isMutating = useIsMutating(['finish-game-set']);
 
   const handleFinishClick = () => {
     if (!props.editMode) {
@@ -39,12 +42,13 @@ function FinishButton(props: IProps) {
 
   return (
     <Button
-      variant={'contained'}
-      fullWidth
-      sx={{ mt: 2 }}
-      disabled={!isValidScore}
+      mt={'4'}
+      size={'3'}
+      color={'green'}
+      disabled={!isValidScore || isMutating > 0}
       onClick={handleFinishClick}
     >
+      {isMutating > 0 && <Spinner />}
       {props.editMode ? 'Изменить счет' : 'Завершить сет'}
     </Button>
   );

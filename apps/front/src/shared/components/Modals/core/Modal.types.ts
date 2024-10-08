@@ -1,18 +1,12 @@
-import { DialogProps } from '@mui/material/Dialog'
-import { ReactElement } from 'react'
-
+import { ReactElement } from 'react';
 
 interface IModalState {
-    component: ReactElement | null
-    props: Omit<DialogProps, 'open'> | null
+  component: ReactElement | null;
 }
 
 interface IModal {
-    open: (component: ReactElement, props?: IModalState['props']) => void;
-    close: () => void;
+  open: (component: ReactElement) => void;
+  close: () => void;
 }
 
-export {
-    IModalState,
-    IModal
-}
+export { IModalState, IModal };

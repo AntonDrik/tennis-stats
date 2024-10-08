@@ -1,12 +1,13 @@
-import Box from '@mui/material/Box';
+import { Box, Flex } from '@radix-ui/themes';
 import { styled } from 'styled-components';
 
 const Container = styled(Box)({
   display: 'flex',
   minHeight: 400,
+  overflow: 'auto',
 });
 
-const Column = styled(Box)<{ $isLast: boolean }>(
+const Column = styled(Flex)<{ $isLast: boolean }>(
   {
     position: 'relative',
     flexShrink: 0,

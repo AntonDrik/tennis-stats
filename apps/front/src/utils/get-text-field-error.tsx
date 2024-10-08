@@ -1,28 +1,28 @@
-import { TextFieldProps } from '@mui/material';
+import { Text } from '@radix-ui/themes';
 import React from 'react';
 import { FieldErrors } from 'react-hook-form';
 
 import isDefined from './is-defined';
 
-const renderErrorMessage = <T extends FieldErrors>(
-  errors: T,
-  name: keyof T
-) => {
+export interface IFieldErrors {
+  error: boolean;
+  helperText: JSX.Element | null;
+}
+
+const renderErrorMessage = <T extends FieldErrors>(errors: T, name: keyof T) => {
   if (!errors[name]) {
     return null;
   }
-
-  console.log(errors[name]);
 
   const message = String(errors[name]?.message ?? '');
 
   return (
     <React.Fragment>
       {message.split('\n').map((i) => (
-        <span key={i} style={{ fontSize: 12 }}>
+        <Text key={i} size={'1'} weight={'light'} color={'tomato'}>
           {i}
           <br />
-        </span>
+        </Text>
       ))}
     </React.Fragment>
   );
@@ -31,7 +31,7 @@ const renderErrorMessage = <T extends FieldErrors>(
 function getTextFieldError<T extends FieldErrors>(
   errors: T,
   name: keyof T
-): TextFieldProps {
+): IFieldErrors {
   return {
     error: isDefined(errors[name]),
     helperText: renderErrorMessage(errors, name),

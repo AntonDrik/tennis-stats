@@ -1,29 +1,36 @@
-import { TextFieldProps } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-import TextField from '@mui/material/TextField';
-import { IUser } from '@tennis-stats/types';
+import { IUser, IUserWithRatingDiff } from '@tennis-stats/types';
+import { Select as RadixSelect, Spinner, Text } from '@radix-ui/themes';
 import React, { useMemo, useState } from 'react';
 import { useUsersQuery } from '../../../../core/api';
+import Select from '../../Select/Select';
 
 interface IProps {
   skipUsers?: (IUser | undefined)[];
-  textFieldProps?: TextFieldProps;
-  onChange?: (users: IUser) => void;
+  onChange?: (users: IUserWithRatingDiff) => void;
 }
 
 function UsersSelect(props: IProps) {
   const { data: allUsers, isLoading } = useUsersQuery();
 
-  const [selectedUsers, setSelectedUsers] = useState<IUser>();
+  const [selectedUserId, setSelectedUserId] = useState<string>();
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 
-  const handleChange = (value: IUser | null) => {
+  const handleChange = (value: string) => {
     if (!value) {
       return;
     }
 
-    setSelectedUsers(value);
-    props.onChange?.(value);
+    const user = usersToDisplay.find((user) => String(user.id) === value);
+
+    setSelectedUser(user ?? null);
+    setSelectedUserId(value);
+
+    console.log(user);
+    console.log('value: ', value);
+
+    if (user) {
+      props.onChange?.(user);
+    }
   };
 
   const usersToDisplay = useMemo(() => {
@@ -33,35 +40,26 @@ function UsersSelect(props: IProps) {
   }, [allUsers, props.skipUsers]);
 
   return (
-    <Autocomplete
-      options={usersToDisplay}
-      value={selectedUsers}
-      getOptionLabel={(option) => `${option.nickname}`}
-      getOptionKey={(option) => option.id}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      size={'small'}
-      loading={isLoading}
-      onChange={(e, value) => handleChange(value)}
-      renderInput={(params) => (
-        <TextField
-          sx={{ minWidth: 200 }}
-          label="Пользователи"
-          {...params}
-          {...props.textFieldProps}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {isLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-        />
-      )}
-    />
+    <Select
+      value={selectedUserId}
+      label={'Выберите нового пользователя'}
+      size={'3'}
+      disabled={isLoading}
+      onValueChange={handleChange}
+    >
+      <RadixSelect.Trigger>
+        {isLoading && <Spinner />}
+        <Text>{selectedUser?.nickname}</Text>
+      </RadixSelect.Trigger>
+
+      <RadixSelect.Content position="popper">
+        {usersToDisplay.map((user) => (
+          <RadixSelect.Item key={`user-select-item-${user.id}`} value={String(user.id)}>
+            {user.nickname}
+          </RadixSelect.Item>
+        ))}
+      </RadixSelect.Content>
+    </Select>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Dialog } from '@radix-ui/themes';
 import { useAtomValue } from 'jotai';
 import * as React from 'react';
 import { tournamentAtom } from '../../../../../../core/store';
@@ -15,19 +15,15 @@ function ModalHeader(props: IProps) {
 
   const title = props.title ? props.title(gameSet) : `Сет № ${gameSet?.number}`;
 
-  return (
-    <Stack
-      justifyContent={'center'}
-      alignItems={'center'}
-      direction={'row'}
-      px={3}
-      py={2}
-    >
-      <Typography variant={'h4'} align={'center'}>
-        {title}
-      </Typography>
-    </Stack>
-  );
+  return <Dialog.Title align={'center'}>{title}</Dialog.Title>;
+
+  // return (
+  //   <Flex align={'center'} justify={'center'} px={3} py={2}>
+  //     <Heading size={'4'} align={'center'}>
+  //       {title}
+  //     </Heading>
+  //   </Flex>
+  // );
 }
 
 export default ModalHeader;

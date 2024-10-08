@@ -1,3 +1,4 @@
+import { Box } from '@radix-ui/themes';
 import React, { ReactNode, useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Helmet } from 'react-helmet';
@@ -21,7 +22,7 @@ function Page({ title, scrollTop = false, children }: IProps): JSX.Element {
       <Helmet titleTemplate="%s | Tennis stats">
         <title>{title}</title>
       </Helmet>
-      {children}
+      <Box p={'4'}>{children}</Box>
     </ErrorBoundary>
   );
 }

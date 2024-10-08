@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box';
+import { Box } from '@radix-ui/themes';
 import styled from 'styled-components';
 
 interface IMatchProps {
@@ -19,7 +19,7 @@ const AfterLine = styled(Box)({
   marginTop: -2,
   width: 19,
   height: 2,
-  backgroundColor: '#53709b',
+  backgroundColor: 'var(--blue-7)',
 });
 
 const BeforeLine = styled(Box)({
@@ -31,7 +31,7 @@ const BeforeLine = styled(Box)({
   height: 2,
   width: 17,
   display: 'block',
-  backgroundColor: '#53709b',
+  backgroundColor: 'var(--blue-7)',
 });
 
 const AfterLineVertical = styled(Box)<{
@@ -42,11 +42,11 @@ const AfterLineVertical = styled(Box)<{
     position: 'absolute',
     right: -17,
     width: 2,
-    backgroundColor: '#53709b',
+    backgroundColor: 'var(--blue-7)',
   },
   ({ $roundNumber, $matchNumber }) => ({
-    ...($matchNumber % 2 === 0 ? { bottom: 35 } : {}),
     ...($matchNumber % 2 !== 0 ? { top: 35 } : {}),
+    ...($matchNumber % 2 === 0 ? { bottom: 35 } : {}),
     height: `calc(55px * ${
       $roundNumber % 2 === 0 ? $roundNumber * $roundNumber : $roundNumber * 2
     })`,

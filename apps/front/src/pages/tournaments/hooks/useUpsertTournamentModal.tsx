@@ -1,15 +1,11 @@
-import { UpsertTournamentDto } from '@tennis-stats/dto';
 import { useModal } from '../../../shared/components';
 import UpsertTournamentModal from '../modals/UpsertTournamentModal/UpsertTournamentModal';
 
-function useUpsertTournamentModal(props?: UpsertTournamentDto) {
+function useUpsertTournamentModal(playersCount?: number) {
   const modal = useModal();
 
   return {
-    open: () =>
-      modal.open(<UpsertTournamentModal {...props} />, {
-        maxWidth: 'xs',
-      }),
+    open: () => modal.open(<UpsertTournamentModal playersCount={playersCount} />),
   };
 }
 

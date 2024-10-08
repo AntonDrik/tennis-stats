@@ -1,18 +1,18 @@
+import { Box, Tabs } from '@radix-ui/themes';
 import { ETournamentStatus } from '@tennis-stats/types';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { useEffect, useMemo } from 'react';
+import { useAtom, useSetAtom } from 'jotai';
+import { useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useGetTournamentQuery } from '../../core/api';
 import { updateTournamentAtom } from '../../core/store';
 import { useBackButton } from '../../layouts/MainLayout';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
-import TabContent from '../../shared/components/TabContent/TabContent';
-import TournamentControlPanel from './components/ControlPanel/ControlPanel';
+import TournamentHeader from './components/Header/Header';
 import PlayoffTab from './components/PlayoffTab/PlayoffTab';
 import TournamentTabs from './components/Tabs/Tabs';
 import TourTab from './components/TourTab/TourTab';
-import { tabsAtom } from './state/Tabs.state';
+import { tabsAtom } from './states/Tabs.state';
 
 type IRouteParams = {
   id: string;
@@ -21,14 +21,10 @@ type IRouteParams = {
 function TournamentPage() {
   const params = useParams<IRouteParams>();
 
-  const { data, isLoading } = useGetTournamentQuery(params?.id);
+  const tournament = useGetTournamentQuery(params?.id, { cacheTime: 0 });
 
-  const tabsState = useAtomValue(tabsAtom);
+  const [tabsState, setTabsState] = useAtom(tabsAtom);
   const updateTournamentState = useSetAtom(updateTournamentAtom);
-
-  const isPlayoffStage = useMemo(() => {
-    return data?.tours.some((tour) => tour.playOffStage);
-  }, [data]);
 
   useBackButton({
     title: 'К списку Турниров',
@@ -36,62 +32,55 @@ function TournamentPage() {
   });
 
   useEffect(() => {
-    if (!data) {
+    if (!tournament.data) {
       return;
     }
 
-    const hasTours = data.tours.length;
+    const hasTours = tournament.data.tours.length;
 
-    if (hasTours) {
-      updateTournamentState({
-        selectedTournament: data,
-      });
-    } else {
-      updateTournamentState({
-        selectedTournament: data,
-        selectedTour: null,
-        selectedMatch: null,
-        selectedGameSet: null,
-      });
-    }
-  }, [data]);
+    updateTournamentState({
+      selectedTournament: tournament.data,
+      ...(!hasTours
+        ? {
+            selectedTour: null,
+            selectedMatch: null,
+            selectedGameSet: null,
+          }
+        : {}),
+    });
+  }, [tournament.data]);
 
-  if (isLoading) {
+  if (tournament.isLoading) {
     return <Spinner />;
   }
 
-  if (!data) {
+  if (!tournament.data) {
     return <Navigate to={appRoutes.TOURNAMENTS} />;
   }
 
-  if (data.status === ETournamentStatus.REGISTRATION) {
+  if (tournament.data.status === ETournamentStatus.REGISTRATION) {
     return <Navigate to={appRoutes.TOURNAMENT_REGISTRATION} />;
   }
 
   return (
-    <Page title={`Турнир № ${1}`}>
-      <TournamentControlPanel tournament={data} />
+    <Page title={`Турнир № ${tournament.data.id}`}>
+      <TournamentHeader tournament={tournament.data} />
 
-      <TournamentTabs tours={data.tours} showPlayoffTab={isPlayoffStage} />
+      <Tabs.Root value={tabsState} onValueChange={(value) => setTabsState(value)}>
+        <TournamentTabs tours={tournament.data.tours} />
 
-      {data.tours.map((tour, index) => (
-        <TabContent
-          key={`tour-${tour.id}`}
-          index={index}
-          value={tabsState}
-          sxProps={{ px: 0, py: 2 }}
-        >
-          <TourTab tour={tour} />
-        </TabContent>
-      ))}
+        <Box pt={'3'}>
+          {tournament.data.tours.map((tour, index) => (
+            <Tabs.Content key={`tour-${tour.id}`} value={`${index}`}>
+              <TourTab tour={tour} />
+            </Tabs.Content>
+          ))}
 
-      <TabContent
-        index={-1}
-        value={tabsState}
-        sxProps={{ px: 0, py: 2, height: '80%', overflow: 'auto' }}
-      >
-        <PlayoffTab tournament={data} />
-      </TabContent>
+          <Tabs.Content value={'-1'}>
+            <PlayoffTab tournament={tournament.data} />
+          </Tabs.Content>
+        </Box>
+      </Tabs.Root>
     </Page>
   );
 }
