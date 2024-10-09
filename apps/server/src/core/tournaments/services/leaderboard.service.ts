@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Match, Tournament } from '@tennis-stats/entities';
 import { mapToArray } from '@tennis-stats/helpers';
 import { ILeaderboardItem, IScoreDiff } from '@tennis-stats/types';
+import { EntityManager } from 'typeorm';
 import { LeaderboardItem } from '../helpers/LeaderboardItem';
+import TournamentsRepository from '../repositories/tournaments.repository';
 
 @Injectable()
 class LeaderboardService {
+  constructor(private repository: TournamentsRepository) {}
+
   public getLeaderboard(tournament: Tournament): ILeaderboardItem[] {
     const collection = new Map<number, LeaderboardItem>();
     const matches = this.getTournamentMatches(tournament);
@@ -19,6 +23,16 @@ class LeaderboardService {
       .map((item) => item.getData(tournament.registeredUsers))
       .filter(Boolean)
       .sort(byTotalAndRating);
+  }
+
+  public async saveLeaderboard(tournament: Tournament, manager: EntityManager) {
+    const leaderboard = this.getLeaderboard(tournament).slice(0, 5);
+
+    const entities = leaderboard.map((item, index) => {
+      return this.repository.createLeaderboardEntity(tournament, item, index + 1);
+    });
+
+    await manager.save(entities);
   }
 
   private getTournamentMatches(tournament: Tournament): Match[] {

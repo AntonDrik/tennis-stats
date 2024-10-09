@@ -37,7 +37,12 @@ function StartTournamentModal(props: IProps) {
     defaultValues: {
       registeredUsersIds: props.joinedUsers.map((user) => user.id),
       handleRating: true,
-      tours: [],
+      tours: [
+        {
+          setsCount: 1,
+          pairsGenerator: ETourGenerator.RANDOM,
+        },
+      ],
     },
     resolver: classValidatorResolver(StartTournamentDto),
   });

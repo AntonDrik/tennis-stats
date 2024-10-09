@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tournament } from '@tennis-stats/entities';
+import { Tournament, TournamentLeaderboard } from '@tennis-stats/entities';
 import { MatchModule } from '../match';
 import RatingModule from '../rating/rating.module';
 import { TourModule } from '../tours';
@@ -15,7 +15,7 @@ import TournamentsService from './services/tournaments.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tournament]),
+    TypeOrmModule.forFeature([Tournament, TournamentLeaderboard]),
     UsersModule,
     TourModule,
     MatchModule,

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Card = styled(RadixCard)({
   width: '100%',
-  aspectRatio: '1 / 1',
+  minHeight: '200px',
   cursor: 'pointer',
   backgroundColor: 'var(--sage-3)',
   borderColor: '#DAD9D6',

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Wrapper = styled.div<{ $isFixed: boolean }>(
+const Wrapper = styled.div<{ $isFixed?: boolean }>(
   {
     backgroundColor: 'var(--sage-2)',
     zIndex: 1003,

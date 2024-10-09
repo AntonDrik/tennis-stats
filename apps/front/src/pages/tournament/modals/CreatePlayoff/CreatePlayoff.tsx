@@ -72,7 +72,7 @@ function CreatePlayoff(props: IProps) {
               Таблица лидеров
             </Text>
 
-            <ScrollArea scrollbars="vertical" style={{ height: '357px' }}>
+            <ScrollArea scrollbars="vertical" style={{ maxHeight: '358px' }}>
               <Box pr={'3'}>
                 <Leaderboard
                   leaderboardItems={leaderboard.data}

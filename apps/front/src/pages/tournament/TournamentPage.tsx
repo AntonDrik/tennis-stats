@@ -21,7 +21,7 @@ type IRouteParams = {
 function TournamentPage() {
   const params = useParams<IRouteParams>();
 
-  const tournament = useGetTournamentQuery(params?.id, { cacheTime: 0 });
+  const tournament = useGetTournamentQuery(params?.id, { staleTime: 100 });
 
   const [tabsState, setTabsState] = useAtom(tabsAtom);
   const updateTournamentState = useSetAtom(updateTournamentAtom);
@@ -49,6 +49,10 @@ function TournamentPage() {
         : {}),
     });
   }, [tournament.data]);
+
+  useEffect(() => {
+    setTabsState('0');
+  }, []);
 
   if (tournament.isLoading) {
     return <Spinner />;

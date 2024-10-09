@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 
 import { Tour } from './tour.entity';
+import { TournamentLeaderboard } from './tournament-leaderboard.entity';
 import { User } from './user.entity';
 
 @Entity()
@@ -35,6 +36,12 @@ export class Tournament extends BaseEntity implements ITournament {
     cascade: true,
   })
   tours: Tour[];
+
+  @OneToMany(() => TournamentLeaderboard, (tour) => tour.tournament, {
+    eager: true,
+    cascade: true,
+  })
+  leaderboard: TournamentLeaderboard[];
 
   @ManyToMany(() => User, (user) => user.id, { eager: true, cascade: true })
   @JoinTable()

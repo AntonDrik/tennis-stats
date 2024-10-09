@@ -7,3 +7,4 @@ export * from './lib/rating-history.entity';
 export * from './lib/user-auth.entity';
 export * from './lib/permission.entity';
 export * from './lib/tournament.entity';
+export * from './lib/tournament-leaderboard.entity';

@@ -20,6 +20,9 @@ export class TournamentPipe implements PipeTransform {
           id: 'ASC',
           matches: {
             id: 'ASC',
+            gameSets: {
+              id: 'ASC',
+            },
           },
         },
       },

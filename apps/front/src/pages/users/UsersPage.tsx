@@ -71,7 +71,9 @@ export default function UsersPage() {
               return (
                 <Table.Row key={user.id}>
                   <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
-                    {user.nickname}
+                    <Text weight={'medium'} size={'3'}>
+                      {user.nickname}
+                    </Text>
                   </Table.RowHeaderCell>
 
                   <Table.Cell style={{ verticalAlign: 'middle' }}>

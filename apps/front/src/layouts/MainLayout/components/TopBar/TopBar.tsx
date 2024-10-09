@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { BurgerIcon, CloseIcon } from '../../../../shared/svg-icons';
 import { Logo } from '../../../../shared/svg-icons';
 import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
-import ProfileAvatar from './components/Avatar/Avatar';
+import AvatarAndMenu from './components/AvatarAndMenu/AvatarAndMenu';
 import BackButton from './components/BackButton/BackButton';
 import Styled from './TopBar.styles';
 
@@ -57,7 +57,7 @@ function TopBar() {
       <Flex direction={'row'} gap={'5'}>
         <BackButton />
 
-        <ProfileAvatar />
+        <AvatarAndMenu />
       </Flex>
     </Styled.Wrapper>
   );

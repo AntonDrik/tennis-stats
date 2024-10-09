@@ -17,3 +17,6 @@ export { default as ChevronDownIcon } from './chevron-down-icon';
 export { default as Logo } from './logo';
 export { default as DoubleArrowUpIcon } from './double-arrow-up-icon';
 export { default as DoubleArrowDownIcon } from './double-arrow-down-icon';
+export { default as WinnerIcon } from './winner-icon';
+export { default as SecondPlaceIcon } from './second-place-icon';
+export { default as ThirdPlaceIcon } from './third-place-icon';

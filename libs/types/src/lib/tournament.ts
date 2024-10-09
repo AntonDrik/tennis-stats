@@ -1,4 +1,5 @@
 import { ITour } from './tour';
+import { ITournamentLeaderboard } from './tournament-leaderboard';
 import { IUser } from './user';
 
 enum ETournamentStatus {
@@ -12,6 +13,7 @@ interface ITournament {
   id: number;
   date: Date;
   status: ETournamentStatus;
+  leaderboard: ITournamentLeaderboard[];
   playersCount: number;
   tours: ITour[];
   registeredUsers: IUser[];

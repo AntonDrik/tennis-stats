@@ -5,7 +5,7 @@ import {
   TournamentRegistrationDto,
   UpsertTournamentDto,
 } from '@tennis-stats/dto';
-import { Tournament, User } from '@tennis-stats/entities';
+import { Tournament } from '@tennis-stats/entities';
 import { allSynchronously, arrayIntersections } from '@tennis-stats/helpers';
 import { ETournamentStatus } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
@@ -15,11 +15,11 @@ import {
   UsersRegisteredInTournamentException,
 } from '../../../common/exceptions';
 import { MatchService } from '../../match';
-import { RatingHistoryService } from '../../rating';
 import RatingService from '../../rating/services/rating.service';
 import ToursRepository from '../../tours/repository/tours.repository';
 import { UsersRepository, UsersService } from '../../users';
 import TournamentsRepository from '../repositories/tournaments.repository';
+import LeaderboardService from './leaderboard.service';
 
 @Injectable()
 class OpenedTournamentService {
@@ -31,7 +31,7 @@ class OpenedTournamentService {
     private toursRepository: ToursRepository,
     private matchService: MatchService,
     private ratingService: RatingService,
-    private ratingHistoryService: RatingHistoryService
+    private leaderboardService: LeaderboardService
   ) {}
 
   public getOpenedToRegistrationTournament() {
@@ -88,22 +88,10 @@ class OpenedTournamentService {
     );
 
     await this.dataSource.transaction(async (manager) => {
+      await this.leaderboardService.saveLeaderboard(tournament, manager);
+
       if (tournament.handleRating) {
-        const ratingCollection = this.ratingService.calculateRating(tournament);
-
-        for (const [id, rating] of ratingCollection) {
-          await manager.update(User, { id }, { rating });
-
-          const user = await manager.findOneBy(User, { id });
-
-          if (user) {
-            await this.ratingHistoryService.addRatingToHistory(
-              user,
-              tournament.date,
-              manager
-            );
-          }
-        }
+        await this.ratingService.calculateAndSaveRating(tournament, manager);
       }
 
       await manager.update(

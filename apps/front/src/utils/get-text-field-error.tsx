@@ -11,7 +11,7 @@ export interface IFieldErrors {
 
 const renderErrorMessage = <T extends FieldErrors>(errors: T, name: keyof T) => {
   if (!errors[name]) {
-    return null;
+    return <></>;
   }
 
   const message = String(errors[name]?.message ?? '');

@@ -18,7 +18,7 @@ const dict = {
   dark: 'Светлая тема',
 };
 
-function ProfileAvatar() {
+function AvatarAndMenu() {
   const navigate = useNavigate();
 
   const logoutMutation = useLogoutMutation();
@@ -52,10 +52,11 @@ function ProfileAvatar() {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        <DropdownMenu.Item disabled onClick={gotoProfile}>
-          <PersonIcon />
-          Профиль
-        </DropdownMenu.Item>
+        {/*<DropdownMenu.Item disabled onClick={gotoProfile}>*/}
+        {/*  <PersonIcon />*/}
+        {/*  Профиль*/}
+        {/*</DropdownMenu.Item>*/}
+
         <DropdownMenu.Item onClick={changeAppearance}>
           {appearance === 'dark' ? <SunIcon /> : <DarkIcon />}
           {dict[appearance]}
@@ -70,4 +71,4 @@ function ProfileAvatar() {
   );
 }
 
-export default memo(ProfileAvatar);
+export default memo(AvatarAndMenu);

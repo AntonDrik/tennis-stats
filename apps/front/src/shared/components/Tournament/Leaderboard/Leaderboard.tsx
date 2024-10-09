@@ -50,7 +50,7 @@ function Leaderboard(props: IProps) {
                 </Table.RowHeaderCell>
 
                 <Table.Cell style={{ verticalAlign: 'middle' }}>
-                  {item.user.nickname}
+                  <Text weight={'bold'}>{item.user.nickname}</Text>
                 </Table.Cell>
 
                 <Table.Cell
@@ -58,7 +58,7 @@ function Leaderboard(props: IProps) {
                   align={'center'}
                   width={'50px'}
                 >
-                  {item.total}
+                  <Text weight={'bold'}>{item.total}</Text>
                 </Table.Cell>
 
                 {!props.onlyTotal && (

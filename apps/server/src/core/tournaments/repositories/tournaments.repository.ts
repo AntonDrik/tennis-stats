@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpsertTournamentDto, GetTournamentsQuery } from '@tennis-stats/dto';
-import { Tournament } from '@tennis-stats/entities';
-import { ETournamentStatus } from '@tennis-stats/types';
+import { Tournament, TournamentLeaderboard, User } from '@tennis-stats/entities';
+import { ETournamentStatus, ILeaderboardItem } from '@tennis-stats/types';
 import { DataSource, Repository } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
 
@@ -51,6 +51,8 @@ class TournamentsRepository extends Repository<Tournament> {
     const builder = this.createQueryBuilder('tournament')
       .leftJoinAndSelect('tournament.tours', 'tours')
       .leftJoinAndSelect('tournament.registeredUsers', 'registeredUsers')
+      .leftJoinAndSelect('tournament.leaderboard', 'leaderboard')
+      .leftJoinAndSelect('leaderboard.user', 'leaderboardUser')
       .leftJoinAndSelect('tours.matches', 'matches')
       .leftJoinAndSelect('matches.user1', 'matchUser1')
       .leftJoinAndSelect('matches.user2', 'matchUser2')
@@ -83,6 +85,20 @@ class TournamentsRepository extends Repository<Tournament> {
     tournament.playersCount = dto.playersCount;
 
     return tournament;
+  }
+
+  public createLeaderboardEntity(
+    tournament: Tournament,
+    item: ILeaderboardItem,
+    place: number
+  ) {
+    const leaderboardItem = new TournamentLeaderboard();
+
+    leaderboardItem.tournament = tournament;
+    leaderboardItem.user = item.user as User;
+    leaderboardItem.place = place;
+
+    return leaderboardItem;
   }
 
   public executeQuery<T>(query: string): Promise<T[]> {

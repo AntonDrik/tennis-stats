@@ -1,26 +1,20 @@
 import { Box, Flex, Separator, Text } from '@radix-ui/themes';
 import { parseISOWithFormat } from '@tennis-stats/helpers';
-import { ETournamentStatus } from '@tennis-stats/types';
+import { ETournamentStatus, ITournament } from '@tennis-stats/types';
 import { useUserPermissions } from '../../../../shared/hooks';
-import PlusIcon from '../../../../shared/svg-icons/plus-icon';
 import TournamentDropdownMenu from './components/DropdownMenu/DropdownMenu';
+import MiniLeaderboard from './components/MiniLeaderboard/MiniLeaderboard';
 import TournamentStatusChip from './components/StatusChip/StatusChip';
 
 import Styled from './TournamentCard.styles';
-import { TProps } from './types/TournamentCard.types';
 
-function TournamentCard(props: TProps) {
+interface IProps {
+  tournament: ITournament;
+  onClick: () => void;
+}
+
+function TournamentCard(props: IProps) {
   const permissions = useUserPermissions();
-
-  if (props.type === 'add-new') {
-    return (
-      <Styled.Card onClick={() => props.onClick?.()}>
-        <Flex align={'center'} justify={'center'} height={'100%'}>
-          <PlusIcon size={3} />
-        </Flex>
-      </Styled.Card>
-    );
-  }
 
   const showMenu =
     props.tournament.status === ETournamentStatus.REGISTRATION &&
@@ -42,7 +36,7 @@ function TournamentCard(props: TProps) {
 
       <Separator my="2" size="4" />
 
-      <Box></Box>
+      <MiniLeaderboard tournament={props.tournament} />
     </Styled.Card>
   );
 }
