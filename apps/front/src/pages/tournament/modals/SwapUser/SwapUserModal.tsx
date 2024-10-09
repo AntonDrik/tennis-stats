@@ -7,6 +7,7 @@ import { useSwapUserOnMatchMutation } from '../../../../core/api';
 import { tournamentAtom, updateTournamentAtom } from '../../../../core/store';
 import { useModal } from '../../../../shared/components';
 import { UsersSelect } from '../../../../shared/components/Inputs';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 
 function SwapUserModal() {
   const tournamentState = useAtomValue(tournamentAtom);
@@ -45,7 +46,9 @@ function SwapUserModal() {
   };
 
   return (
-    <Dialog.Content>
+    <Dialog.Content onOpenAutoFocus={(event) => event.preventDefault()}>
+      <DialogCloseButton />
+
       <Dialog.Title>Заменить игрока</Dialog.Title>
 
       <Flex direction={'column'} mt={'1'} gap={'4'}>

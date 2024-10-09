@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import { useAddTourMutation } from '../../../../core/api';
 import { tournamentAtom } from '../../../../core/store';
 import { Select, TextField, useModal } from '../../../../shared/components';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { getTextFieldError } from '../../../../utils';
 
 function CreateNewTour() {
@@ -35,7 +36,12 @@ function CreateNewTour() {
   };
 
   return (
-    <Dialog.Content maxWidth={'300px'}>
+    <Dialog.Content
+      maxWidth={'300px'}
+      onOpenAutoFocus={(event) => event.preventDefault()}
+    >
+      <DialogCloseButton />
+
       <Dialog.Title>Добавить тур</Dialog.Title>
 
       <form onSubmit={form.handleSubmit(submit)}>

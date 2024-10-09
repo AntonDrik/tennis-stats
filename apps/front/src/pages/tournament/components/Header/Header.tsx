@@ -23,7 +23,12 @@ function TournamentHeader({ tournament }: IProps) {
 
   return (
     <Flex mb={'3'} justify={'between'} align={'center'} gap={'3'} wrap={'wrap'}>
-      <Flex align={'center'} gap={'2'}>
+      <Flex
+        align={'center'}
+        justify={!isMobileDevice ? 'start' : 'between'}
+        gap={'2'}
+        width={isMobileDevice ? '100%' : 'auto'}
+      >
         <Heading size={'6'}>
           Турнир от {parseISOWithFormat(tournament.date, 'dd.MM.yyyy')}
         </Heading>

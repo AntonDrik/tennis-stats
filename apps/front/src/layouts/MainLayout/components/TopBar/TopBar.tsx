@@ -1,6 +1,7 @@
 import { Flex, IconButton } from '@radix-ui/themes';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { BurgerIcon, CloseIcon } from '../../../../shared/svg-icons';
 import { Logo } from '../../../../shared/svg-icons';
 import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
@@ -11,6 +12,8 @@ import Styled from './TopBar.styles';
 function TopBar() {
   const mainLayoutState = useAtomValue(mainLayoutAtom);
   const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
+
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const getIcon = useCallback(() => {
     if (mainLayoutState.isOpenedMenu) {
@@ -30,20 +33,8 @@ function TopBar() {
     updateMainLayoutState({ isOpenedMenu: true });
   };
 
-  const handleScroll = () => {
-    updateMainLayoutState({ isFixedTop: Boolean(window.scrollY) });
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   return (
-    <Styled.Wrapper $isFixed={mainLayoutState.isFixedTop}>
+    <Styled.Wrapper>
       <Flex gap={'2'} align={'center'}>
         {mainLayoutState.isHiddenMenu && (
           <IconButton variant="soft" size={'3'} onClick={handleClick}>
@@ -55,7 +46,7 @@ function TopBar() {
       </Flex>
 
       <Flex direction={'row'} gap={'5'}>
-        <BackButton />
+        {!isMobileDevice && <BackButton />}
 
         <AvatarAndMenu />
       </Flex>

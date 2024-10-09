@@ -27,7 +27,11 @@ class MatchService {
     private pairsGeneratorService: PairsGeneratorService
   ) {}
 
-  public async createMatches(users: User[], tourDto: CreateTourDto): Promise<Match[]> {
+  public async createMatches(
+    users: User[],
+    tourDto: CreateTourDto,
+    isPlayoff = false
+  ): Promise<Match[]> {
     const pairs = this.pairsGeneratorService.generatePairs(users, tourDto.pairsGenerator);
 
     return allSynchronously(
@@ -41,6 +45,7 @@ class MatchService {
         match.user1 = pair.user1;
         match.user2 = pair.user2;
         match.number = index + 1;
+        match.isPlayoff = isPlayoff;
         match.gameSets = gameSets;
 
         return match;

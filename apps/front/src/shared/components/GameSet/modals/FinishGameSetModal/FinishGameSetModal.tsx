@@ -4,6 +4,7 @@ import * as React from 'react';
 import { tournamentAtom } from '../../../../../core/store';
 
 import { useModal } from '../../../index';
+import { DialogCloseButton } from '../../../Modals';
 import FinishButton from '../../FinishButton/FinishButton';
 import ScoreBlock from '../../ScoreBlock/ScoreBlock';
 import ModalHeader from '../components/Header/Header';
@@ -17,6 +18,8 @@ function FinishGameSetModal() {
 
   return (
     <Dialog.Content>
+      <DialogCloseButton />
+
       <ModalHeader title={(set) => `Завершить сет № ${set?.number}`} />
 
       <Flex direction={'column'} mt={'6'}>

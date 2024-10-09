@@ -6,18 +6,18 @@ const Container = styled(Flex)<{ $isOpened: boolean }>(
     display: 'flex',
     flexDirection: 'column',
 
-    backgroundColor: 'var(--blue-3)',
+    backgroundColor: 'var(--sage-3)',
     borderRadius: 'var(--radius-3)',
     overflow: 'hidden',
     cursor: 'pointer',
     transition: 'height .2s ease-in-out',
 
     '&:hover': {
-      backgroundColor: 'var(--blue-4)',
+      backgroundColor: 'var(--sage-4)',
     },
   },
   ({ $isOpened }) => ({
-    height: $isOpened ? '140px' : '72px',
+    height: $isOpened ? '160px' : '92px',
   })
 );
 
@@ -30,14 +30,14 @@ const Username = styled(Text)({
   flex: 1,
   whiteSpace: 'nowrap',
   marginRight: 12,
-  color: 'var(--blue-12)',
+  color: 'var(--sage-12)',
 });
 
 const ScoreContainer = styled(Flex)({
   flexDirection: 'column',
 
   '&:hover': {
-    backgroundColor: 'var(--blue-7)',
+    backgroundColor: 'var(--sage-7)',
   },
 });
 
@@ -47,8 +47,8 @@ const MatchScore = styled(Flex)<{ $isWin?: boolean }>(
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    width: 35,
-    height: 35,
+    width: 45,
+    height: 45,
   },
   ({ $isWin }) => ({
     backgroundColor: $isWin ? 'var(--grass-6)' : 'var(--blue-6)',
@@ -60,14 +60,14 @@ const SetScore = styled(Flex)({
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
-  width: 35,
-  height: 35,
+  width: 45,
+  height: 45,
 });
 
 const Divider = styled(Flex)<{ $isPlayoffCard: boolean | unknown }>(
   {
     flexDirection: 'column',
-    backgroundColor: 'var(--blue-7)',
+    backgroundColor: 'var(--sage-7)',
   },
   ({ $isPlayoffCard }) => ({
     height: $isPlayoffCard ? 2 : 1,
@@ -75,7 +75,7 @@ const Divider = styled(Flex)<{ $isPlayoffCard: boolean | unknown }>(
 );
 
 const TextMeduim = styled(Text)({
-  color: 'var(--blue-12)',
+  color: 'var(--sage-12)',
 });
 
 export default {

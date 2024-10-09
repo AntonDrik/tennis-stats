@@ -1,19 +1,21 @@
-import { Flex, Heading, IconButton, Table, Text } from '@radix-ui/themes';
+import { Box, Flex, Heading, IconButton, Table, Text } from '@radix-ui/themes';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { useNavigate } from 'react-router-dom';
 import { useUsersQuery } from '../../core/api';
 import { appRoutes } from '../../routes/routes.constant';
-import { Page, useModal } from '../../shared/components';
+import { Page, Spinner, useModal } from '../../shared/components';
+import useMediaQuery from '../../shared/hooks/useMediaQuery';
 import useUserPermissions from '../../shared/hooks/useUserPermissions';
 import { DoubleArrowUpIcon, DoubleArrowDownIcon, PlusIcon } from '../../shared/svg-icons';
 import CreateUserModal from './modals/CreateUserModal/CreateUserModal';
 
 export default function UsersPage() {
-  const { data: usersList } = useUsersQuery();
+  const { data: usersList, isLoading } = useUsersQuery();
 
   const modal = useModal();
   const navigate = useNavigate();
   const permissions = useUserPermissions();
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const handleNewUserClick = () => {
     modal.open(<CreateUserModal />);
@@ -46,7 +48,13 @@ export default function UsersPage() {
   return (
     <Page title={'Пользователи'}>
       <Flex direction={'column'}>
-        <Flex align={'center'} mb={'4'} gap={'2'}>
+        <Flex
+          align={'center'}
+          mb={'4'}
+          gap={'2'}
+          width={isMobileDevice ? '100%' : 'auto'}
+          justify={isMobileDevice ? 'between' : 'start'}
+        >
           <Heading size={'7'}>Пользователи</Heading>
 
           {permissions.canCreateUser && (
@@ -64,34 +72,58 @@ export default function UsersPage() {
             </Table.Row>
           </Table.Header>
 
-          <Table.Body>
-            {(usersList ?? []).map((user) => {
-              const ratingInfo = getRatingInfo(user);
+          {usersList?.length && usersList.length > 0 && (
+            <Table.Body>
+              {usersList.map((user) => {
+                const ratingInfo = getRatingInfo(user);
 
-              return (
-                <Table.Row key={user.id}>
-                  <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
-                    <Text weight={'medium'} size={'3'}>
-                      {user.nickname}
-                    </Text>
-                  </Table.RowHeaderCell>
+                return (
+                  <Table.Row key={user.id}>
+                    <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
+                      <Text weight={'medium'} size={'3'}>
+                        {user.nickname}
+                      </Text>
+                    </Table.RowHeaderCell>
 
-                  <Table.Cell style={{ verticalAlign: 'middle' }}>
-                    <Text
-                      style={{
-                        color: ratingInfo.color,
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                      weight={'medium'}
-                    >
-                      {Math.round(user.rating)} ({user.ratingDiff}){ratingInfo.icon}
-                    </Text>
-                  </Table.Cell>
-                </Table.Row>
-              );
-            })}
-          </Table.Body>
+                    <Table.Cell style={{ verticalAlign: 'middle' }}>
+                      <Text
+                        style={{
+                          color: ratingInfo.color,
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                        weight={'medium'}
+                      >
+                        {Math.round(user.rating)} ({user.ratingDiff}){ratingInfo.icon}
+                      </Text>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
+          )}
+
+          {isLoading && (
+            <Table.Body>
+              <Table.Row style={{ position: 'relative' }}>
+                <Table.RowHeaderCell>
+                  <Box p={'5'}>
+                    <Spinner />
+                  </Box>
+                </Table.RowHeaderCell>
+              </Table.Row>
+            </Table.Body>
+          )}
+
+          {usersList && !usersList.length && (
+            <Table.Body>
+              <Table.Row>
+                <Table.RowHeaderCell colSpan={2} align={'center'}>
+                  Нет пользователей
+                </Table.RowHeaderCell>
+              </Table.Row>
+            </Table.Body>
+          )}
         </Table.Root>
       </Flex>
     </Page>

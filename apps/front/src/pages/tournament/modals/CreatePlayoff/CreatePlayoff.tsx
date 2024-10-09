@@ -20,6 +20,7 @@ import {
   useModal,
   Spinner as LargeSpinner,
 } from '../../../../shared/components';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 import { getTextFieldError } from '../../../../utils';
 import usePlayoffActiveUsers from './hooks/usePlayoffActiveUsers';
@@ -66,7 +67,9 @@ function CreatePlayoff(props: IProps) {
   }, [activeUsers, form]);
 
   return (
-    <Dialog.Content>
+    <Dialog.Content onOpenAutoFocus={(event) => event.preventDefault()}>
+      <DialogCloseButton />
+
       <Dialog.Title>Создать плейофф</Dialog.Title>
 
       <form onSubmit={form.handleSubmit(submit)}>

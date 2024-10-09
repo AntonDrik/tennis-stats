@@ -1,10 +1,13 @@
 import { Button, Dialog, Flex } from '@radix-ui/themes';
 import * as React from 'react';
+import { DialogCloseButton } from '../core';
 import { IConfirmProps } from './ConfirmModal.tyles';
 
 function ConfirmModal(props: IConfirmProps) {
   return (
     <Dialog.Content>
+      <DialogCloseButton />
+
       <Dialog.Title>{props.title}</Dialog.Title>
 
       <Dialog.Description>{props.description}</Dialog.Description>

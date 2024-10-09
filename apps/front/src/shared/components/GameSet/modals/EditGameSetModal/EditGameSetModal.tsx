@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import * as React from 'react';
 import { tournamentAtom } from '../../../../../core/store';
 
-import { useModal } from '../../../index';
+import { useModal, DialogCloseButton } from '../../../index';
 import FinishButton from '../../FinishButton/FinishButton';
 import ScoreBlock from '../../ScoreBlock/ScoreBlock';
 import ModalHeader from '../components/Header/Header';
@@ -15,6 +15,8 @@ function EditGameSetModal() {
 
   return (
     <Dialog.Content>
+      <DialogCloseButton />
+
       <ModalHeader title={(set) => `Редактировать счет для сета № ${set?.number}`} />
 
       <Flex direction={'column'} mt={'6'}>

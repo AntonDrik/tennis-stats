@@ -65,10 +65,14 @@ class PlayoffService {
     setsCount: number,
     stage: TPlayOffRound
   ) {
-    const matches = await this.matchService.createMatches(activeUsers, {
-      setsCount,
-      pairsGenerator: ETourGenerator.RANDOM,
-    });
+    const matches = await this.matchService.createMatches(
+      activeUsers,
+      {
+        setsCount,
+        pairsGenerator: ETourGenerator.RANDOM,
+      },
+      true
+    );
 
     return this.toursRepository.createPlayOffTourEntity(setsCount, stage, matches);
   }

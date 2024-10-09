@@ -26,7 +26,7 @@ class LeaderboardService {
   }
 
   public async saveLeaderboard(tournament: Tournament, manager: EntityManager) {
-    const leaderboard = this.getLeaderboard(tournament).slice(0, 5);
+    const leaderboard = this.getLeaderboard(tournament).slice(0, 3);
 
     const entities = leaderboard.map((item, index) => {
       return this.repository.createLeaderboardEntity(tournament, item, index + 1);
@@ -36,17 +36,9 @@ class LeaderboardService {
   }
 
   private getTournamentMatches(tournament: Tournament): Match[] {
-    const matches = tournament.tours.flatMap((tour) =>
-      tour.matches.flatMap((match) => match)
-    );
-
-    const hasPlayoff = matches.some((match) => match.isPlayoff);
-
-    if (hasPlayoff) {
-      return matches.filter((match) => match.isPlayoff && match.user1 && match.user2);
-    }
-
-    return matches.filter((match) => match.user1 && match.user2);
+    return tournament.tours
+      .flatMap((tour) => tour.matches.flatMap((match) => match))
+      .filter((match) => match.user1 && match.user2);
   }
 
   private setPointsForUser(
@@ -98,5 +90,9 @@ class LeaderboardService {
 export default LeaderboardService;
 
 function byTotalAndRating(a: ILeaderboardItem, b: ILeaderboardItem) {
-  return b.total - a.total || b.user.rating - a.user.rating;
+  return (
+    b.wins - a.wins ||
+    b.total - a.total ||
+    (b.user.rating - a.user.rating) | b.user.nickname.localeCompare(a.user.nickname)
+  );
 }

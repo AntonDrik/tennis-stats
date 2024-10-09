@@ -2,6 +2,7 @@ import { Box, Dialog, Flex, ScrollArea } from '@radix-ui/themes';
 import React from 'react';
 import { useGetLeaderboardQuery } from '../../../../core/api';
 import { Spinner } from '../../../../shared/components';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 
 interface IProps {
@@ -13,11 +14,13 @@ function LeaderboardModal(props: IProps) {
 
   return (
     <Dialog.Content>
+      <DialogCloseButton />
+
       {leaderboard.isLoading && <Spinner />}
       <Dialog.Title align={'center'}>Таблица лидеров</Dialog.Title>
 
       <Flex mr={'-3'}>
-        <ScrollArea scrollbars="vertical" style={{ height: 'calc(100vh - 200px)' }}>
+        <ScrollArea scrollbars="vertical" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           <Box pr={'3'}>
             {leaderboard.data && <Leaderboard leaderboardItems={leaderboard.data} />}
           </Box>

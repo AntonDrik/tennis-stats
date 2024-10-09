@@ -2,6 +2,7 @@ import { Dialog } from '@radix-ui/themes';
 import * as React from 'react';
 import { useModal } from '../../../../shared/components';
 import RegistrationForm from '../../../../shared/components/Auth/RegistrationForm/RegistrationForm';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 
 function CreateUserModal() {
   const modal = useModal();
@@ -10,6 +11,8 @@ function CreateUserModal() {
 
   return (
     <Dialog.Content>
+      <DialogCloseButton />
+
       <Dialog.Title>Создание пользователя</Dialog.Title>
 
       <RegistrationForm

@@ -21,17 +21,12 @@ function Leaderboard(props: IProps) {
         <Table.Row>
           <Table.ColumnHeaderCell align={'center'}>#</Table.ColumnHeaderCell>
           <Table.ColumnHeaderCell>Игрок</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell align={'center'}>Очки</Table.ColumnHeaderCell>
 
-          {!props.onlyTotal && (
-            <Table.ColumnHeaderCell align="center">Г</Table.ColumnHeaderCell>
-          )}
+          <Table.ColumnHeaderCell align="center">Г</Table.ColumnHeaderCell>
 
-          {!props.onlyTotal && (
-            <Table.ColumnHeaderCell align="center">Побед</Table.ColumnHeaderCell>
-          )}
+          <Table.ColumnHeaderCell align="center">Побед</Table.ColumnHeaderCell>
 
-          {props.onRemove && <Table.ColumnHeaderCell>Действия</Table.ColumnHeaderCell>}
+          {props.onRemove && <Table.ColumnHeaderCell></Table.ColumnHeaderCell>}
         </Table.Row>
       </Table.Header>
 
@@ -56,30 +51,18 @@ function Leaderboard(props: IProps) {
                 <Table.Cell
                   style={{ verticalAlign: 'middle' }}
                   align={'center'}
-                  width={'50px'}
+                  width={'40px'}
                 >
-                  <Text weight={'bold'}>{item.total}</Text>
+                  {item.scoreDiff}
                 </Table.Cell>
 
-                {!props.onlyTotal && (
-                  <Table.Cell
-                    style={{ verticalAlign: 'middle' }}
-                    align={'center'}
-                    width={'40px'}
-                  >
-                    {item.scoreDiff}
-                  </Table.Cell>
-                )}
-
-                {!props.onlyTotal && (
-                  <Table.Cell
-                    style={{ verticalAlign: 'middle' }}
-                    align={'center'}
-                    width={'60px'}
-                  >
-                    {item.wins}
-                  </Table.Cell>
-                )}
+                <Table.Cell
+                  style={{ verticalAlign: 'middle' }}
+                  align={'center'}
+                  width={'60px'}
+                >
+                  {item.wins}
+                </Table.Cell>
 
                 {props.onRemove && (
                   <Table.Cell align="center" width={'20px'}>

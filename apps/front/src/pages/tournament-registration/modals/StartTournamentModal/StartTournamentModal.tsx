@@ -18,6 +18,8 @@ import { toast } from 'react-hot-toast';
 import { useStartTournamentMutation } from '../../../../core/api';
 import { Select, TextField, useModal } from '../../../../shared/components';
 import { GroupBox } from '../../../../shared/components/GroupBox/GroupBox';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
+import { useMediaQuery } from '../../../../shared/hooks';
 import { PlusIcon, TrashIcon } from '../../../../shared/svg-icons';
 
 import Styled from './StartTournamentModal.styles';
@@ -31,6 +33,7 @@ function StartTournamentModal(props: IProps) {
   const startTournament = useStartTournamentMutation();
 
   const modal = useModal();
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const form = useForm<StartTournamentDto>({
     mode: 'onChange',
@@ -70,7 +73,12 @@ function StartTournamentModal(props: IProps) {
   };
 
   return (
-    <Dialog.Content maxWidth={'570px'}>
+    <Dialog.Content
+      maxWidth={'570px'}
+      onOpenAutoFocus={(event) => event.preventDefault()}
+    >
+      <DialogCloseButton />
+
       <Dialog.Title mb={'6'}>Настройте турнир</Dialog.Title>
 
       <FormProvider {...form}>
@@ -98,11 +106,29 @@ function StartTournamentModal(props: IProps) {
                     <Styled.TourRow
                       key={field.id}
                       mb={isLastRow(index) ? '2' : '0'}
-                      gap={'4'}
+                      gap={!isMobileDevice ? '4' : '2'}
                     >
-                      <Text align={'left'} mb={'2'} wrap={'nowrap'}>
-                        Тур № {index + 1}
-                      </Text>
+                      <Flex align={'center'}>
+                        <Text
+                          align={'left'}
+                          mb={!isMobileDevice ? '2' : '0'}
+                          wrap={'nowrap'}
+                        >
+                          Тур № {index + 1}
+                        </Text>
+
+                        {isMobileDevice && (
+                          <IconButton
+                            color={'red'}
+                            variant={'ghost'}
+                            size={'1'}
+                            ml={'3'}
+                            onClick={() => toursControl.remove(index)}
+                          >
+                            <TrashIcon />
+                          </IconButton>
+                        )}
+                      </Flex>
 
                       <TextField
                         size={'3'}
@@ -134,26 +160,33 @@ function StartTournamentModal(props: IProps) {
                         )}
                       />
 
-                      <IconButton
-                        color={'red'}
-                        variant={'soft'}
-                        size={'3'}
-                        mt={'5'}
-                        ml={'4'}
-                        onClick={() => toursControl.remove(index)}
-                      >
-                        <TrashIcon />
-                      </IconButton>
+                      {!isMobileDevice && (
+                        <IconButton
+                          color={'red'}
+                          variant={'soft'}
+                          size={'3'}
+                          mt={'5'}
+                          ml={'4'}
+                          onClick={() => toursControl.remove(index)}
+                        >
+                          <TrashIcon />
+                        </IconButton>
+                      )}
                     </Styled.TourRow>
 
-                    {index !== toursControl.fields.length - 1 && (
-                      <Separator size={'4'} my={'2'} />
-                    )}
+                    <Separator size={'4'} my={'2'} />
                   </React.Fragment>
                 ))}
               </Flex>
 
-              <IconButton variant={'soft'} type={'button'} onClick={addTour}>
+              <IconButton
+                variant={'soft'}
+                color={'green'}
+                type={'button'}
+                mt={'2'}
+                style={{ width: isMobileDevice ? '100%' : '33px' }}
+                onClick={addTour}
+              >
                 <PlusIcon />
               </IconButton>
             </GroupBox>

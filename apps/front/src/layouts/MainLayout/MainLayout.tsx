@@ -5,14 +5,13 @@ import useMediaQuery from '../../shared/hooks/useMediaQuery';
 
 import Sidebar from './components/Sidebar/Sidebar';
 import TopBar from './components/TopBar/TopBar';
-import { mainLayoutAtom, updateMainLayoutAtom } from './MainLayout.state';
+import { updateMainLayoutAtom } from './MainLayout.state';
 
 interface IProps {
   children: ReactElement;
 }
 
 function MainLayout(props: IProps) {
-  const mainLayoutState = useAtomValue(mainLayoutAtom);
   const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
 
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
@@ -39,7 +38,6 @@ function MainLayout(props: IProps) {
             flexShrink: 'unset',
             width: 'calc(100% - 250px)',
             marginLeft: !isSmallDevice ? 250 : 0,
-            marginTop: mainLayoutState.isFixedTop ? 55 : 0,
           }}
         >
           {props.children}

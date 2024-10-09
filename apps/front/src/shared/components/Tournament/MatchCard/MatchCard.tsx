@@ -68,13 +68,13 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
     >
       <Styled.Row>
         <Flex direction={'column'} style={{ flex: 1 }}>
-          <Styled.Username mb={'1'} weight={'medium'}>
+          <Styled.Username mb={'2'} weight={'medium'}>
             {match.user1?.nickname ?? 'Не определено'}
           </Styled.Username>
 
           <Styled.Divider $isPlayoffCard={isPlayoffCard} />
 
-          <Styled.Username mt={'1'} weight={'medium'}>
+          <Styled.Username mt={'2'} weight={'medium'}>
             {match.user2?.nickname ?? 'Не определено'}
           </Styled.Username>
         </Flex>
@@ -99,7 +99,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
 
           <Flex
             direction={'row'}
-            style={{ borderRight: isPlayoffCard ? '4px solid var(--blue-7)' : 'none' }}
+            style={{ borderRight: isPlayoffCard ? '7px solid var(--sage-7)' : 'none' }}
           >
             {match.gameSets.map((gameSet) => (
               <Styled.ScoreContainer
@@ -127,7 +127,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
 
       {!isPlayoffCard && (
         <React.Fragment>
-          <Separator size={'4'} ml={'3'} style={{ backgroundColor: 'var(--blue-7)' }} />
+          <Separator size={'4'} ml={'3'} style={{ backgroundColor: 'var(--sage-7)' }} />
 
           <MatchCardControls />
         </React.Fragment>

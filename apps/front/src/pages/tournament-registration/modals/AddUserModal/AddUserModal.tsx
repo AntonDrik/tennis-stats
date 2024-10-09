@@ -9,10 +9,12 @@ import {
   Table,
 } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
+import * as React from 'react';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useJoinTournamentMutation } from '../../../../core/api';
 import { useModal } from '../../../../shared/components';
+import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { useMultiCheckboxState } from '../../../../shared/hooks';
 
 import Styled from './AddUserModal.styles';
@@ -61,7 +63,12 @@ function AddUsersToTournamentModal(props: IProps) {
   };
 
   return (
-    <Dialog.Content maxHeight={'90vh'}>
+    <Dialog.Content
+      maxHeight={'90vh'}
+      onOpenAutoFocus={(event) => event.preventDefault()}
+    >
+      <DialogCloseButton />
+
       <Dialog.Title>Добавить пользователей на турнир</Dialog.Title>
 
       <Box pt={'2'} mr={'-3'}>

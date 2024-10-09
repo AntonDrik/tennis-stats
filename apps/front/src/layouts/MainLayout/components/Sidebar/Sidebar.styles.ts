@@ -40,7 +40,7 @@ const Backdrop = styled(Box)<IMenuWrapperProps>(
   {
     position: 'fixed',
     top: 57,
-    left: 250,
+    left: 0,
     right: 0,
     bottom: 0,
     backgroundColor: 'var(--black-a5)',

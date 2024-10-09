@@ -3,13 +3,11 @@ import { atom } from 'jotai';
 interface IMainLayoutState {
   isHiddenMenu: boolean;
   isOpenedMenu: boolean;
-  isFixedTop: boolean;
 }
 
 const mainLayoutAtom = atom<IMainLayoutState>({
   isHiddenMenu: false,
   isOpenedMenu: false,
-  isFixedTop: false,
 });
 
 const updateMainLayoutAtom = atom(
