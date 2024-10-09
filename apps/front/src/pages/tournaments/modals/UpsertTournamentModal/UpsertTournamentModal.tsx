@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Button, Dialog, Flex, Spinner } from '@radix-ui/themes';
 import { UpsertTournamentDto } from '@tennis-stats/dto';
+import { useNavigate } from 'react-router-dom';
 import {
   useCreateTournamentMutation,
   useEditTournamentMutation,
 } from '../../../../core/api';
+import routes from '../../../../routes/routes';
+import { appRoutes } from '../../../../routes/routes.constant';
 import { TextField, useModal } from '../../../../shared/components';
 
 function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
@@ -25,9 +28,10 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
     const request = { playersCount: Number(playersCount) };
 
     if (!isUpdateModel) {
-      createTournament.mutateAsync(request).then(() => {
+      createTournament.mutateAsync(request).then((tournament) => {
         modal.close();
         toast.success(`Турнир успешно создан`);
+        void routes.navigate(appRoutes.TOURNAMENT_BY_ID(tournament.id));
       });
 
       return;

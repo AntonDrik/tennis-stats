@@ -11,7 +11,7 @@ function useFinishTournamentMutation() {
     {
       onSuccess: () => {
         void queryClient.invalidateQueries({
-          queryKey: ['get-tournaments', 'get-tournament'],
+          queryKey: ['get-tournaments'],
         });
       },
     }

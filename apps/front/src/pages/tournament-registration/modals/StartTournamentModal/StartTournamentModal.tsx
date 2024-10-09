@@ -28,9 +28,9 @@ interface IProps {
 }
 
 function StartTournamentModal(props: IProps) {
-  const modal = useModal();
-
   const startTournament = useStartTournamentMutation();
+
+  const modal = useModal();
 
   const form = useForm<StartTournamentDto>({
     mode: 'onChange',
@@ -75,10 +75,10 @@ function StartTournamentModal(props: IProps) {
               <Controller
                 name="handleRating"
                 control={form.control}
-                render={({ field: { onChange } }) => (
+                render={({ field: { value, onChange } }) => (
                   <Text as="label" size="2">
                     <Flex gap="2">
-                      <Switch size="2" defaultChecked onChange={onChange} />
+                      <Switch size="2" checked={value} onCheckedChange={onChange} />
                       Считать рейтинг
                     </Flex>
                   </Text>

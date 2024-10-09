@@ -44,15 +44,11 @@ class RatingHistoryService {
 
     const prevRating = prevDayRecord?.[0]?.rating;
 
-    console.log(`user: ${user.nickname}`, prevRating);
-
     if (!prevRating) {
       return '+0';
     }
 
     const ratingDiff = user.rating - prevRating;
-
-    console.log('diff:', ratingDiff);
 
     return ratingDiff > 0 ? `+${ratingDiff}` : String(ratingDiff);
   }

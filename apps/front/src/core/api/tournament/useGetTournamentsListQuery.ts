@@ -18,5 +18,6 @@ export function useGetTournamentsListQuery(query?: GetTournamentsQuery) {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
+    cacheTime: 0,
   });
 }

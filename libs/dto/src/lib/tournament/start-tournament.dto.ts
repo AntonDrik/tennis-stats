@@ -10,10 +10,11 @@ import CreateTourDto from '../tour/create-tour.dto';
 
 class StartTournamentDto {
   @IsNumber({}, { each: true })
+  @ArrayNotEmpty()
   registeredUsersIds: number[];
 
   @IsBoolean()
-  @Transform(({ value }) => value === 'true')
+  @Transform(({ value }) => value || value === 'true')
   handleRating: boolean;
 
   @IsArray()

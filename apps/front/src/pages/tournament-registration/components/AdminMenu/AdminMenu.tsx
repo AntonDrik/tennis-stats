@@ -46,14 +46,14 @@ function RegistrationAdminMenu(props: IProps) {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        <DropdownMenu.Item color={'green'} onClick={openStartTournamentModal}>
-          <PlayIcon />
-          Запустить турнир
-        </DropdownMenu.Item>
-
         <DropdownMenu.Item onClick={openAddUsersModal}>
           <PlusIcon />
           Добавить пользователей
+        </DropdownMenu.Item>
+
+        <DropdownMenu.Item color={'green'} onClick={openStartTournamentModal}>
+          <PlayIcon />
+          Запустить турнир
         </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
