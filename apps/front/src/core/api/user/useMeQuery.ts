@@ -1,21 +1,16 @@
-import { IUser } from '@tennis-stats/types'
-import { useQuery } from 'react-query'
-import { updateMeStore } from '../../store'
-import axiosFetcher from '../axios/fetcher'
-
+import { IUser } from '@tennis-stats/types';
+import { useQuery } from 'react-query';
+import { updateMeStore } from '../../store';
+import axiosFetcher from '../axios/fetcher';
 
 export function fetchMe() {
-    return axiosFetcher.get<IUser>('/users/me')
+  return axiosFetcher.get<IUser>('/users/me', { skipToastError: true });
 }
 
 function useMeQuery() {
-    return useQuery<IUser>(
-        ['get-me'],
-        fetchMe,
-        {
-            onSuccess: updateMeStore
-        }
-    )
+  return useQuery<IUser>(['get-me'], fetchMe, {
+    onSuccess: updateMeStore,
+  });
 }
 
-export default useMeQuery
+export default useMeQuery;

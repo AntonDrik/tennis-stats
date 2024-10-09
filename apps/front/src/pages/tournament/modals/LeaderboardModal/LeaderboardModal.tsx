@@ -1,6 +1,7 @@
 import { Box, Dialog, Flex, ScrollArea } from '@radix-ui/themes';
 import React from 'react';
 import { useGetLeaderboardQuery } from '../../../../core/api';
+import { Spinner } from '../../../../shared/components';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 
 interface IProps {
@@ -12,6 +13,7 @@ function LeaderboardModal(props: IProps) {
 
   return (
     <Dialog.Content>
+      {leaderboard.isLoading && <Spinner />}
       <Dialog.Title align={'center'}>Таблица лидеров</Dialog.Title>
 
       <Flex mr={'-3'}>

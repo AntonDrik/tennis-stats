@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useGetGameSetQuery } from '../../../../core/api';
 import { ITournamentState } from '../../../../core/store';
+import Spinner from '../../Spinner/Spinner';
 import PlayerLabel from './components/PlayerLabel/PlayerLabel';
 import ScoreSelector from './components/ScoreSelector/ScoreSelector';
 import Styled from './ScoreBlock.styles';
@@ -21,7 +22,7 @@ function ScoreBlock(props: IProps) {
   const [value1, setValue1] = useState<TScore>(0);
   const [value2, setValue2] = useState<TScore>(0);
 
-  const { data: gameSet } = useGetGameSetQuery(props.tournamentState);
+  const { data: gameSet, isLoading } = useGetGameSetQuery(props.tournamentState);
 
   const handleChangeInput = (type: 'player1' | 'player2', value: number) => {
     if (!Number.isFinite(value)) {
@@ -50,6 +51,8 @@ function ScoreBlock(props: IProps) {
 
   return (
     <Flex>
+      {isLoading && <Spinner />}
+
       <Styled.SectionWrapper gap={'2'} pr={'4'}>
         <PlayerLabel player={gameSet?.player1} number={1} />
 

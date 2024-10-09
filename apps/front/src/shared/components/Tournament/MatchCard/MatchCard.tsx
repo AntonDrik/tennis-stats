@@ -2,10 +2,12 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import React, { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { IGameSet, IMatch } from '@tennis-stats/types';
 import { Flex, Separator } from '@radix-ui/themes';
+import { useIsMutating } from 'react-query';
 import { tournamentAtom, updateTournamentAtom } from '../../../../core/store';
 import { useCanManageTournament } from '../../../../pages/tournament/hooks';
 import { EditGameSetModal, FinishGameSetModal } from '../../GameSet';
 import { useModal } from '../../Modals';
+import Spinner from '../../Spinner/Spinner';
 import MatchCardControls from './components/MatchCardControls';
 import Styled from './MatchCard.styles';
 
@@ -20,6 +22,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
 
   const modal = useModal();
   const canManageTournament = useCanManageTournament();
+  const isFinishingSet = useIsMutating(['finish-game-set']);
 
   const isEmptyMatch = !match.user1 || !match.user2;
   const isPlayer1Winner = match.totalScore.user1 > match.totalScore.user2;
@@ -76,7 +79,8 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
           </Styled.Username>
         </Flex>
 
-        <Flex direction={'row'}>
+        <Flex direction={'row'} position={'relative'}>
+          {isFinishingSet > 0 && <Spinner />}
           <Flex direction={'column'}>
             <Styled.MatchScore $isWin={isPlayer1Winner}>
               <Styled.TextMeduim weight={'medium'}>

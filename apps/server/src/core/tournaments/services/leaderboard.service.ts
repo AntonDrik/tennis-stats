@@ -36,9 +36,17 @@ class LeaderboardService {
   }
 
   private getTournamentMatches(tournament: Tournament): Match[] {
-    return tournament.tours
-      .flatMap((tour) => tour.matches.flatMap((match) => match))
-      .filter((match) => match.user1 && match.user2);
+    const matches = tournament.tours.flatMap((tour) =>
+      tour.matches.flatMap((match) => match)
+    );
+
+    const hasPlayoff = matches.some((match) => match.isPlayoff);
+
+    if (hasPlayoff) {
+      return matches.filter((match) => match.isPlayoff && match.user1 && match.user2);
+    }
+
+    return matches.filter((match) => match.user1 && match.user2);
   }
 
   private setPointsForUser(

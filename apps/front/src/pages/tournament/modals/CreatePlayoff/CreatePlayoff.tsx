@@ -15,7 +15,11 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useCreatePlayoffMutation, useGetLeaderboardQuery } from '../../../../core/api';
-import { TextField, useModal } from '../../../../shared/components';
+import {
+  TextField,
+  useModal,
+  Spinner as LargeSpinner,
+} from '../../../../shared/components';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 import { getTextFieldError } from '../../../../utils';
 import usePlayoffActiveUsers from './hooks/usePlayoffActiveUsers';
@@ -73,6 +77,8 @@ function CreatePlayoff(props: IProps) {
             </Text>
 
             <ScrollArea scrollbars="vertical" style={{ maxHeight: '358px' }}>
+              {leaderboard.isLoading && <LargeSpinner />}
+
               <Box pr={'3'}>
                 <Leaderboard
                   leaderboardItems={leaderboard.data}

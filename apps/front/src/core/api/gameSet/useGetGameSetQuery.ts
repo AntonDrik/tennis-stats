@@ -21,6 +21,7 @@ function useGetGameSetQuery(
       ),
     {
       refetchOnMount: true,
+      staleTime: 0,
       ...options,
     }
   );
