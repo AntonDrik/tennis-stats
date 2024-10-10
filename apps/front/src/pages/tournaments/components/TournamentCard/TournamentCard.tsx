@@ -1,6 +1,9 @@
-import { Box, Flex, Separator, Text } from '@radix-ui/themes';
+import { Flex, Separator, Text } from '@radix-ui/themes';
 import { parseISOWithFormat } from '@tennis-stats/helpers';
 import { ETournamentStatus, ITournament } from '@tennis-stats/types';
+import { memo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../../../routes/routes.constant';
 import { useUserPermissions } from '../../../../shared/hooks';
 import TournamentDropdownMenu from './components/DropdownMenu/DropdownMenu';
 import MiniLeaderboard from './components/MiniLeaderboard/MiniLeaderboard';
@@ -10,18 +13,22 @@ import Styled from './TournamentCard.styles';
 
 interface IProps {
   tournament: ITournament;
-  onClick: () => void;
 }
 
 function TournamentCard(props: IProps) {
   const permissions = useUserPermissions();
+  const navigate = useNavigate();
 
   const showMenu =
     props.tournament.status === ETournamentStatus.REGISTRATION &&
     permissions.canCrudTournament;
 
+  const navigateToTournament = useCallback(() => {
+    navigate(appRoutes.TOURNAMENT_BY_ID(props.tournament.id));
+  }, [props.tournament.id]);
+
   return (
-    <Styled.Card onClick={() => props.onClick?.()}>
+    <Styled.Card onClick={() => navigateToTournament()}>
       <Flex align={'center'} justify={'between'}>
         <Flex align={'center'} gap={'2'}>
           <Text size="3" weight="bold">
@@ -41,4 +48,4 @@ function TournamentCard(props: IProps) {
   );
 }
 
-export default TournamentCard;
+export default memo(TournamentCard);

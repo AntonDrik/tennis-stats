@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import React from 'react';
 import { modalAtom } from './Modal.state';
 
-function ModalContainer(): JSX.Element {
+function ModalContainer(): JSX.Element | null {
   const [state, setState] = useAtom(modalAtom);
 
   const handleOpenChange = (open: boolean) => {
@@ -12,8 +12,12 @@ function ModalContainer(): JSX.Element {
     }
   };
 
+  if (!state.component) {
+    return null;
+  }
+
   return (
-    <Dialog.Root open={Boolean(state.component)} onOpenChange={handleOpenChange}>
+    <Dialog.Root open onOpenChange={handleOpenChange}>
       {state.component}
     </Dialog.Root>
   );

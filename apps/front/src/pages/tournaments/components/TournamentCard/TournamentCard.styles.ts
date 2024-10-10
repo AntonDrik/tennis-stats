@@ -1,15 +1,17 @@
-import { Card as RadixCard } from '@radix-ui/themes';
+import { Box } from '@radix-ui/themes';
 import styled from 'styled-components';
 
-const Card = styled(RadixCard)({
+const Card = styled(Box)({
   width: '100%',
   minHeight: '200px',
   cursor: 'pointer',
-  backgroundColor: 'var(--sage-3)',
-  borderColor: '#DAD9D6',
+  borderRadius: 'var(--radius-4)',
+  backgroundColor: 'var(--sage-2)',
+  border: '1px solid var(--sage-7)',
+  padding: 'var(--space-3)',
 
   '&:hover': {
-    backgroundColor: 'var(--sage-5)',
+    backgroundColor: 'var(--sage-3)',
   },
 });
 

@@ -15,7 +15,7 @@ export default function App(): ReactElement {
   const appearance = useAtomValue(appearanceAtom);
 
   return (
-    <Theme radius={'large'} appearance={appearance}>
+    <Theme radius={'large'} panelBackground="solid" appearance={appearance}>
       <QueryClientProvider client={queryClient}>
         <AppRoutes />
         <ModalContainer />

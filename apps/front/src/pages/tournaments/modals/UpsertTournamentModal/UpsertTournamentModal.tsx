@@ -22,20 +22,16 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
   const modal = useModal();
   const form = useForm<UpsertTournamentDto>({
     mode: 'onChange',
-    defaultValues: { playersCount: 2 },
+    defaultValues: { playersCount: props.playersCount ?? 2 },
     resolver: classValidatorResolver(UpsertTournamentDto),
   });
-
-  const [playersCount, setPlayersCount] = useState(2);
 
   const isLoading = createTournament.isLoading || updateTournament.isLoading;
   const isUpdateModel = props.playersCount;
 
-  const submit = () => {
-    const request = { playersCount: Number(playersCount) };
-
+  const submit = (form: UpsertTournamentDto) => {
     if (!isUpdateModel) {
-      createTournament.mutateAsync(request).then((tournament) => {
+      createTournament.mutateAsync(form).then((tournament) => {
         modal.close();
         toast.success(`Турнир успешно создан`);
         void routes.navigate(appRoutes.TOURNAMENT_BY_ID(tournament.id));
@@ -44,17 +40,11 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
       return;
     }
 
-    updateTournament.mutateAsync(request).then(() => {
+    updateTournament.mutateAsync(form).then(() => {
       modal.close();
       toast.success(`Турнир успешно изменен`);
     });
   };
-
-  useEffect(() => {
-    if (isUpdateModel) {
-      setPlayersCount(Number(props.playersCount));
-    }
-  }, [isUpdateModel]);
 
   return (
     <Dialog.Content maxWidth="350px" onOpenAutoFocus={(event) => event.preventDefault()}>

@@ -26,11 +26,12 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "front:build",
+        "buildTarget": "front:build"
       },
       "configurations": {
         "development": {
           "buildTarget": "front:build:development",
+          "host": true,
           "hmr": true
         },
         "production": {

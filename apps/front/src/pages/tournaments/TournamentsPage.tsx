@@ -13,7 +13,6 @@ import useUpsertTournamentModal from './hooks/useUpsertTournamentModal';
 import Styled from './TournamentsPage.styles';
 
 function TournamentsPage() {
-  const navigate = useNavigate();
   const permissions = useUserPermissions();
   const tournamentModal = useUpsertTournamentModal();
   const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
@@ -21,10 +20,6 @@ function TournamentsPage() {
   const { data: tournamentsList, isLoading } = useGetTournamentsListQuery({
     sortByDate: true,
   });
-
-  const navigateToTournament = (tournament: ITournament) => {
-    navigate(appRoutes.TOURNAMENT_BY_ID(tournament.id));
-  };
 
   return (
     <Page title={'Все турниры'}>
@@ -50,11 +45,7 @@ function TournamentsPage() {
 
       <Styled.Grid>
         {tournamentsList?.map((tournament) => (
-          <TournamentCard
-            key={`tournament-${tournament.id}`}
-            tournament={tournament}
-            onClick={() => navigateToTournament(tournament)}
-          />
+          <TournamentCard key={`tournament-${tournament.id}`} tournament={tournament} />
         ))}
       </Styled.Grid>
     </Page>

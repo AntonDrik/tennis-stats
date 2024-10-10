@@ -46,6 +46,8 @@ class PlayoffService {
     tournament.status = ETournamentStatus.PLAYOFF;
 
     await tournament.save();
+
+    return tournament;
   }
 
   async removePlayoff() {

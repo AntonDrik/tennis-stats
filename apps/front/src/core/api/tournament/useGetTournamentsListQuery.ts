@@ -15,9 +15,6 @@ export function fetchTournamentsFn(query?: GetTournamentsQuery) {
 
 export function useGetTournamentsListQuery(query?: GetTournamentsQuery) {
   return useQuery(['get-tournaments', query], () => fetchTournamentsFn(query), {
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
     staleTime: 100,
   });
 }

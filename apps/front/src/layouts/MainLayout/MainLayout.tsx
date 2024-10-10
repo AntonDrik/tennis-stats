@@ -1,5 +1,5 @@
 import { Box, Container, Flex } from '@radix-ui/themes';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { ReactElement, useEffect } from 'react';
 import useMediaQuery from '../../shared/hooks/useMediaQuery';
 
