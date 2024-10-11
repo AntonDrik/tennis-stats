@@ -25,9 +25,6 @@ export default defineConfig({
       root: '../../',
     }),
   ],
-  optimizeDeps: {
-    include: ['@mui/icons-material'],
-  },
   define: {
     'process.env': process.env,
   },
@@ -36,6 +33,21 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         secure: false,
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('@radix')) {
+            return '@radix';
+          }
+
+          if (id.includes('date-fns')) {
+            return 'date-fns';
+          }
+        },
       },
     },
   },

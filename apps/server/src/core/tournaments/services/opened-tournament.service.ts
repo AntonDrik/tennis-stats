@@ -39,22 +39,6 @@ class OpenedTournamentService {
   }
 
   /**
-   * Редактирование доступно только на стадии регистрации
-   */
-  public async editTournament(dto: UpsertTournamentDto): Promise<Tournament> {
-    const tournament = await this.getOpenedToRegistrationTournament();
-
-    if (tournament.registeredUsers.length > dto.playersCount) {
-      throw new UnableUpdateTournamentException();
-    }
-
-    tournament.playersCount = dto.playersCount;
-    await tournament.save();
-
-    return tournament;
-  }
-
-  /**
    * Завершение регистрации и старт турнира
    */
   public async startTournament(dto: StartTournamentDto) {
@@ -102,6 +86,28 @@ class OpenedTournamentService {
     });
 
     return tournament;
+  }
+
+  /**
+   * Редактирование доступно только на стадии регистрации
+   */
+  public async editTournament(dto: UpsertTournamentDto): Promise<Tournament> {
+    const tournament = await this.getOpenedToRegistrationTournament();
+
+    if (tournament.registeredUsers.length > dto.playersCount) {
+      throw new UnableUpdateTournamentException();
+    }
+
+    tournament.playersCount = dto.playersCount;
+    await tournament.save();
+
+    return tournament;
+  }
+
+  public async deleteTournament() {
+    const openedTournament = await this.getOpenedToRegistrationTournament();
+
+    await openedTournament.remove();
   }
 
   /**

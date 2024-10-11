@@ -16,14 +16,6 @@ function ModalHeader(props: IProps) {
   const title = props.title ? props.title(gameSet) : `Сет № ${gameSet?.number}`;
 
   return <Dialog.Title align={'center'}>{title}</Dialog.Title>;
-
-  // return (
-  //   <Flex align={'center'} justify={'center'} px={3} py={2}>
-  //     <Heading size={'4'} align={'center'}>
-  //       {title}
-  //     </Heading>
-  //   </Flex>
-  // );
 }
 
 export default ModalHeader;

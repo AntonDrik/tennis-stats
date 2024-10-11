@@ -1,9 +1,9 @@
-import formatFn from 'date-fns/format';
-import ruLocale from 'date-fns/locale/ru';
-import parseISO from 'date-fns/parseISO';
-import { zonedTimeToUtc } from 'date-fns-tz';
-import startOfDay from 'date-fns/startOfDay';
-import endOfDay from 'date-fns/endOfDay';
+import { formatDate } from 'date-fns/format';
+import { ru } from 'date-fns/locale/ru';
+import { parseISO } from 'date-fns/parseISO';
+import { fromZonedTime } from 'date-fns-tz';
+import { startOfDay } from 'date-fns/startOfDay';
+import { endOfDay } from 'date-fns/endOfDay';
 
 const clientTimezone = 'Europe/Minsk';
 const dbDateFormat = 'yyyy-MM-dd HH:mm:ss';
@@ -11,7 +11,7 @@ const dbDateFormat = 'yyyy-MM-dd HH:mm:ss';
 function parseISOWithFormat(date: string | Date, format: string) {
   const parsedDate = parseISO(String(date));
 
-  return formatFn(parsedDate, format, { locale: ruLocale });
+  return formatDate(parsedDate, format, { locale: ru });
 }
 
 function secondsWithTwoDigits(seconds: number | undefined): string {
@@ -23,11 +23,11 @@ function secondsWithTwoDigits(seconds: number | undefined): string {
 }
 
 function startOfDayInUTC(date: Date, tz: string): Date {
-  return zonedTimeToUtc(startOfDay(date), tz);
+  return fromZonedTime(startOfDay(date), tz);
 }
 
 function endOfDayInUTC(date: Date, tz: string): Date {
-  return zonedTimeToUtc(endOfDay(date), tz);
+  return fromZonedTime(endOfDay(date), tz);
 }
 
 export {

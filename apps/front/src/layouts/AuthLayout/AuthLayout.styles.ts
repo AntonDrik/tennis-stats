@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import theme from '../../theme/theme';
 
 const Wrapper = styled.div({
   position: 'fixed',
@@ -12,7 +11,7 @@ const Wrapper = styled.div({
   alignItems: 'center',
   justifyContent: 'center',
 
-  padding: theme.spacing(3),
+  padding: 'var(--spacing-3)',
 });
 
 const Gradient = styled.div({

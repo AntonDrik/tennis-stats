@@ -82,7 +82,7 @@ function TournamentRegistrationPage() {
           {!isRegistered && (
             <Button
               variant={'solid'}
-              size={'3'}
+              size={'2'}
               color={'green'}
               onClick={joinTournamentSelf}
             >

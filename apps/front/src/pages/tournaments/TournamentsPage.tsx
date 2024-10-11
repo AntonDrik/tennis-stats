@@ -1,8 +1,5 @@
 import { Flex, Heading, IconButton } from '@radix-ui/themes';
-import { ITournament } from '@tennis-stats/types';
-import { useNavigate } from 'react-router-dom';
 import { useGetTournamentsListQuery } from '../../core/api';
-import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
 import { useUserPermissions } from '../../shared/hooks';
 import useMediaQuery from '../../shared/hooks/useMediaQuery';

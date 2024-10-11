@@ -8,14 +8,15 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import AuthRoute from './AuthRoute';
-import MainRoute from './MainRoute';
 import { appRoutes } from './routes.constant';
+
+const AuthRoute = loadable(() => import('./AuthRoute'));
+const MainRoute = loadable(() => import('./MainRoute'));
 
 const AuthPage = loadable(() => import('../pages/auth/AuthPage'));
 const UsersPage = loadable(() => import('../pages/users/UsersPage'));
-const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsPage'));
 const TournamentPage = loadable(() => import('../pages/tournament/TournamentPage'));
+const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsPage'));
 const TournamentRegistrationPage = loadable(
   () => import('../pages/tournament-registration/TournamentRegistrationPage')
 );

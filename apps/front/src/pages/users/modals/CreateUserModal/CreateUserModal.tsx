@@ -1,7 +1,7 @@
 import { Dialog } from '@radix-ui/themes';
 import * as React from 'react';
 import { useModal } from '../../../../shared/components';
-import RegistrationForm from '../../../../shared/components/Auth/RegistrationForm/RegistrationForm';
+import { RegistrationForm } from '../../../../shared/components/Auth';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 
 function CreateUserModal() {

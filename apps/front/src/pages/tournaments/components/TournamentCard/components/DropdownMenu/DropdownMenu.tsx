@@ -1,6 +1,9 @@
 import { DropdownMenu, IconButton } from '@radix-ui/themes';
 import { ITournament } from '@tennis-stats/types';
 import React from 'react';
+import { toast } from 'react-hot-toast';
+import { useDeleteTournamentMutation } from '../../../../../../core/api';
+import { useConfirmModal } from '../../../../../../shared/components';
 import {
   EditIcon,
   TrashIcon,
@@ -14,15 +17,28 @@ interface IProps {
 
 function TournamentDropdownMenu(props: IProps) {
   const tournamentModal = useUpsertTournamentModal(props.tournament.playersCount);
+  const deleteTournament = useDeleteTournamentMutation();
 
-  const editTournament = (e: React.MouseEvent) => {
+  const deleteTournamentConfirmModal = useConfirmModal({
+    title: 'Вы действительно хотите удалить турнир?',
+    confirmTitle: 'Да, удалить',
+    denyTitle: 'Нет, отменить',
+  });
+
+  const editClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
     tournamentModal.open();
   };
 
-  const deleteTournament = (e: React.MouseEvent) => {
+  const deleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    deleteTournamentConfirmModal(() => {
+      deleteTournament.mutateAsync().then(() => {
+        toast.success('Турнир успешно удален');
+      });
+    });
   };
 
   return (
@@ -34,14 +50,14 @@ function TournamentDropdownMenu(props: IProps) {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        <DropdownMenu.Item onClick={editTournament}>
+        <DropdownMenu.Item onClick={editClick}>
           <EditIcon />
           Редактировать
         </DropdownMenu.Item>
 
         <DropdownMenu.Separator />
 
-        <DropdownMenu.Item color="red" onClick={deleteTournament}>
+        <DropdownMenu.Item color="red" onClick={deleteClick}>
           <TrashIcon />
           Удалить
         </DropdownMenu.Item>

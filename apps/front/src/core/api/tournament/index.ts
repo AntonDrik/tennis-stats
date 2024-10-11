@@ -12,3 +12,4 @@ export { default as useGetLeaderboardQuery } from './useGetLeaderboardQuery';
 export { default as useStartTournamentMutation } from './useStartTournamentMutation';
 export { default as useFinishTournamentMutation } from './useFinishTournamentMutation';
 export { default as useRemovePlayoffMutation } from './useRemovePlayoffMutation';
+export { default as useDeleteTournamentMutation } from './useDeleteTournamentMutation';

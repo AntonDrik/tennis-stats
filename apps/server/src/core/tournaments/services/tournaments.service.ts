@@ -28,12 +28,6 @@ class TournamentsService {
 
     return tourEntity;
   }
-
-  public async deleteTournament(id: number): Promise<void> {
-    const tournament = await this.repository.findById(id);
-
-    await tournament.remove();
-  }
 }
 
 export default TournamentsService;

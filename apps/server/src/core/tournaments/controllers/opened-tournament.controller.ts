@@ -44,6 +44,12 @@ class OpenedTournamentController {
     return this.openedTournamentService.editTournament(dto);
   }
 
+  @Delete('/delete')
+  @Permissions([EPermission.TOURNAMENT_CRUD])
+  deleteTournament() {
+    return this.openedTournamentService.deleteTournament();
+  }
+
   @Post('/create-playoff')
   @Permissions([EPermission.TOURNAMENT_CRUD])
   createPlayoff(@Body() dto: CreatePlayoffDto) {

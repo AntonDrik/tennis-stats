@@ -1,7 +1,7 @@
 import { dbDateFormat } from '@tennis-stats/helpers';
 import { IsISO8601, IsOptional } from 'class-validator';
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
+import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import { IsTogetherOnly } from './is-together-only';
 
 class DateRangeQuery {

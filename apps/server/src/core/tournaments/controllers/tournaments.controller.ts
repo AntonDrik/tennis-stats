@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
-import { UpsertTournamentDto, GetToursQuery, IdDto } from '@tennis-stats/dto';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { UpsertTournamentDto, GetToursQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { Permissions } from '../../../auth/decorators';
@@ -33,12 +33,6 @@ class TournamentsController {
   @Permissions([EPermission.TOURNAMENT_CRUD])
   createTournament(@Body() dto: UpsertTournamentDto) {
     return this.tournamentsService.createTournament(dto);
-  }
-
-  @Delete('/:id/delete')
-  @Permissions([EPermission.TOURNAMENT_CRUD])
-  deleteTournament(@Body() dto: IdDto) {
-    return this.tournamentsService.deleteTournament(dto.id);
   }
 }
 

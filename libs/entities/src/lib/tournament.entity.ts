@@ -57,7 +57,9 @@ export class Tournament extends BaseEntity implements ITournament {
       this.status === ETournamentStatus.PLAYOFF ||
       this.status === ETournamentStatus.REGISTRATION;
 
-    const simpleTours = this.tours.filter((tour) => tour?.number);
-    this.lastTourNumber = simpleTours[simpleTours.length - 1]?.number ?? 0;
+    const simpleTours = this.tours?.filter((tour) => tour?.number);
+    const lastTour = simpleTours?.[simpleTours?.length - 1];
+
+    this.lastTourNumber = lastTour?.number ?? 0;
   }
 }

@@ -1,7 +1,6 @@
 export * from './lib/date';
 export { default as uniqueCombinations } from './lib/unique-combinations';
 export { default as getRatingDelta } from './lib/rating-formula';
-export { arrayToObject } from './lib/array-to-object';
 export { default as mapToArray } from './lib/map-to-array';
 export { default as maxInCollection } from './lib/max-in-collection';
 export { default as avgOfSet } from './lib/avg-of-set';

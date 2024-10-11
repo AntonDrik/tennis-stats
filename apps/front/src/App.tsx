@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import { useAtomValue } from 'jotai';
 import React, { ReactElement } from 'react';
 import { QueryClientProvider } from 'react-query';
+import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import './reset.css';
-import { Theme } from '@radix-ui/themes';
 
 import { queryClient } from './core/api';
 import { appearanceAtom } from './core/store/appearance.store';

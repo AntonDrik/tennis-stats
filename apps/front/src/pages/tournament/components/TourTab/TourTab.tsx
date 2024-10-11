@@ -1,9 +1,9 @@
-import { Box, Stack } from '@mui/material';
+import { Flex } from '@radix-ui/themes';
 import { ITour } from '@tennis-stats/types';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { updateTournamentAtom } from '../../../../core/store';
-import MatchCard from '../../../../shared/components/Tournament/MatchCard/MatchCard';
+import { MatchCard } from '../../../../shared/components/Tournament';
 
 interface IProps {
   tour: ITour;
@@ -17,13 +17,11 @@ function TourTab(props: IProps) {
   }, [props.tour]);
 
   return (
-    <Box height={'100%'} overflow={'auto'}>
-      <Stack spacing={2.5}>
-        {props.tour.matches.map((match) => (
-          <MatchCard key={match.id} match={match} />
-        ))}
-      </Stack>
-    </Box>
+    <Flex direction={'column'} height={'100%'} overflow={'auto'} gap={'2'}>
+      {props.tour.matches.map((match) => (
+        <MatchCard key={match.id} match={match} />
+      ))}
+    </Flex>
   );
 }
 

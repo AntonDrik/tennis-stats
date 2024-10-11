@@ -1,11 +1,10 @@
 import { Flex } from '@radix-ui/themes';
 import styled from 'styled-components';
-import { device } from '../../../../theme/media-queries';
 
 const TourRow = styled(Flex)({
   alignItems: 'flex-end',
 
-  [`@media ${device.tablet}`]: {
+  [`@media only screen and (max-width : 576px)`]: {
     flexDirection: 'column',
     alignItems: 'center',
   },
