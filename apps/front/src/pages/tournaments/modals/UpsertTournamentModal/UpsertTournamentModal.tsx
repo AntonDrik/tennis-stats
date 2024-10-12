@@ -1,6 +1,5 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { Button, Dialog, Flex, Spinner } from '@radix-ui/themes';
@@ -34,7 +33,7 @@ function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
       createTournament.mutateAsync(form).then((tournament) => {
         modal.close();
         toast.success(`Турнир успешно создан`);
-        void routes.navigate(appRoutes.TOURNAMENT_BY_ID(tournament.id));
+        void routes.navigate(appRoutes.TOURNAMENT_REGISTRATION);
       });
 
       return;

@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
 import { GameSetScoreDto, SwapUserDto } from '@tennis-stats/dto';
-import { GameSet, Match } from '@tennis-stats/entities';
+import { GameSet, Match, User } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
-import { Permissions } from '../../../auth/decorators';
+import { CurrentUser, Permissions } from '../../../auth/decorators';
+import { ForbiddenException } from '../../../common/exceptions';
 import { GameSetById } from '../decorators/game-set.decorator';
 import { MatchById } from '../decorators/match.decorator';
 import GameSetService from '../services/game-set.service';
@@ -26,22 +27,30 @@ class MatchController {
   }
 
   @Post('/:matchId/game-set/:setId/finish')
-  @Permissions([EPermission.GAME_SET_CRUD])
   finishGameSet(
+    @CurrentUser() user: User,
     @MatchById() match: Match,
     @GameSetById() gameSet: GameSet,
     @Body() dto: GameSetScoreDto
   ) {
+    if (!this.matchService.isUserCanCrudMatch(user, match)) {
+      throw new ForbiddenException();
+    }
+
     return this.gameSetService.finishGameSet(match, gameSet, dto);
   }
 
   @Put('/:matchId/game-set/:setId/edit')
-  @Permissions([EPermission.GAME_SET_CRUD])
   editGameSet(
+    @CurrentUser() user: User,
     @MatchById() match: Match,
     @GameSetById() gameSet: GameSet,
     @Body() dto: GameSetScoreDto
   ) {
+    if (!this.matchService.isUserCanCrudMatch(user, match)) {
+      throw new ForbiddenException();
+    }
+
     return this.gameSetService.editGameSet(match, gameSet, dto);
   }
 

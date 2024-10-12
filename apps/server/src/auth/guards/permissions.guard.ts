@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { EPermission, IUser } from '@tennis-stats/types';
+import { matchPermissions } from '../../common/utils';
 import { PERMISSIONS_KEY } from '../decorators';
 
 /**
@@ -26,12 +27,4 @@ export default class PermissionsGuard implements CanActivate {
 
     return matchPermissions(permissions, userPermissions);
   }
-}
-
-function matchPermissions(permissions: EPermission[], userPermissions: EPermission[]) {
-  if (!permissions.length) {
-    return true;
-  }
-
-  return userPermissions.some((permission) => permissions.includes(permission));
 }

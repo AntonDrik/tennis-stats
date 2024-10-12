@@ -17,7 +17,6 @@ function useCanManageTournament(tournament?: ITournament) {
 
     return (
       permissions.canCrudTournament &&
-      permissions.canCrudGameSet &&
       activeTournament.status !== ETournamentStatus.FINISHED
     );
   }, [permissions.canCrudTournament, activeTournament?.status]);

@@ -1,17 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTourDto, SwapUserDto } from '@tennis-stats/dto';
 import { Match, Tour, User } from '@tennis-stats/entities';
-import {
-  allSynchronously,
-  createArray,
-  getRatingDelta,
-  getRoundInfo,
-} from '@tennis-stats/helpers';
-import { TMatchRatingDelta, TPlayOffRound } from '@tennis-stats/types';
+import { allSynchronously, createArray, getRoundInfo } from '@tennis-stats/helpers';
+import { EPermission, TMatchRatingDelta, TPlayOffRound } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
+import { matchPermissions } from '../../../common/utils';
 import { UsersRepository, UsersService } from '../../users';
-import getAllScoresForMatch from '../helpers/get-all-scores-for-match.helper';
 import MatchRepository from '../repositories/match.repository';
 import GameSetService from './game-set.service';
 import PairsGeneratorService from './pairs-generator.service';
@@ -88,6 +83,19 @@ class MatchService {
     await match.save();
 
     return match;
+  }
+
+  public isUserCanCrudMatch(user: User, match: Match) {
+    const isFullAccess = matchPermissions(
+      [EPermission.TOURNAMENT_CRUD],
+      user.permissions.map((permission) => permission.value)
+    );
+
+    if (isFullAccess) {
+      return true;
+    }
+
+    return match.user1.id === user.id || match.user2.id === user.id;
   }
 
   public async calculateRatingDelta(match: Match): Promise<TMatchRatingDelta> {

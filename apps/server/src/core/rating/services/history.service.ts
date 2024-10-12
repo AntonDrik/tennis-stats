@@ -45,7 +45,7 @@ class RatingHistoryService {
     const prevRating = prevDayRecord?.[0]?.rating;
 
     if (!prevRating) {
-      return '+0';
+      return '0';
     }
 
     const ratingDiff = user.rating - prevRating;

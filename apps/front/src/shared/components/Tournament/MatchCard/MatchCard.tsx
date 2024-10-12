@@ -9,6 +9,7 @@ import { EditGameSetModal, FinishGameSetModal } from '../../GameSet';
 import { useModal } from '../../Modals';
 import Spinner from '../../Spinner/Spinner';
 import MatchCardControls from './components/MatchCardControls';
+import useCanChangeGameSet from './hooks/useCanChangeGameSet';
 import Styled from './MatchCard.styles';
 
 interface IProps {
@@ -20,15 +21,16 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
   const tournamentState = useAtomValue(tournamentAtom);
   const updateTournamentState = useSetAtom(updateTournamentAtom);
 
-  const modal = useModal();
-  const canManageTournament = useCanManageTournament();
-  const isFinishingSet = useIsMutating(['finish-game-set']);
+  const [isSettingsOpened, setIsSettingsOpened] = useState<boolean>(false);
 
   const isEmptyMatch = !match.user1 || !match.user2;
   const isPlayer1Winner = match.totalScore.user1 > match.totalScore.user2;
   const isPlayer2Winner = match.totalScore.user2 > match.totalScore.user1;
 
-  const [isSettingsOpened, setIsSettingsOpened] = useState<boolean>(false);
+  const modal = useModal();
+  const canChangeGameSet = useCanChangeGameSet(match);
+  const canManageTournament = useCanManageTournament();
+  const isFinishingSet = useIsMutating(['finish-game-set']);
 
   const isCanOpenSettings = useMemo(() => {
     return tournamentState.selectedMatch?.id === match.id;
@@ -46,7 +48,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
   const setScore = (e: MouseEvent, gameSet: IGameSet) => {
     e.stopPropagation();
 
-    if (isEmptyMatch || !canManageTournament) {
+    if (isEmptyMatch || !canChangeGameSet) {
       return;
     }
 
