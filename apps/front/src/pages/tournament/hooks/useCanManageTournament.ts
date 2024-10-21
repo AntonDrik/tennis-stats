@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { tournamentAtom } from '../../../core/store';
 import { useUserPermissions } from '../../../shared/hooks';
 
-function useCanManageTournament(tournament?: ITournament) {
+function useCanManageTournament(tournament?: ITournament | undefined) {
   const permissions = useUserPermissions();
   const tournamentState = useAtomValue(tournamentAtom);
 

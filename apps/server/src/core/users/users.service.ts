@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
-import { Player } from '@tennis-stats/entities';
+import { Player, Tournament } from '@tennis-stats/entities';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import { RatingHistoryService } from '../rating';
@@ -15,7 +15,7 @@ class UsersService {
   ) {}
 
   public async getAll(): Promise<IUserWithRatingDiff[]> {
-    const users = await this.repository.find({ order: { rating: 'DESC' } });
+    const users = await this.repository.find();
 
     const promise = users.map(async (user) => {
       const ratingDiff = await this.ratingHistoryService.getDailyRatingDiff(user);
@@ -23,35 +23,33 @@ class UsersService {
       return { ...user, ratingDiff };
     });
 
-    return Promise.all(promise);
+    const result = await Promise.all(promise);
+
+    return result.sort(
+      (a, b) => b.rating - a.rating || b.nickname.localeCompare(a.nickname)
+    );
   }
 
-  public async getUsersForTournament(registeredUsersIds: number[]) {
-    const users = await this.repository.findByIds(registeredUsersIds);
+  public getJoinedUsers(tournament: Tournament) {
+    const joinedUsersIds = tournament.registeredUsers?.map((user) => user.id) ?? [];
 
-    if (users.length % 2 !== 0) {
-      return [...users, await this.getSystemUser()];
-    }
-
-    return users;
+    return this.getEvenUsersList(joinedUsersIds);
   }
 
   public async getUsersForPlayoff(dto: CreatePlayoffDto) {
     let ids = dto.activeUsersIds;
 
-    if (dto.round === '1/8') {
+    if (dto.stage === '1/8') {
       ids = ids.slice(0, 16);
     }
 
-    if (dto.round === '1/4') {
+    if (dto.stage === '1/4') {
       ids = ids.slice(0, 8);
     }
 
-    return await this.getUsersForTournament(ids);
-  }
+    const users = await this.getEvenUsersList(ids);
 
-  public getSystemUser() {
-    return this.repository.findByNickname('Халява');
+    return users.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
   }
 
   public async createPlayer(userId: number) {
@@ -63,6 +61,24 @@ class UsersService {
     player.score = 0;
 
     return player;
+  }
+
+  /**
+   * Возвращает entity пользователей по списку ID.
+   * Если пользователей нечетное кол-во, то добавляет Халяву
+   */
+  private async getEvenUsersList(joinedUsersIds: number[]) {
+    const users = await this.repository.findByIds(joinedUsersIds);
+
+    if (users.length % 2 !== 0) {
+      return [...users, await this.getSystemUser()];
+    }
+
+    return users;
+  }
+
+  private getSystemUser() {
+    return this.repository.findByNickname('Халява');
   }
 }
 

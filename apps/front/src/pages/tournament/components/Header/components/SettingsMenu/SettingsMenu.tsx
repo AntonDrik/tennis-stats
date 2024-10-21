@@ -19,7 +19,7 @@ interface IProps {
   tournament: ITournament;
 }
 
-function TournamentAdminMenu({ tournament }: IProps) {
+function TournamentSettingsMenu({ tournament }: IProps) {
   const finishTournamentMutation = useFinishTournamentMutation();
 
   const modal = useModal();
@@ -58,7 +58,7 @@ function TournamentAdminMenu({ tournament }: IProps) {
   const finishTournament = () => {
     finishTournamentConfirmModal(() => {
       finishTournamentMutation.mutateAsync().then(() => {
-        toast.success('Турнир завершен. Рейтинг пересчитан');
+        toast.success('Турнир завершен');
         navigate(appRoutes.TOURNAMENTS);
       });
     });
@@ -84,7 +84,7 @@ function TournamentAdminMenu({ tournament }: IProps) {
           onClick={openCreatePlayoffModal}
         >
           <PlayIcon />
-          Начать плейофф
+          Начать плей-офф
         </DropdownMenu.Item>
 
         <DropdownMenu.Separator />
@@ -98,4 +98,4 @@ function TournamentAdminMenu({ tournament }: IProps) {
   );
 }
 
-export default TournamentAdminMenu;
+export default TournamentSettingsMenu;

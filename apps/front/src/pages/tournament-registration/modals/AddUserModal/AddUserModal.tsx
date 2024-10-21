@@ -25,7 +25,7 @@ interface IProps {
 }
 
 function AddUsersToTournamentModal(props: IProps) {
-  const joinTournament = useJoinTournamentMutation();
+  const joinTournamentMutation = useJoinTournamentMutation();
 
   const [selectedUsersIds, setSelectedUsersIds] = useState<number[]>([]);
 
@@ -38,8 +38,8 @@ function AddUsersToTournamentModal(props: IProps) {
   };
 
   const addUsersToTournament = () => {
-    joinTournament.mutateAsync({ usersIds: selectedUsersIds }).then(() => {
-      toast.success('Пользователи успешно зарегистрированы в турнире');
+    joinTournamentMutation.mutateAsync({ usersIds: selectedUsersIds }).then(() => {
+      toast.success('Пользователи успешно добавлены в турнир');
       modal.close();
     });
   };
@@ -120,10 +120,10 @@ function AddUsersToTournamentModal(props: IProps) {
         <Button
           variant={'solid'}
           style={{ alignSelf: 'flex-end' }}
-          disabled={joinTournament.isLoading || !selectedUsersIds.length}
+          disabled={joinTournamentMutation.isLoading || !selectedUsersIds.length}
           onClick={addUsersToTournament}
         >
-          {joinTournament.isLoading && <Spinner />}
+          {joinTournamentMutation.isLoading && <Spinner />}
           Добавить {selectedUsersIds.length ? selectedUsersIds.length : ''}
         </Button>
       </Flex>

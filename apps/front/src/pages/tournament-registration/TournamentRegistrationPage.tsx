@@ -14,6 +14,7 @@ import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
 import { useConfirmModal } from '../../shared/components/Modals';
 import { useUserPermissions } from '../../shared/hooks';
+import useMediaQuery from '../../shared/hooks/useMediaQuery';
 import RegistrationAdminMenu from './components/AdminMenu/AdminMenu';
 import TournamentRegistrationHeader from './components/Header/Header';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
@@ -22,10 +23,12 @@ function TournamentRegistrationPage() {
   const me = useAtomValue(meAtom);
 
   const openedTournament = useGetOpenedTournamentQuery();
-  const joinTournament = useJoinTournamentMutation();
-  const leaveTournament = useLeaveTournamentMutation();
+  const joinTournamentMutation = useJoinTournamentMutation();
+  const leaveTournamentMutation = useLeaveTournamentMutation();
 
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
   const permissions = useUserPermissions();
+
   const confirmUnregister = useConfirmModal({
     title: 'Отмена регистрации',
     description: 'Вы действительно хотите отменить регистрацию на турнир?',
@@ -43,16 +46,16 @@ function TournamentRegistrationPage() {
     return Boolean(joinedList.find((user) => user.id === me?.id));
   }, [joinedList, me?.id]);
 
-  const joinTournamentSelf = () => {
-    joinTournament.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
-      toast.success('Вы успешно зарегистрировались на турнире');
+  const joinTournament = () => {
+    joinTournamentMutation.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
+      toast.success('Вы успешно присоединились к турниру');
     });
   };
 
-  const leaveTournamentSelf = () => {
+  const leaveTournament = () => {
     confirmUnregister(() => {
-      leaveTournament.mutateAsync({ id: me?.id ?? -1 }).then(() => {
-        toast.success('Вы успешно отменили регистрацию на турнире');
+      leaveTournamentMutation.mutateAsync({ id: me?.id ?? -1 }).then(() => {
+        toast.success('Вы успешно покинули турнир');
       });
     });
   };
@@ -82,9 +85,9 @@ function TournamentRegistrationPage() {
           {!isRegistered && (
             <Button
               variant={'solid'}
-              size={'2'}
+              size={isMobileDevice ? '2' : '3'}
               color={'green'}
-              onClick={joinTournamentSelf}
+              onClick={joinTournament}
             >
               Зарегистрироваться
             </Button>
@@ -93,9 +96,9 @@ function TournamentRegistrationPage() {
           {isRegistered && (
             <Button
               variant={'solid'}
-              size={'3'}
+              size={isMobileDevice ? '2' : '3'}
               color={'red'}
-              onClick={leaveTournamentSelf}
+              onClick={leaveTournament}
             >
               Отменить регистрацию
             </Button>
@@ -106,16 +109,10 @@ function TournamentRegistrationPage() {
           )}
         </Flex>
 
-        <Box mr={'-3'}>
-          <ScrollArea scrollbars="vertical" style={{ height: 'calc(100vh - 232px)' }}>
-            <Box pr={'3'}>
-              <RegistrationTable
-                isAdmin={permissions.canCrudTournament}
-                usersList={joinedList}
-              />
-            </Box>
-          </ScrollArea>
-        </Box>
+        <RegistrationTable
+          isAdmin={permissions.canCrudTournament}
+          usersList={joinedList}
+        />
       </Flex>
     </Page>
   );

@@ -7,7 +7,7 @@ class CreateTourDto {
   @Min(1, { message: 'Минимум 1 сет' })
   setsCount: number;
 
-  @IsIn([ETourGenerator.RANDOM])
+  @IsIn([ETourGenerator.RANDOM, ETourGenerator.BY_RATING, ETourGenerator.BY_LEADERBOARD])
   pairsGenerator: ETourGenerator;
 }
 

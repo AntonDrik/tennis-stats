@@ -1,17 +1,16 @@
-import { TPlayOffRound } from '@tennis-stats/types';
-import { IsIn, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { TPlayOffStage } from '@tennis-stats/types';
+import { IsIn, IsNumber, Max, Min } from 'class-validator';
 import { IsPlayoffRoundValid } from '../custom-decorators/is-playoff-round-valid';
 
-const rounds: TPlayOffRound[] = ['1/8', '1/4'];
+const stages: TPlayOffStage[] = ['1/8', '1/4'];
 
 class CreatePlayoffDto {
   @IsNumber({}, { each: true })
   activeUsersIds: number[];
 
-  @IsOptional()
   @IsPlayoffRoundValid()
-  @IsIn(rounds)
-  round: TPlayOffRound;
+  @IsIn(stages)
+  stage: TPlayOffStage;
 
   @IsNumber()
   @Max(5, { message: 'Максимум 5 сетов' })

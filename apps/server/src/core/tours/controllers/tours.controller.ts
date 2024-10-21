@@ -11,7 +11,7 @@ import ToursService from '../services/tours.service';
 class ToursController {
   constructor(private tourService: ToursService) {}
 
-  @Post()
+  @Post('/add')
   @Permissions([EPermission.TOURNAMENT_CRUD])
   addTour(
     @TournamentById('tournamentId') tournament: Tournament,

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTourDto } from '@tennis-stats/dto';
 import { Tour, Tournament } from '@tennis-stats/entities';
-import { ETournamentStatus } from '@tennis-stats/types';
-import { DataSource } from 'typeorm';
+import { ETourGenerator, ETournamentStatus } from '@tennis-stats/types';
 import {
   UnableAddTourException,
   UnableRemoveTourException,
 } from '../../../common/exceptions/tour.exceptions';
 import { MatchService } from '../../match';
+import { IPair } from '../../match/interfaces/pair.interface';
+import { PairsGeneratorService } from '../../pairs-generator';
 import { UsersService } from '../../users';
 import ToursRepository from '../repository/tours.repository';
 
@@ -15,9 +16,9 @@ import ToursRepository from '../repository/tours.repository';
 class ToursService {
   constructor(
     private repository: ToursRepository,
-    private dataSource: DataSource,
     private matchService: MatchService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private pairsGeneratorService: PairsGeneratorService
   ) {}
 
   public async addTourForTournament(tournament: Tournament, dto: CreateTourDto) {
@@ -25,14 +26,28 @@ class ToursService {
       throw new UnableAddTourException();
     }
 
-    const lastTourNumber = tournament.lastTourNumber + 1;
-    const registeredUsersIds = tournament.registeredUsers.map((user) => user.id);
-    const tournamentUsers = await this.usersService.getUsersForTournament(
-      registeredUsersIds
-    );
+    const users = await this.usersService.getJoinedUsers(tournament);
 
-    const matches = await this.matchService.createMatches(tournamentUsers, dto);
-    const tour = this.repository.createSimpleTourEntity(dto, lastTourNumber, matches);
+    let pairs: IPair[] = [];
+
+    if (dto.pairsGenerator === ETourGenerator.RANDOM) {
+      pairs = this.pairsGeneratorService.generateByRandom(users);
+    }
+
+    if (dto.pairsGenerator === ETourGenerator.BY_RATING) {
+      pairs = this.pairsGeneratorService.generateByRating(users);
+    }
+
+    if (dto.pairsGenerator === ETourGenerator.BY_LEADERBOARD) {
+      pairs = this.pairsGeneratorService.generateByLeaderboard(tournament);
+    }
+
+    const matches = await this.matchService.createMatches(pairs, dto.setsCount);
+    const tour = this.repository.createSimpleTourEntity(
+      dto.setsCount,
+      tournament.nextTourNumber,
+      matches
+    );
 
     tournament.tours.push(tour);
     await tournament.save();

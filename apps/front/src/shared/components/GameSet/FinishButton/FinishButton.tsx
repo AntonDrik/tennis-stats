@@ -1,4 +1,5 @@
 import { Button, Spinner } from '@radix-ui/themes';
+import { GameSetScoreDto } from '@tennis-stats/dto';
 import { useAtomValue } from 'jotai';
 import { useIsMutating } from 'react-query';
 import { useEditGameSetMutation, useFinishGameSetMutation } from '../../../../core/api';
@@ -18,26 +19,23 @@ function FinishButton(props: IProps) {
   const finishGameSet = useFinishGameSetMutation(props.tournamentState);
   const editGameSetScore = useEditGameSetMutation(props.tournamentState);
 
-  const isMutating = useIsMutating(['finish-game-set']);
+  const isMutating = useIsMutating([
+    `finish-game-set-${props.tournamentState.selectedMatch?.id}`,
+  ]);
 
   const handleFinishClick = () => {
+    const dto: GameSetScoreDto = {
+      player1Score: score[0],
+      player2Score: score[1],
+    };
+
     if (!props.editMode) {
-      finishGameSet
-        .mutateAsync({
-          player1Score: score[0],
-          player2Score: score[1],
-        })
-        .then(props.onSuccess);
+      finishGameSet.mutateAsync(dto).then(props.onSuccess);
 
       return;
     }
 
-    editGameSetScore
-      .mutateAsync({
-        player1Score: score[0],
-        player2Score: score[1],
-      })
-      .then(props.onSuccess);
+    editGameSetScore.mutateAsync(dto).then(props.onSuccess);
   };
 
   return (

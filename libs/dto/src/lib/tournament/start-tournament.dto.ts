@@ -1,27 +1,11 @@
-import { Transform, Type } from 'class-transformer';
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsBoolean,
-  IsNumber,
-  ValidateNested,
-} from 'class-validator';
-import CreateTourDto from '../tour/create-tour.dto';
+import { Transform } from 'class-transformer';
+import { IsBoolean } from 'class-validator';
+import { CreateTourDto } from '../../index';
 
-class StartTournamentDto {
-  @IsNumber({}, { each: true })
-  @ArrayNotEmpty()
-  registeredUsersIds: number[];
-
+class StartTournamentDto extends CreateTourDto {
   @IsBoolean()
   @Transform(({ value }) => value || value === 'true')
   handleRating: boolean;
-
-  @IsArray()
-  @ArrayNotEmpty()
-  @Type(() => CreateTourDto)
-  @ValidateNested()
-  tours: CreateTourDto[];
 }
 
 export default StartTournamentDto;

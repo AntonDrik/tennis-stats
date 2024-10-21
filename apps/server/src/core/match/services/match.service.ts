@@ -1,40 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTourDto, SwapUserDto } from '@tennis-stats/dto';
-import { Match, Tour, User } from '@tennis-stats/entities';
-import { allSynchronously, createArray, getRoundInfo } from '@tennis-stats/helpers';
-import { EPermission, TMatchRatingDelta, TPlayOffRound } from '@tennis-stats/types';
-import { DataSource } from 'typeorm';
-import { TournamentNotFoundException } from '../../../common/exceptions';
+import { GameSetScoreDto } from '@tennis-stats/dto';
+import { GameSet, Match, User } from '@tennis-stats/entities';
+import {
+  allSynchronously,
+  createArray,
+  getPlayoffStageInfo,
+} from '@tennis-stats/helpers';
+import { EPermission, TPlayOffStage } from '@tennis-stats/types';
+import { DataSource, EntityManager } from 'typeorm';
+import { GameSetFinishedException } from '../../../common/exceptions';
 import { matchPermissions } from '../../../common/utils';
-import { UsersRepository, UsersService } from '../../users';
-import MatchRepository from '../repositories/match.repository';
+import { UsersService } from '../../users';
+import getNextPlayoffStageMatchId from '../helpers/get-next-playoff-stage-match-id.helper';
+import { IPair } from '../interfaces/pair.interface';
 import GameSetService from './game-set.service';
-import PairsGeneratorService from './pairs-generator.service';
 
 @Injectable()
 class MatchService {
   constructor(
     private dataSource: DataSource,
-    private repository: MatchRepository,
-    private usersRepository: UsersRepository,
-    private usersService: UsersService,
     private gameSetService: GameSetService,
-    private pairsGeneratorService: PairsGeneratorService
+    private usersService: UsersService
   ) {}
 
-  public async createMatches(
-    users: User[],
-    tourDto: CreateTourDto,
-    isPlayoff = false
-  ): Promise<Match[]> {
-    const pairs = this.pairsGeneratorService.generatePairs(users, tourDto.pairsGenerator);
+  public isUserCanCrudMatch(user: User, match: Match) {
+    if (matchPermissions([EPermission.TOURNAMENT_CRUD], user)) {
+      return true;
+    }
 
+    return match.user1?.id === user.id || match.user2?.id === user.id;
+  }
+
+  public async createMatches(pairs: IPair[], setsCount: number, isPlayoff = false) {
     return allSynchronously(
       pairs.map((pair, index) => async () => {
-        const gameSets = await this.gameSetService.createGameSets(
-          tourDto.setsCount,
-          pair
-        );
+        const gameSets = await this.gameSetService.createGameSets(setsCount, pair);
 
         const match = new Match();
         match.user1 = pair.user1;
@@ -48,11 +48,11 @@ class MatchService {
     );
   }
 
-  public async createMatchesForPlayoffRound(round: TPlayOffRound, setsCount: number) {
-    const roundInfo = getRoundInfo(round);
+  public async createMatchesForPlayoffStage(stage: TPlayOffStage, setsCount: number) {
+    const stageInfo = getPlayoffStageInfo(stage);
 
     return allSynchronously(
-      createArray(roundInfo.matchesCount).map((index) => async () => {
+      createArray(stageInfo.matchesCount).map((index) => async () => {
         const gameSets = await this.gameSetService.createGameSets(setsCount);
 
         const match = new Match();
@@ -65,78 +65,85 @@ class MatchService {
     );
   }
 
-  public async deleteMatch(match: Match) {
-    await match.remove();
-  }
-
-  public async swapUser(match: Match, dto: SwapUserDto) {
-    const newUser = await this.usersRepository.findById(dto.newUserId);
-
-    if (match.user1.id === dto.currentUserId) {
-      match.user1 = newUser;
+  public async finishGameSet(match: Match, gameSet: GameSet, dto: GameSetScoreDto) {
+    if (gameSet.isFinished) {
+      throw new GameSetFinishedException();
     }
 
-    if (match.user2.id === dto.currentUserId) {
-      match.user2 = newUser;
-    }
+    await this.dataSource.transaction(async (manager) => {
+      await this.gameSetService.finishGameSet(gameSet, dto, manager);
 
-    await match.save();
+      const updatedMatch = await manager.findOne(Match, {
+        where: { id: match.id },
+        order: { id: 'ASC' },
+        relations: ['tour'],
+      });
 
-    return match;
+      if (!updatedMatch?.isFinished) {
+        return;
+      }
+
+      await this.handleFinishedMatch(updatedMatch, manager);
+    });
   }
 
-  public isUserCanCrudMatch(user: User, match: Match) {
-    const isFullAccess = matchPermissions(
-      [EPermission.TOURNAMENT_CRUD],
-      user.permissions.map((permission) => permission.value)
-    );
+  private async handleFinishedMatch(match: Match, manager: EntityManager) {
+    const winnerLooser = match.getWinnerLooser();
 
-    if (isFullAccess) {
-      return true;
+    if (!winnerLooser) {
+      await this.addGameSetToMatch(match, manager);
+
+      return;
     }
 
-    return match.user1.id === user.id || match.user2.id === user.id;
+    if (match.tour.playOffStage) {
+      await this.setWinnerToNextPlayoffStage(match, winnerLooser.winner, manager);
+    }
+
+    await manager.update(Match, { id: match.id }, { endDate: new Date() });
   }
 
-  public async calculateRatingDelta(match: Match): Promise<TMatchRatingDelta> {
-    const tour = await this.dataSource.manager.findOneBy(Tour, {
-      id: match.tour.id,
+  private async addGameSetToMatch(match: Match, manager: EntityManager) {
+    const gameSet = await this.gameSetService.createGameSet(match.nextGameSetNumber, {
+      user1: match.user1,
+      user2: match.user2,
     });
 
-    if (!tour) {
-      throw new TournamentNotFoundException();
+    match.gameSets.push(gameSet);
+
+    await manager.save(Match, match);
+  }
+
+  private async setWinnerToNextPlayoffStage(
+    match: Match,
+    winner: User,
+    manager: EntityManager
+  ) {
+    const nextMatchId = getNextPlayoffStageMatchId(match);
+    const userNumber = match.number % 2 === 0 ? 2 : 1;
+
+    const nextMatch = await manager.findOne(Match, {
+      where: { id: nextMatchId },
+      relations: ['gameSets'],
+    });
+
+    if (!nextMatch) {
+      return;
     }
 
-    // const availableScores = getAllScoresForMatch(tour.setsCount);
-    const result: TMatchRatingDelta = {};
-    // const { user1, user2 } = match;
+    const player = await this.usersService.createPlayer(winner.id);
 
-    // availableScores.forEach((score) => {
-    //   const minScore = Math.min(...score);
-    //   const maxScore = Math.max(...score);
-    //
-    //   const deltaIfUser1Win = getRatingDelta(user1.rating, user2.rating, tour, {
-    //     user1: maxScore,
-    //     user2: minScore,
-    //   });
-    //
-    //   const deltaIfUser2Win = getRatingDelta(user2.rating, user1.rating, tour, {
-    //     user1: minScore,
-    //     user2: maxScore,
-    //   });
-    //
-    //   result[`${maxScore}-${minScore}`] = [
-    //     { userName: user1.nickname, delta: `+${deltaIfUser1Win}` },
-    //     { userName: user2.nickname, delta: `-${deltaIfUser1Win}` },
-    //   ];
-    //
-    //   result[`${minScore}-${maxScore}`] = [
-    //     { userName: user1.nickname, delta: `-${deltaIfUser2Win}` },
-    //     { userName: user2.nickname, delta: `+${deltaIfUser2Win}` },
-    //   ];
-    // });
+    const newGameSets = nextMatch.gameSets.map((gameSet) => {
+      return GameSet.create({
+        ...gameSet,
+        [`player${userNumber}`]: player,
+      });
+    });
 
-    return result;
+    nextMatch[`user${userNumber}`] = winner;
+    nextMatch.gameSets = newGameSets;
+
+    await manager.save(nextMatch);
   }
 }
 

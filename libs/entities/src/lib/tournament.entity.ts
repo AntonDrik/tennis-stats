@@ -48,7 +48,6 @@ export class Tournament extends BaseEntity implements ITournament {
   registeredUsers: User[];
 
   isUnfinished: boolean;
-  lastTourNumber: number;
 
   @AfterLoad()
   setVariables() {
@@ -56,10 +55,12 @@ export class Tournament extends BaseEntity implements ITournament {
       this.status === ETournamentStatus.ACTIVE ||
       this.status === ETournamentStatus.PLAYOFF ||
       this.status === ETournamentStatus.REGISTRATION;
+  }
 
+  get nextTourNumber() {
     const simpleTours = this.tours?.filter((tour) => tour?.number);
     const lastTour = simpleTours?.[simpleTours?.length - 1];
 
-    this.lastTourNumber = lastTour?.number ?? 0;
+    return (lastTour?.number ?? 0) + 1;
   }
 }

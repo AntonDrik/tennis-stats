@@ -3,8 +3,6 @@ import {
   Dialog,
   Flex,
   Select as RadixSelect,
-  IconButton,
-  Separator,
   Switch,
   Text,
   Spinner,
@@ -12,20 +10,18 @@ import {
 import React from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { StartTournamentDto } from '@tennis-stats/dto';
-import { ETourGenerator, IUser } from '@tennis-stats/types';
-import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { ETourGenerator } from '@tennis-stats/types';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useStartTournamentMutation } from '../../../../core/api';
 import { Select, TextField, useModal } from '../../../../shared/components';
 import { GroupBox } from '../../../../shared/components/GroupBox/GroupBox';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { useMediaQuery } from '../../../../shared/hooks';
-import { PlusIcon, TrashIcon } from '../../../../shared/svg-icons';
 
 import Styled from './StartTournamentModal.styles';
 
 interface IProps {
-  joinedUsers: IUser[];
   onSuccess?: (tournamentId: number) => void;
 }
 
@@ -38,31 +34,12 @@ function StartTournamentModal(props: IProps) {
   const form = useForm<StartTournamentDto>({
     mode: 'onChange',
     defaultValues: {
-      registeredUsersIds: props.joinedUsers.map((user) => user.id),
       handleRating: true,
-      tours: [
-        {
-          setsCount: 1,
-          pairsGenerator: ETourGenerator.RANDOM,
-        },
-      ],
+      setsCount: 1,
+      pairsGenerator: ETourGenerator.BY_RATING,
     },
     resolver: classValidatorResolver(StartTournamentDto),
   });
-
-  const toursControl = useFieldArray({
-    control: form.control,
-    name: 'tours',
-  });
-
-  const isLastRow = (index: number) => index === toursControl.fields.length - 1;
-
-  const addTour = () => {
-    toursControl.append({
-      setsCount: 1,
-      pairsGenerator: ETourGenerator.RANDOM,
-    });
-  };
 
   const submit = (form: StartTournamentDto) => {
     startTournament.mutateAsync(form).then((tournament) => {
@@ -100,95 +77,47 @@ function StartTournamentModal(props: IProps) {
             </GroupBox>
 
             <GroupBox caption={'Настройки туров'} bgcolor={'var(--accent-1)'}>
-              <Flex direction={'column'} gap={'2'}>
-                {toursControl.fields.map((field, index) => (
-                  <React.Fragment key={`tour-${index}`}>
-                    <Styled.TourRow
-                      key={field.id}
-                      mb={isLastRow(index) ? '2' : '0'}
-                      gap={!isMobileDevice ? '4' : '2'}
+              <Styled.TourRow mb={'2'} gap={!isMobileDevice ? '4' : '2'}>
+                <Flex align={'center'}>
+                  <Text align={'left'} mb={!isMobileDevice ? '2' : '0'} wrap={'nowrap'}>
+                    Тур № 1
+                  </Text>
+                </Flex>
+
+                <TextField
+                  size={'3'}
+                  type={'number'}
+                  label={'Кол-во сетов'}
+                  {...form.register('setsCount', {
+                    valueAsNumber: true,
+                  })}
+                />
+
+                <Controller
+                  name={'pairsGenerator'}
+                  control={form.control}
+                  render={({ field }) => (
+                    <Select
+                      label={'Генерация матчей'}
+                      size={'3'}
+                      value={field.value}
+                      onValueChange={field.onChange}
                     >
-                      <Flex align={'center'}>
-                        <Text
-                          align={'left'}
-                          mb={!isMobileDevice ? '2' : '0'}
-                          wrap={'nowrap'}
-                        >
-                          Тур № {index + 1}
-                        </Text>
+                      <RadixSelect.Trigger />
 
-                        {isMobileDevice && (
-                          <IconButton
-                            color={'red'}
-                            variant={'ghost'}
-                            size={'1'}
-                            ml={'3'}
-                            onClick={() => toursControl.remove(index)}
-                          >
-                            <TrashIcon />
-                          </IconButton>
-                        )}
-                      </Flex>
+                      <RadixSelect.Content position="popper">
+                        <RadixSelect.Item value={ETourGenerator.RANDOM}>
+                          Рандом
+                        </RadixSelect.Item>
 
-                      <TextField
-                        size={'3'}
-                        type={'number'}
-                        label={'Кол-во сетов'}
-                        {...form.register(`tours.${index}.setsCount`, {
-                          valueAsNumber: true,
-                        })}
-                      />
-
-                      <Controller
-                        name={`tours.${index}.pairsGenerator`}
-                        control={form.control}
-                        render={({ field }) => (
-                          <Select
-                            label={'Генерация матчей'}
-                            size={'3'}
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <RadixSelect.Trigger />
-
-                            <RadixSelect.Content>
-                              <RadixSelect.Item value={ETourGenerator.RANDOM}>
-                                Рандом
-                              </RadixSelect.Item>
-                            </RadixSelect.Content>
-                          </Select>
-                        )}
-                      />
-
-                      {!isMobileDevice && (
-                        <IconButton
-                          color={'red'}
-                          variant={'soft'}
-                          size={'3'}
-                          mt={'5'}
-                          ml={'4'}
-                          onClick={() => toursControl.remove(index)}
-                        >
-                          <TrashIcon />
-                        </IconButton>
-                      )}
-                    </Styled.TourRow>
-
-                    <Separator size={'4'} my={'2'} />
-                  </React.Fragment>
-                ))}
-              </Flex>
-
-              <IconButton
-                variant={'soft'}
-                color={'green'}
-                type={'button'}
-                mt={'2'}
-                style={{ width: isMobileDevice ? '100%' : '33px' }}
-                onClick={addTour}
-              >
-                <PlusIcon />
-              </IconButton>
+                        <RadixSelect.Item value={ETourGenerator.BY_RATING}>
+                          По рейтингу
+                        </RadixSelect.Item>
+                      </RadixSelect.Content>
+                    </Select>
+                  )}
+                />
+              </Styled.TourRow>
             </GroupBox>
 
             <Button

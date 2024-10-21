@@ -12,6 +12,12 @@ export class MatchNotFinishedException extends HttpException {
   }
 }
 
+export class UnableDeleteFinishedException extends HttpException {
+  constructor(options?: HttpExceptionOptions) {
+    super(`Нельзя удалить завершенный матч`, HttpStatus.NOT_FOUND, options);
+  }
+}
+
 export class IsOddUsersException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
     super(

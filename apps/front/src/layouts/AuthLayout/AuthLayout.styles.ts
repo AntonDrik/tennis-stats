@@ -11,7 +11,7 @@ const Wrapper = styled.div({
   alignItems: 'center',
   justifyContent: 'center',
 
-  padding: 'var(--spacing-3)',
+  padding: 'var(--space-3)',
 });
 
 const Gradient = styled.div({

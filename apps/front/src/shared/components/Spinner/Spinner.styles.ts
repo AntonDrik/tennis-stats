@@ -20,8 +20,6 @@ const PageWrapper = styled(Wrapper)(() => ({
   right: 0,
   top: 0,
   transform: 'none',
-  backgroundColor: 'var(--sage-a3)',
-  backdropFilter: 'blur(3px)',
 }));
 
 const rotation = keyframes`

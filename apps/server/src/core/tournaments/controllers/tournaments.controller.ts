@@ -3,8 +3,8 @@ import { UpsertTournamentDto, GetToursQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { Permissions } from '../../../auth/decorators';
+import { LeaderboardService } from '../../leaderboard';
 import { TournamentById } from '../decorators/tournament.decorator';
-import LeaderboardService from '../services/leaderboard.service';
 import TournamentsService from '../services/tournaments.service';
 
 @Controller('tournaments')

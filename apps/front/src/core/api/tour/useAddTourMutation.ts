@@ -10,7 +10,7 @@ function useAddTourMutation(tournamentId: number | undefined) {
     ['add-tour'],
     (dto: CreateTourDto) =>
       axiosFetcher.post<ITour, CreateTourDto>(
-        `/tournaments/${tournamentId}/tours`,
+        `/tournaments/${tournamentId}/tours/add`,
         dto
       ),
     {

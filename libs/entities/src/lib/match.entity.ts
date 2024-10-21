@@ -31,6 +31,9 @@ export class Match extends BaseEntity implements IMatch {
   @ManyToOne(() => User, { eager: true })
   user2: User;
 
+  @Column('datetime', { nullable: true })
+  endDate: Date;
+
   @Column('int')
   number: number;
 
@@ -53,9 +56,14 @@ export class Match extends BaseEntity implements IMatch {
   // Флаг указывающий на то, что матч не должен быть засчитан. (Игра с Халявой)
   isFictive: boolean;
 
+  get nextGameSetNumber() {
+    return (this.gameSets?.length ?? 0) + 1;
+  }
+
   @AfterLoad()
   loadVariables() {
     const gameSets = this.gameSets ?? [];
+
     gameSets.forEach((item) => {
       if (item.player1?.isWinner) {
         this.totalScore.user1 += 1;

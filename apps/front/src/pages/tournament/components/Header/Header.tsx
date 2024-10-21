@@ -1,24 +1,23 @@
 import { Button, Flex, Heading } from '@radix-ui/themes';
 import { parseISOWithFormat } from '@tennis-stats/helpers';
 import { ITournament } from '@tennis-stats/types';
-import React from 'react';
+import React, { memo } from 'react';
 import { useModal } from '../../../../shared/components';
 import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
-import { useCanManageTournament } from '../../hooks';
 import LeaderboardModal from '../../modals/LeaderboardModal/LeaderboardModal';
-import TournamentAdminMenu from './components/AdminMenu/AdminMenu';
+import TournamentSettingsMenu from './components/SettingsMenu/SettingsMenu';
 
 interface IProps {
   tournament: ITournament;
+  canManageTournament: boolean;
 }
 
-function TournamentHeader({ tournament }: IProps) {
+function TournamentHeader(props: IProps) {
   const modal = useModal();
-  const canManageTournament = useCanManageTournament(tournament);
   const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const openLeaderboard = () => {
-    modal.open(<LeaderboardModal tournamentId={tournament.id} />);
+    modal.open(<LeaderboardModal tournamentId={props.tournament.id} />);
   };
 
   return (
@@ -30,10 +29,12 @@ function TournamentHeader({ tournament }: IProps) {
         width={isMobileDevice ? '100%' : 'auto'}
       >
         <Heading size={'6'}>
-          Турнир от {parseISOWithFormat(tournament.date, 'dd.MM.yyyy')}
+          Турнир от {parseISOWithFormat(props.tournament.date, 'dd.MM.yyyy')}
         </Heading>
 
-        {canManageTournament && <TournamentAdminMenu tournament={tournament} />}
+        {props.canManageTournament && (
+          <TournamentSettingsMenu tournament={props.tournament} />
+        )}
       </Flex>
 
       <Button
@@ -49,4 +50,4 @@ function TournamentHeader({ tournament }: IProps) {
   );
 }
 
-export default TournamentHeader;
+export default memo(TournamentHeader);

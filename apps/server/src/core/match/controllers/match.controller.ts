@@ -1,9 +1,12 @@
-import { Body, Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
-import { GameSetScoreDto, SwapUserDto } from '@tennis-stats/dto';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Match, User } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { CurrentUser, Permissions } from '../../../auth/decorators';
-import { ForbiddenException } from '../../../common/exceptions';
+import {
+  ForbiddenException,
+  UnableDeleteFinishedException,
+} from '../../../common/exceptions';
 import { GameSetById } from '../decorators/game-set.decorator';
 import { MatchById } from '../decorators/match.decorator';
 import GameSetService from '../services/game-set.service';
@@ -15,11 +18,6 @@ class MatchController {
     private matchService: MatchService,
     private gameSetService: GameSetService
   ) {}
-
-  @Get('/:matchId/rating-delta')
-  getRatingDeltaOfMatch(@MatchById() match: Match) {
-    return this.matchService.calculateRatingDelta(match);
-  }
 
   @Get('/:matchId/game-set/:setId')
   getGameSet(@GameSetById() gameSet: GameSet): GameSet {
@@ -37,7 +35,7 @@ class MatchController {
       throw new ForbiddenException();
     }
 
-    return this.gameSetService.finishGameSet(match, gameSet, dto);
+    return this.matchService.finishGameSet(match, gameSet, dto);
   }
 
   @Put('/:matchId/game-set/:setId/edit')
@@ -54,16 +52,14 @@ class MatchController {
     return this.gameSetService.editGameSet(match, gameSet, dto);
   }
 
-  @Patch('/:matchId/swap-user')
-  @Permissions([EPermission.TOURNAMENT_CRUD])
-  swapUser(@MatchById() match: Match, @Body() dto: SwapUserDto) {
-    return this.matchService.swapUser(match, dto);
-  }
-
   @Delete('/:matchId')
   @Permissions([EPermission.TOURNAMENT_CRUD])
-  deleteMatch(@MatchById() match: Match) {
-    return this.matchService.deleteMatch(match);
+  async deleteMatch(@MatchById() match: Match) {
+    if (match.isFinished) {
+      throw new UnableDeleteFinishedException();
+    }
+
+    await match.remove();
   }
 }
 

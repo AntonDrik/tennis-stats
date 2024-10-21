@@ -2,27 +2,21 @@ import { User } from '@tennis-stats/entities';
 import { IInitialPoints, ILeaderboardItem } from '@tennis-stats/types';
 
 export class LeaderboardItem {
-  private readonly _userId: number;
+  private readonly _user: User;
   private _games = 0;
   private _scoreDiff = 0;
   private _wins = 0;
 
-  constructor(userId: number, points: IInitialPoints) {
-    this._userId = userId;
+  constructor(user: User, points: IInitialPoints) {
+    this._user = user;
     this._games = points.games;
     this._scoreDiff = points.scoreDiff;
     this._wins = points.wins;
   }
 
-  getData(userEntities: User[]): ILeaderboardItem | null {
-    const user = userEntities.find((user) => user.id === this._userId) ?? null;
-
-    if (!user) {
-      return null;
-    }
-
+  getData(): ILeaderboardItem | null {
     return {
-      user,
+      user: this._user,
       games: this._games,
       scoreDiff: this._scoreDiff,
       wins: this._wins,

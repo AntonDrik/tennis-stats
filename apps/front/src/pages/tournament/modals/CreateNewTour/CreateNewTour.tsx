@@ -21,7 +21,7 @@ function CreateNewTour() {
     mode: 'onChange',
     defaultValues: {
       setsCount: 1,
-      pairsGenerator: ETourGenerator.RANDOM,
+      pairsGenerator: ETourGenerator.BY_LEADERBOARD,
     },
     resolver: classValidatorResolver(CreateTourDto),
   });
@@ -66,9 +66,17 @@ function CreateNewTour() {
               >
                 <RadixSelect.Trigger />
 
-                <RadixSelect.Content>
+                <RadixSelect.Content position={'popper'}>
                   <RadixSelect.Item value={ETourGenerator.RANDOM}>
                     Рандом
+                  </RadixSelect.Item>
+
+                  <RadixSelect.Item value={ETourGenerator.BY_RATING}>
+                    По рейтингу
+                  </RadixSelect.Item>
+
+                  <RadixSelect.Item value={ETourGenerator.BY_LEADERBOARD}>
+                    По таблице лидеров
                   </RadixSelect.Item>
                 </RadixSelect.Content>
               </Select>

@@ -12,6 +12,7 @@ import TournamentHeader from './components/Header/Header';
 import PlayoffTab from './components/PlayoffTab/PlayoffTab';
 import TournamentTabs from './components/Tabs/Tabs';
 import TourTab from './components/TourTab/TourTab';
+import { useCanManageTournament } from './hooks';
 import { tabsAtom } from './states/Tabs.state';
 
 type IRouteParams = {
@@ -26,6 +27,8 @@ function TournamentPage() {
   const [tabsState, setTabsState] = useAtom(tabsAtom);
   const updateTournamentState = useSetAtom(updateTournamentAtom);
 
+  const canManageTournament = useCanManageTournament(tournament.data);
+
   useBackButton({
     title: 'К списку Турниров',
     link: appRoutes.TOURNAMENTS,
@@ -38,21 +41,19 @@ function TournamentPage() {
 
     const hasTours = tournament.data.tours.length;
 
-    updateTournamentState({
-      selectedTournament: tournament.data,
-      ...(!hasTours
-        ? {
-            selectedTour: null,
-            selectedMatch: null,
-            selectedGameSet: null,
-          }
-        : {}),
-    });
+    if (!hasTours) {
+      updateTournamentState({
+        selectedTournament: tournament.data,
+        selectedTour: null,
+        selectedMatch: null,
+        selectedGameSet: null,
+      });
+    } else {
+      updateTournamentState({
+        selectedTournament: tournament.data,
+      });
+    }
   }, [tournament.data]);
-
-  useEffect(() => {
-    setTabsState('0');
-  }, []);
 
   if (tournament.isLoading) {
     return <Spinner />;
@@ -68,7 +69,10 @@ function TournamentPage() {
 
   return (
     <Page title={`Турнир № ${tournament.data.id}`}>
-      <TournamentHeader tournament={tournament.data} />
+      <TournamentHeader
+        tournament={tournament.data}
+        canManageTournament={canManageTournament}
+      />
 
       <Tabs.Root value={tabsState} onValueChange={(value) => setTabsState(value)}>
         <TournamentTabs tours={tournament.data.tours} />

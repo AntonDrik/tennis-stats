@@ -12,6 +12,7 @@ interface IMatch {
   tour: ITour;
   user1: IUser;
   user2: IUser;
+  endDate: Date;
   number: number;
   gameSets: IGameSet[];
   isPlayoff: boolean;

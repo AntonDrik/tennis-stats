@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 
-const tabsAtom = atom<string>('0');
+const tabsAtom = atomWithStorage<string>('selectedTab', '0');
 
 export { tabsAtom };

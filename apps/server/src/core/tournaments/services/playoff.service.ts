@@ -1,15 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { User } from '@tennis-stats/entities';
-import { allSynchronously, getRoundInfo } from '@tennis-stats/helpers';
-import {
-  ETourGenerator,
-  ETournamentStatus,
-  ETourType,
-  TPlayOffRound,
-} from '@tennis-stats/types';
-import { InvalidPlayoffTypeException } from '../../../common/exceptions/playoff.exceptions';
+import { allSynchronously, getPlayoffStageInfo } from '@tennis-stats/helpers';
+import { ETournamentStatus, ETourType, TPlayOffStage } from '@tennis-stats/types';
 import { MatchService } from '../../match';
+import { PairsGeneratorService } from '../../pairs-generator';
 import ToursRepository from '../../tours/repository/tours.repository';
 import { UsersService } from '../../users';
 import TournamentsRepository from '../repositories/tournaments.repository';
@@ -22,29 +17,25 @@ class PlayoffService {
     private usersService: UsersService,
     private tournamentRepository: TournamentsRepository,
     private openedTournamentService: OpenedTournamentService,
-    private toursRepository: ToursRepository
+    private toursRepository: ToursRepository,
+    private pairsGeneratorService: PairsGeneratorService
   ) {}
 
   async createPlayoff(dto: CreatePlayoffDto) {
     const activeUsers = await this.usersService.getUsersForPlayoff(dto);
+
     const tournament = await this.tournamentRepository.findByStatus(
       [ETournamentStatus.ACTIVE],
       'Не найден турнир с активным статусом'
     );
 
-    if (!dto.round) {
-      throw new InvalidPlayoffTypeException();
-    }
+    const nextRounds = getPlayoffStageInfo(dto.stage).nextRounds;
 
-    const nextRounds = getRoundInfo(dto.round).nextRounds;
-
-    const firstTour = await this.createFirstTour(activeUsers, dto.setsCount, dto.round);
-
+    const firstTour = await this.createFirstTour(activeUsers, dto);
     const restTours = await this.createRestTours(dto.setsCount, nextRounds);
 
     tournament.tours.push(firstTour, ...restTours);
     tournament.status = ETournamentStatus.PLAYOFF;
-
     await tournament.save();
 
     return tournament;
@@ -62,32 +53,26 @@ class PlayoffService {
     await tournament.save();
   }
 
-  private async createFirstTour(
-    activeUsers: User[],
-    setsCount: number,
-    stage: TPlayOffRound
-  ) {
-    const matches = await this.matchService.createMatches(
-      activeUsers,
-      {
-        setsCount,
-        pairsGenerator: ETourGenerator.RANDOM,
-      },
-      true
-    );
+  private async createFirstTour(activeUsers: User[], dto: CreatePlayoffDto) {
+    const pairs = this.pairsGeneratorService.generateFirstWithLast(activeUsers);
+    const matches = await this.matchService.createMatches(pairs, dto.setsCount, true);
 
-    return this.toursRepository.createPlayOffTourEntity(setsCount, stage, matches);
+    return this.toursRepository.createPlayOffTourEntity(
+      dto.setsCount,
+      dto.stage,
+      matches
+    );
   }
 
-  private createRestTours(setsCount: number, restRounds: TPlayOffRound[]) {
+  private createRestTours(setsCount: number, restStages: TPlayOffStage[]) {
     return allSynchronously(
-      restRounds.map((round) => async () => {
-        const matches = await this.matchService.createMatchesForPlayoffRound(
-          round,
+      restStages.map((stage) => async () => {
+        const matches = await this.matchService.createMatchesForPlayoffStage(
+          stage,
           setsCount
         );
 
-        return this.toursRepository.createPlayOffTourEntity(setsCount, round, matches);
+        return this.toursRepository.createPlayOffTourEntity(setsCount, stage, matches);
       })
     );
   }

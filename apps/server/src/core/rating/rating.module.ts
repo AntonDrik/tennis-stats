@@ -10,7 +10,7 @@ import RatingService from './services/rating.service';
   imports: [TypeOrmModule.forFeature([RatingHistory])],
   controllers: [RatingHistoryController],
   providers: [RatingService, RatingHistoryService, RatingHistoryRepository],
-  exports: [RatingService, RatingHistoryService, RatingHistoryRepository],
+  exports: [RatingService, RatingHistoryService],
 })
 class RatingModule {}
 

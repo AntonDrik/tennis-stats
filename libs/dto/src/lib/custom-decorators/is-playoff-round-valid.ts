@@ -1,5 +1,9 @@
-import { TPlayOffRound } from '@tennis-stats/types';
-import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
+import { TPlayOffStage } from '@tennis-stats/types';
+import {
+  registerDecorator,
+  ValidationArguments,
+  ValidationOptions,
+} from 'class-validator';
 
 export function IsPlayoffRoundValid(validationOptions?: ValidationOptions) {
   return function (object: NonNullable<unknown>, propertyName: string) {
@@ -9,12 +13,8 @@ export function IsPlayoffRoundValid(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: TPlayOffRound, args: ValidationArguments) {
+        validate(value: TPlayOffStage, args: ValidationArguments) {
           const activeUsersIds = (args.object as any)['activeUsersIds'];
-
-          // if (value === 'all') {
-          //   return activeUsersIds.length > 1;
-          // }
 
           const roundUsersCount = Number(value?.split('/')?.[1]) * 2;
 

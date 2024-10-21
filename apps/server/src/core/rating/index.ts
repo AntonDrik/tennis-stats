@@ -1,3 +1,3 @@
 export { default as RatingHistoryService } from './services/history.service';
-export { default as RatingHistoryModule } from './rating.module';
-export { default as RatingHistoryRepository } from './repositories/history.repository';
+export { default as RatingService } from './services/rating.service';
+export { default as RatingModule } from './rating.module';

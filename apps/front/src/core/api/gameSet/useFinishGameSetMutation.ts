@@ -13,7 +13,7 @@ function useFinishGameSetMutation(tournamentState: ITournamentState) {
   const gameSetId = tournamentState.selectedGameSet?.id;
 
   return useMutation(
-    ['finish-game-set'],
+    [`finish-game-set-${matchId}`],
     (dto: GameSetScoreDto) => {
       return axiosFetcher.post<IGameSet, GameSetScoreDto>(
         `tournaments/${tournamentId}/tours/${tourId}/match/${matchId}/game-set/${gameSetId}/finish`,

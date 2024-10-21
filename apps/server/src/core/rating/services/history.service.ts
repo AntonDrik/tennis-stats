@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { RatingHistory, User } from '@tennis-stats/entities';
+import { User } from '@tennis-stats/entities';
+import { toFixedNumber } from '@tennis-stats/helpers';
 import { IAvgRatingByDay } from '@tennis-stats/types';
-import { EntityManager } from 'typeorm';
 import RatingHistoryRepository from '../repositories/history.repository';
 import { getAvgRatingByDaysQuery } from '../repositories/sql';
 
@@ -9,32 +9,16 @@ import { getAvgRatingByDaysQuery } from '../repositories/sql';
 class RatingHistoryService {
   constructor(private repository: RatingHistoryRepository) {}
 
-  getHistoryForAll(): Promise<IAvgRatingByDay[]> {
+  public getHistoryForAll(): Promise<IAvgRatingByDay[]> {
     const query = getAvgRatingByDaysQuery();
 
     return this.repository.executeQuery<IAvgRatingByDay[]>(query);
   }
 
-  getHistoryForUser(userId: number): Promise<IAvgRatingByDay[]> {
+  public getHistoryForUser(userId: number): Promise<IAvgRatingByDay[]> {
     const query = getAvgRatingByDaysQuery(userId);
 
     return this.repository.executeQuery<IAvgRatingByDay[]>(query);
-  }
-
-  async addRatingToHistory(user: User, tournamentDate: Date, manager?: EntityManager) {
-    const history = new RatingHistory();
-
-    history.user = user;
-    history.rating = user.rating;
-    history.date = tournamentDate;
-
-    if (manager) {
-      await manager.save(RatingHistory, history);
-
-      return;
-    }
-
-    await history.save();
   }
 
   async getDailyRatingDiff(user: User): Promise<string> {
@@ -48,7 +32,7 @@ class RatingHistoryService {
       return '0';
     }
 
-    const ratingDiff = user.rating - prevRating;
+    const ratingDiff = toFixedNumber(user.rating - prevRating, 1);
 
     return ratingDiff > 0 ? `+${ratingDiff}` : String(ratingDiff);
   }

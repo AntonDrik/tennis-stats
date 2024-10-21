@@ -5,6 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../../routes/routes.constant';
 import { useModal } from '../../../../shared/components';
+import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { PlayIcon, PlusIcon } from '../../../../shared/svg-icons';
 import { tabsAtom } from '../../../tournament/states/Tabs.state';
 import AddUsersToTournamentModal from '../../modals/AddUserModal/AddUserModal';
@@ -19,11 +20,11 @@ function RegistrationAdminMenu(props: IProps) {
 
   const modal = useModal();
   const navigate = useNavigate();
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const openStartTournamentModal = () => {
     modal.open(
       <StartTournamentModal
-        joinedUsers={props.joinedUsers}
         onSuccess={(tournamentId) => {
           setTournamentTab('0');
           navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
@@ -39,7 +40,7 @@ function RegistrationAdminMenu(props: IProps) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="soft" size={'3'} color={'orange'}>
+        <Button variant="soft" size={isMobileDevice ? '2' : '3'} color={'orange'}>
           Действия
           <DropdownMenu.TriggerIcon />
         </Button>

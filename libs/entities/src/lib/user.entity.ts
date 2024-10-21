@@ -22,7 +22,7 @@ export class User extends BaseEntity implements IUser {
   @Column('varchar', { nullable: false, unique: true })
   nickname: string;
 
-  @Column('int', { default: 100 })
+  @Column('double', { default: 100 })
   rating: number;
 
   @ManyToMany(() => Permission, { eager: true, cascade: true })

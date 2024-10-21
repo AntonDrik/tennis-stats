@@ -1,5 +1,12 @@
-import { ETourType, ITour, TPlayOffRound } from '@tennis-stats/types';
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ETourType, ITour, TPlayOffStage } from '@tennis-stats/types';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Match } from './match.entity';
 import { Tournament } from './tournament.entity';
 
@@ -27,13 +34,5 @@ export class Tour extends BaseEntity implements ITour {
   number?: number;
 
   @Column('varchar', { nullable: true })
-  playOffStage?: TPlayOffRound;
-
-  getNextTourIndex(): number | null {
-    if (!Number.isFinite(this.number) || this.number === undefined) {
-      return null;
-    }
-
-    return this.number + 1;
-  }
+  playOffStage?: TPlayOffStage;
 }

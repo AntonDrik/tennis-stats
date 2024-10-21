@@ -1,10 +1,13 @@
 export * from './lib/date';
 export { default as uniqueCombinations } from './lib/unique-combinations';
-export { default as getRatingDelta } from './lib/rating-formula';
+export { default as calculateRating } from './lib/rating-formula';
 export { default as mapToArray } from './lib/map-to-array';
 export { default as maxInCollection } from './lib/max-in-collection';
 export { default as avgOfSet } from './lib/avg-of-set';
 export { default as arrayIntersections } from './lib/array-intersections';
 export { default as createArray } from './lib/create-array';
 export { default as allSynchronously } from './lib/all-synchronously';
-export { default as getRoundInfo } from './lib/get-round-info';
+export { default as getPlayoffStageInfo } from './lib/get-playoff-stage-info';
+export { default as chunk } from './lib/chunk-array';
+export { default as shuffleArray } from './lib/shuffle-array';
+export { default as toFixedNumber } from './lib/to-fixed-number';

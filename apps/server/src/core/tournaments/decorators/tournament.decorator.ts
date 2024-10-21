@@ -9,7 +9,7 @@ import { EntityManager } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
 
 @Injectable()
-export class TournamentPipe implements PipeTransform {
+class TournamentPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
   async transform(value: number): Promise<Tournament | null> {

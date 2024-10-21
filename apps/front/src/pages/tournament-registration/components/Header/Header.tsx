@@ -13,7 +13,7 @@ function TournamentRegistrationHeader({ tournament, registeredUsersCount }: IPro
     const parsedDate = parseISOWithFormat(tournament.date, 'dd.MM.yyyy');
     const usersStat = `${registeredUsersCount}/${tournament.playersCount}`;
 
-    return `Дата проведения: ${parsedDate} | Участники: ${usersStat}`;
+    return `Дата: ${parsedDate} | Участники: ${usersStat}`;
   }, [tournament.date, tournament.playersCount, registeredUsersCount]);
 
   const isFull = useMemo(() => {

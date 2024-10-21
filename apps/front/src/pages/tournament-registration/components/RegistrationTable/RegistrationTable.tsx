@@ -1,5 +1,7 @@
 import { Table } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
+import { useAtomValue } from 'jotai';
+import { meAtom } from '../../../../core/store';
 import AdminActionsCell from './components/AdminActionsCell/AdminActionsCell';
 
 interface IProps {
@@ -8,6 +10,8 @@ interface IProps {
 }
 
 function RegistrationTable(props: IProps) {
+  const me = useAtomValue(meAtom);
+
   return (
     <Table.Root variant={'surface'} size={'1'}>
       <Table.Header>
@@ -21,7 +25,12 @@ function RegistrationTable(props: IProps) {
       <Table.Body>
         {props.usersList.map((user) => {
           return (
-            <Table.Row key={user.id}>
+            <Table.Row
+              key={user.id}
+              style={{
+                backgroundColor: me?.id === user.id ? 'var(--indigo-3)' : 'inherit',
+              }}
+            >
               <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
                 {user.nickname}
               </Table.RowHeaderCell>

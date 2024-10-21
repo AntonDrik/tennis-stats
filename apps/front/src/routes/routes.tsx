@@ -7,6 +7,7 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom';
+import { Spinner } from '../shared/components';
 
 import { appRoutes } from './routes.constant';
 
@@ -27,21 +28,30 @@ const routes = createBrowserRouter(
       <Route index element={<Navigate to={appRoutes.TOURNAMENTS} />} />
       <Route path="*" element={<Navigate to={appRoutes.TOURNAMENTS} />} />
 
-      <Route element={<AuthRoute />}>
+      <Route element={<AuthRoute fallback={<Spinner page />} />}>
         <Route path={appRoutes.LOGIN} element={<AuthPage />} />
       </Route>
 
-      <Route element={<MainRoute />}>
-        <Route path={appRoutes.USERS} element={<UsersPage />} />
+      <Route element={<MainRoute fallback={<Spinner page />} />}>
+        <Route
+          path={appRoutes.USERS}
+          element={<UsersPage fallback={<Spinner page />} />}
+        />
 
-        <Route path={appRoutes.TOURNAMENTS} element={<TournamentsPage />} />
+        <Route
+          path={appRoutes.TOURNAMENTS}
+          element={<TournamentsPage fallback={<Spinner page />} />}
+        />
 
         <Route
           path={appRoutes.TOURNAMENT_REGISTRATION}
-          element={<TournamentRegistrationPage />}
+          element={<TournamentRegistrationPage fallback={<Spinner page />} />}
         />
 
-        <Route path={appRoutes.TOURNAMENT_BY_ID()} element={<TournamentPage />} />
+        <Route
+          path={appRoutes.TOURNAMENT_BY_ID()}
+          element={<TournamentPage fallback={<Spinner page />} />}
+        />
 
         {/*<Route path={appRoutes.STATS} element={<StatsPage />} />*/}
         {/*<Route path={appRoutes.PROFILE()} element={<ProfilePage />} />*/}

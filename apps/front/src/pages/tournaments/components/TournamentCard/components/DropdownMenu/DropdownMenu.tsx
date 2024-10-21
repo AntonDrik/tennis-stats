@@ -1,5 +1,5 @@
 import { DropdownMenu, IconButton } from '@radix-ui/themes';
-import { ITournament } from '@tennis-stats/types';
+import { ETournamentStatus, ITournament } from '@tennis-stats/types';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { useDeleteTournamentMutation } from '../../../../../../core/api';
@@ -50,7 +50,10 @@ function TournamentDropdownMenu(props: IProps) {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        <DropdownMenu.Item onClick={editClick}>
+        <DropdownMenu.Item
+          disabled={props.tournament.status !== ETournamentStatus.REGISTRATION}
+          onClick={editClick}
+        >
           <EditIcon />
           Редактировать
         </DropdownMenu.Item>

@@ -13,7 +13,7 @@ function TournamentStatusChip({ tournament }: IProps) {
     }
 
     if (tournament.status === ETournamentStatus.PLAYOFF) {
-      return <Badge color="purple">Плейофф</Badge>;
+      return <Badge color="purple">Плей-офф</Badge>;
     }
 
     if (tournament.status === ETournamentStatus.ACTIVE) {

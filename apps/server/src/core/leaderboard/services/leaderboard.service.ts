@@ -4,15 +4,15 @@ import { mapToArray } from '@tennis-stats/helpers';
 import { ILeaderboardItem, IScoreDiff } from '@tennis-stats/types';
 import { EntityManager } from 'typeorm';
 import { LeaderboardItem } from '../helpers/LeaderboardItem';
-import TournamentsRepository from '../repositories/tournaments.repository';
+import LeaderboardRepository from '../repository/leaderboard.repository';
 
 @Injectable()
 class LeaderboardService {
-  constructor(private repository: TournamentsRepository) {}
+  constructor(private repository: LeaderboardRepository) {}
 
   public getLeaderboard(tournament: Tournament): ILeaderboardItem[] {
     const collection = new Map<number, LeaderboardItem>();
-    const matches = this.getTournamentMatches(tournament);
+    const matches = this.getValidTournamentMatches(tournament);
 
     matches.forEach((match) => {
       this.setPointsForUser(match, 'user1', collection);
@@ -20,7 +20,7 @@ class LeaderboardService {
     });
 
     return mapToArray(collection)
-      .map((item) => item.getData(tournament.registeredUsers))
+      .map((item) => item.getData())
       .filter(Boolean)
       .sort(byTotalAndRating);
   }
@@ -29,13 +29,13 @@ class LeaderboardService {
     const leaderboard = this.getLeaderboard(tournament).slice(0, 3);
 
     const entities = leaderboard.map((item, index) => {
-      return this.repository.createLeaderboardEntity(tournament, item, index + 1);
+      return this.repository.createEntity(tournament, item, index + 1);
     });
 
     await manager.save(entities);
   }
 
-  private getTournamentMatches(tournament: Tournament): Match[] {
+  private getValidTournamentMatches(tournament: Tournament): Match[] {
     return tournament.tours
       .flatMap((tour) => tour.matches.flatMap((match) => match))
       .filter((match) => match.user1 && match.user2);
@@ -52,7 +52,7 @@ class LeaderboardService {
     const matchScoreDiff = this.calculateScoreDiff(match, userKey);
 
     if (!points) {
-      const points = new LeaderboardItem(user.id, {
+      const points = new LeaderboardItem(user, {
         games: Number(match.isFinished),
         scoreDiff: matchScoreDiff,
         wins: match.isWinner(user) ? 1 : 0,
@@ -78,21 +78,25 @@ class LeaderboardService {
     const gameSets = match.gameSets ?? [];
     const result: IScoreDiff = { user1: 0, user2: 0 };
 
-    return gameSets.reduce((acc, curr) => {
+    const diff = gameSets.reduce((acc, curr) => {
       acc.user1 += curr.player1.score - curr.player2.score;
       acc.user2 += curr.player2.score - curr.player1.score;
 
       return acc;
-    }, result)[userKey];
+    }, result);
+
+    return diff[userKey];
   }
 }
 
 export default LeaderboardService;
 
+// Окончательная сортировка списка
 function byTotalAndRating(a: ILeaderboardItem, b: ILeaderboardItem) {
   return (
     b.wins - a.wins ||
     b.total - a.total ||
-    (b.user.rating - a.user.rating) | b.user.nickname.localeCompare(a.user.nickname)
+    b.user.rating - a.user.rating ||
+    b.user.nickname.localeCompare(a.user.nickname)
   );
 }

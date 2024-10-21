@@ -6,7 +6,7 @@ import {
   UpsertTournamentDto,
 } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
-import { allSynchronously, arrayIntersections } from '@tennis-stats/helpers';
+import { arrayIntersections } from '@tennis-stats/helpers';
 import { ETournamentStatus } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import {
@@ -14,12 +14,13 @@ import {
   UsersLimitTournamentException,
   UsersRegisteredInTournamentException,
 } from '../../../common/exceptions';
+import { LeaderboardService } from '../../leaderboard';
 import { MatchService } from '../../match';
-import RatingService from '../../rating/services/rating.service';
+import { PairsGeneratorService } from '../../pairs-generator';
+import { RatingService } from '../../rating';
 import ToursRepository from '../../tours/repository/tours.repository';
 import { UsersRepository, UsersService } from '../../users';
 import TournamentsRepository from '../repositories/tournaments.repository';
-import LeaderboardService from './leaderboard.service';
 
 @Injectable()
 class OpenedTournamentService {
@@ -30,8 +31,9 @@ class OpenedTournamentService {
     private usersService: UsersService,
     private toursRepository: ToursRepository,
     private matchService: MatchService,
+    private leaderboardService: LeaderboardService,
     private ratingService: RatingService,
-    private leaderboardService: LeaderboardService
+    private pairsGeneratorService: PairsGeneratorService
   ) {}
 
   public getOpenedToRegistrationTournament() {
@@ -43,17 +45,13 @@ class OpenedTournamentService {
    */
   public async startTournament(dto: StartTournamentDto) {
     const tournament = await this.getOpenedToRegistrationTournament();
-    const users = await this.usersService.getUsersForTournament(dto.registeredUsersIds);
+    const users = await this.usersService.getJoinedUsers(tournament);
 
-    const tours = allSynchronously(
-      dto.tours.map((tourDto, index) => async () => {
-        const matches = await this.matchService.createMatches(users, tourDto);
+    const pairs = this.pairsGeneratorService.generateByRating(users);
+    const matches = await this.matchService.createMatches(pairs, dto.setsCount);
+    const tour = this.toursRepository.createSimpleTourEntity(dto.setsCount, 1, matches);
 
-        return this.toursRepository.createSimpleTourEntity(tourDto, index + 1, matches);
-      })
-    );
-
-    tournament.tours = await tours;
+    tournament.tours = [tour];
     tournament.handleRating = dto.handleRating;
     tournament.status = ETournamentStatus.ACTIVE;
 
@@ -63,7 +61,7 @@ class OpenedTournamentService {
   }
 
   /**
-   * Завершение турнира. Подсчет рейтинга
+   * Завершение турнира. Сохранение первой тройки лидеров
    */
   public async finishTournament() {
     const tournament = await this.repository.findByStatus(
@@ -105,9 +103,12 @@ class OpenedTournamentService {
   }
 
   public async deleteTournament() {
-    const openedTournament = await this.getOpenedToRegistrationTournament();
+    const tournament = await this.repository.findByStatus(
+      [ETournamentStatus.ACTIVE, ETournamentStatus.REGISTRATION],
+      'Не найден открытый турнир'
+    );
 
-    await openedTournament.remove();
+    await tournament.remove();
   }
 
   /**

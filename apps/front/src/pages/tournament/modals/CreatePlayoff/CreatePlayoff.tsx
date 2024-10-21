@@ -53,7 +53,7 @@ function CreatePlayoff(props: IProps) {
 
   const submit = (form: CreatePlayoffDto) => {
     createPlayoffMutation.mutateAsync(form).then(() => {
-      toast.success('Плейофф успешно создан');
+      toast.success('Плей-офф успешно создан');
       modal.close();
     });
   };
@@ -70,7 +70,7 @@ function CreatePlayoff(props: IProps) {
     <Dialog.Content onOpenAutoFocus={(event) => event.preventDefault()}>
       <DialogCloseButton />
 
-      <Dialog.Title>Создать плейофф</Dialog.Title>
+      <Dialog.Title>Создать плей-офф</Dialog.Title>
 
       <form onSubmit={form.handleSubmit(submit)}>
         <Flex direction={'column'} gap={'4'} mt={'6'}>
@@ -102,7 +102,7 @@ function CreatePlayoff(props: IProps) {
           />
 
           <Controller
-            name={'round'}
+            name={'stage'}
             control={form.control}
             render={({ field }) => (
               <SegmentedControl.Root

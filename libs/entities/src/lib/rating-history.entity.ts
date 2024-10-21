@@ -1,12 +1,6 @@
 import { User } from './user.entity';
 import { IRatingHistory } from '@tennis-stats/types';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class RatingHistory extends BaseEntity implements IRatingHistory {
@@ -19,6 +13,9 @@ export class RatingHistory extends BaseEntity implements IRatingHistory {
   @Column('datetime', { nullable: true })
   date: Date;
 
-  @Column('int', { nullable: false })
+  @Column('double', { nullable: false })
   rating: number;
+
+  @Column('varchar', { nullable: true })
+  visual: string;
 }

@@ -1,7 +1,9 @@
 import { Box, Flex, Heading, IconButton, Table, Text } from '@radix-ui/themes';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
+import { useAtomValue } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import { useUsersQuery } from '../../core/api';
+import { meAtom } from '../../core/store';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner, useModal } from '../../shared/components';
 import useMediaQuery from '../../shared/hooks/useMediaQuery';
@@ -10,6 +12,8 @@ import { DoubleArrowUpIcon, DoubleArrowDownIcon, PlusIcon } from '../../shared/s
 import CreateUserModal from './modals/CreateUserModal/CreateUserModal';
 
 export default function UsersPage() {
+  const me = useAtomValue(meAtom);
+
   const { data: usersList, isLoading } = useUsersQuery();
 
   const modal = useModal();
@@ -67,6 +71,7 @@ export default function UsersPage() {
         <Table.Root variant={'surface'}>
           <Table.Header>
             <Table.Row>
+              <Table.ColumnHeaderCell>#</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Никнейм</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Рейтинг</Table.ColumnHeaderCell>
             </Table.Row>
@@ -74,11 +79,25 @@ export default function UsersPage() {
 
           {usersList?.length && usersList.length > 0 && (
             <Table.Body>
-              {usersList.map((user) => {
+              {usersList.map((user, index) => {
                 const ratingInfo = getRatingInfo(user);
 
                 return (
-                  <Table.Row key={user.id}>
+                  <Table.Row
+                    key={user.id}
+                    style={{
+                      backgroundColor: me?.id === user.id ? 'var(--indigo-3)' : 'inherit',
+                    }}
+                  >
+                    <Table.RowHeaderCell
+                      width={'40px'}
+                      style={{ verticalAlign: 'middle' }}
+                    >
+                      <Text weight={'medium'} size={'3'}>
+                        {index + 1}
+                      </Text>
+                    </Table.RowHeaderCell>
+
                     <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
                       <Text weight={'medium'} size={'3'}>
                         {user.nickname}

@@ -1,6 +1,6 @@
-import { Flex, IconButton, Tabs } from '@radix-ui/themes';
+import { Flex, IconButton, Tabs, Text } from '@radix-ui/themes';
 import { ITour } from '@tennis-stats/types';
-import { useAtom, useAtomValue } from 'jotai';
+import { useSetAtom, useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useRemovePlayoffMutation, useRemoveTourMutation } from '../../../../core/api';
@@ -17,7 +17,7 @@ interface IProps {
 }
 
 function TournamentTabs(props: IProps) {
-  const [tabsState, setTabsState] = useAtom(tabsAtom);
+  const setTabsState = useSetAtom(tabsAtom);
   const tournamentState = useAtomValue(tournamentAtom);
 
   const removePlayoffMutation = useRemovePlayoffMutation();
@@ -26,13 +26,14 @@ function TournamentTabs(props: IProps) {
   const canManageTournament = useCanManageTournament();
 
   const removeTourConfirmModal = useConfirmModal({
-    title: 'Вы действительно хотите удалить тур?',
+    title: `Вы действительно хотите удалить тур № ${tournamentState.selectedTour?.number}?`,
+    description: 'Таблица лидеров будет перестроена',
     confirmTitle: 'Да, удалить',
     denyTitle: 'Нет, отменить',
   });
 
   const removePlayoffConfirmModal = useConfirmModal({
-    title: 'Вы действительно хотите удалить плейофф?',
+    title: 'Вы действительно хотите удалить плей-офф?',
     confirmTitle: 'Да, удалить',
     denyTitle: 'Нет, отменить',
   });
@@ -41,22 +42,19 @@ function TournamentTabs(props: IProps) {
     return props.tours.some((tour) => tour.playOffStage);
   }, [props.tours]);
 
-  const removeTour = (tour: ITour) => {
-    removeTourConfirmModal(
-      () => {
-        removeTourMutation.mutateAsync().then(() => {
-          toast.success('Турнир успешно удален');
-          setTabsState('0');
-        });
-      },
-      { title: `Вы действительно хотите удалить тур № ${tour.number}?` }
-    );
+  const removeTour = () => {
+    removeTourConfirmModal(() => {
+      removeTourMutation.mutateAsync().then(() => {
+        toast.success('Тур успешно удален');
+        setTabsState('0');
+      });
+    });
   };
 
   const removePlayoff = () => {
     removePlayoffConfirmModal(() => {
       removePlayoffMutation.mutateAsync().then(() => {
-        toast.success('Плейофф успешно удален');
+        toast.success('Плей-офф успешно удален');
         setTabsState('0');
       });
     });
@@ -68,28 +66,28 @@ function TournamentTabs(props: IProps) {
         .filter((tour) => !tour.playOffStage)
         .map((tour, index) => (
           <Tabs.Trigger key={`tour-tab-${tour.id}`} value={index.toString()}>
-            {`Тур № ${tour.number}`}
+            <Text>{`Тур ${tour.number}`}</Text>
 
-            {tabsState === index.toString() && canManageTournament && (
-              <Flex ml={'2'} align={'center'}>
+            <Flex ml={'2'} align={'center'}>
+              {canManageTournament && !hasPlayoffMatches && (
                 <IconButton
                   variant={'ghost'}
                   size={'1'}
                   radius={'full'}
                   color={'red'}
-                  onClick={() => removeTour(tour)}
+                  onClick={removeTour}
                 >
                   <CloseIcon />
                 </IconButton>
-              </Flex>
-            )}
+              )}
+            </Flex>
           </Tabs.Trigger>
         ))}
 
       {hasPlayoffMatches && (
         <Styled.PlayoffTab value={'-1'}>
-          Плейофф
-          {tabsState === '-1' && canManageTournament && (
+          Плей-офф
+          {canManageTournament && (
             <Flex ml={'2'} align={'center'}>
               <IconButton
                 variant={'ghost'}

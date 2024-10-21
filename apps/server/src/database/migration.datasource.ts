@@ -5,6 +5,8 @@ import {
   Player,
   RatingHistory,
   Tour,
+  Tournament,
+  TournamentLeaderboard,
   User,
   UserAuth,
 } from '@tennis-stats/entities';
@@ -24,6 +26,8 @@ export default new DataSource({
     GameSet,
     Permission,
     Tour,
+    Tournament,
+    TournamentLeaderboard,
     Player,
     Match,
   ],

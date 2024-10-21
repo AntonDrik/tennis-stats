@@ -10,6 +10,7 @@ import { User } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { CurrentUser, Permissions, Public } from '../../../auth/decorators';
 import { ForbiddenException } from '../../../common/exceptions';
+import { matchPermissions } from '../../../common/utils';
 import OpenedTournamentService from '../services/opened-tournament.service';
 import PlayoffService from '../services/playoff.service';
 
@@ -67,9 +68,7 @@ class OpenedTournamentController {
     @CurrentUser() user: User,
     @Body() dto: TournamentRegistrationDto
   ) {
-    const isAdmin = user.permissions?.find(
-      (permission) => permission.value === EPermission.TOURNAMENT_CRUD
-    );
+    const isAdmin = matchPermissions([EPermission.TOURNAMENT_CRUD], user);
 
     if (!isAdmin && (dto.usersIds.length > 1 || dto.usersIds[0] !== user.id)) {
       throw new ForbiddenException();
@@ -80,9 +79,7 @@ class OpenedTournamentController {
 
   @Post('/unregister-user')
   unregisterUsersFromTournament(@CurrentUser() user: User, @Body() dto: IdDto) {
-    const isAdmin = user.permissions?.find(
-      (permission) => permission.value === EPermission.TOURNAMENT_CRUD
-    );
+    const isAdmin = matchPermissions([EPermission.TOURNAMENT_CRUD], user);
 
     if (!isAdmin && dto.id !== user.id) {
       throw new ForbiddenException();
