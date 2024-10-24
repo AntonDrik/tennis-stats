@@ -63,8 +63,8 @@ class PairsGeneratorService {
    *  ...
    */
   public generateByLeaderboard(tournament: Tournament): IPair[] {
-    const leaderboard = this.leaderboardService.getLeaderboard(tournament);
-    const users = leaderboard.map((item) => item.user) as User[];
+    const { toursLeaderboard } = this.leaderboardService.getLeaderboard(tournament);
+    const users = toursLeaderboard.map((item) => item.user) as User[];
 
     if (users.length % 2 !== 0) {
       throw new IsOddUsersException();

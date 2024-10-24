@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Match, Tournament } from '@tennis-stats/entities';
 import { mapToArray } from '@tennis-stats/helpers';
-import { ILeaderboardItem, IScoreDiff } from '@tennis-stats/types';
+import { ILeaderboard, ILeaderboardItem, IScoreDiff } from '@tennis-stats/types';
 import { EntityManager } from 'typeorm';
 import { LeaderboardItem } from '../helpers/LeaderboardItem';
 import LeaderboardRepository from '../repository/leaderboard.repository';
@@ -10,9 +10,34 @@ import LeaderboardRepository from '../repository/leaderboard.repository';
 class LeaderboardService {
   constructor(private repository: LeaderboardRepository) {}
 
-  public getLeaderboard(tournament: Tournament): ILeaderboardItem[] {
-    const collection = new Map<number, LeaderboardItem>();
+  public getLeaderboard(tournament: Tournament): ILeaderboard {
     const matches = this.getValidTournamentMatches(tournament);
+
+    const tourMatches = matches.filter((match) => !match.isPlayoff);
+    const playoffMatches = matches.filter((match) => match.isPlayoff);
+
+    return {
+      toursLeaderboard: this.composeTable(tourMatches),
+      playoffLeaderboard: this.composeTable(playoffMatches),
+    };
+  }
+
+  public async saveLeaderboard(tournament: Tournament, manager: EntityManager) {
+    const { playoffLeaderboard } = this.getLeaderboard(tournament);
+
+    if (!playoffLeaderboard.length) {
+      return;
+    }
+
+    const entities = playoffLeaderboard.slice(0, 3).map((item, index) => {
+      return this.repository.createEntity(tournament, item, index + 1);
+    });
+
+    await manager.save(entities);
+  }
+
+  private composeTable(matches: Match[]) {
+    const collection = new Map<number, LeaderboardItem>();
 
     matches.forEach((match) => {
       this.setPointsForUser(match, 'user1', collection);
@@ -23,16 +48,6 @@ class LeaderboardService {
       .map((item) => item.getData())
       .filter(Boolean)
       .sort(byTotalAndRating);
-  }
-
-  public async saveLeaderboard(tournament: Tournament, manager: EntityManager) {
-    const leaderboard = this.getLeaderboard(tournament).slice(0, 3);
-
-    const entities = leaderboard.map((item, index) => {
-      return this.repository.createEntity(tournament, item, index + 1);
-    });
-
-    await manager.save(entities);
   }
 
   private getValidTournamentMatches(tournament: Tournament): Match[] {

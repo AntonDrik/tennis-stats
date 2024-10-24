@@ -1,4 +1,4 @@
-import { Button, Flex } from '@radix-ui/themes';
+import { Button, Callout, Flex } from '@radix-ui/themes';
 import { Spinner } from '@radix-ui/themes';
 import { useAtomValue } from 'jotai';
 import * as React from 'react';
@@ -8,6 +8,7 @@ import useLoginMutation from '../../../../core/api/auth/useLoginMutation';
 import { updateMeStore } from '../../../../core/store';
 import { appRoutes } from '../../../../routes/routes.constant';
 import { TextField } from '../../../../shared/components';
+import { InfoIcon } from '../../../../shared/svg-icons';
 import { registrationFormAtom } from '../../state/AuthPage.state';
 
 function Login() {
@@ -40,6 +41,16 @@ function Login() {
 
   return (
     <Flex direction={'column'} gap={'4'}>
+      <Callout.Root color="orange" size={'1'}>
+        <Callout.Icon>
+          <InfoIcon />
+        </Callout.Icon>
+
+        <Callout.Text>
+          Если вы забыли логин или пароль, обратитесь к администратору.
+        </Callout.Text>
+      </Callout.Root>
+
       <TextField
         size={'3'}
         label={'Логин'}

@@ -9,9 +9,17 @@ export interface IFieldErrors {
   helperText: JSX.Element | null;
 }
 
-const renderErrorMessage = <T extends FieldErrors>(errors: T, name: keyof T) => {
+const renderErrorMessage = <T extends FieldErrors>(
+  errors: T,
+  name: keyof T,
+  defaultHelperText?: string
+) => {
   if (!errors[name]) {
-    return <></>;
+    return (
+      <Text size={'1'} weight={'light'}>
+        {defaultHelperText}
+      </Text>
+    );
   }
 
   const message = String(errors[name]?.message ?? '');
@@ -30,11 +38,12 @@ const renderErrorMessage = <T extends FieldErrors>(errors: T, name: keyof T) => 
 
 function getTextFieldError<T extends FieldErrors>(
   errors: T,
-  name: keyof T
+  name: keyof T,
+  defaultHelperText?: string
 ): IFieldErrors {
   return {
     error: isDefined(errors[name]),
-    helperText: renderErrorMessage(errors, name),
+    helperText: renderErrorMessage(errors, name, defaultHelperText),
   };
 }
 

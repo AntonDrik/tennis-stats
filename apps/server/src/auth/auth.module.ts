@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common/decorators';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { RatingModule } from '../core/rating';
 import { UsersModule } from '../core/users';
 import AuthController from './auth.controller';
 import AuthService from './auth.service';
@@ -13,6 +14,7 @@ import JwtStrategy from './strategies/jwt.strategy';
     ConfigModule,
     UsersModule,
     PassportModule,
+    RatingModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

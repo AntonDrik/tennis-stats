@@ -84,7 +84,7 @@ function CreatePlayoff(props: IProps) {
 
               <Box pr={'3'}>
                 <Leaderboard
-                  leaderboardItems={leaderboard.data}
+                  leaderboardItems={leaderboard.data?.toursLeaderboard}
                   onlyTotal
                   hideUsersIds={removedUsersIds}
                   onRemove={removeUserFromLeaderboard}

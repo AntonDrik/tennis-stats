@@ -32,7 +32,7 @@ function RegistrationForm(props: IProps) {
   };
 
   useEffect(() => {
-    form.setValue('rating', 100);
+    form.setValue('rating', 1000);
   }, []);
 
   return (
@@ -44,7 +44,11 @@ function RegistrationForm(props: IProps) {
             label={'Логин'}
             placeholder="Введите логин"
             {...form.register('login')}
-            {...getTextFieldError(form.formState.errors, 'login')}
+            {...getTextFieldError(
+              form.formState.errors,
+              'login',
+              'Используется только при входе в систему'
+            )}
           />
 
           <TextField
@@ -61,7 +65,11 @@ function RegistrationForm(props: IProps) {
             label="Никнейм"
             placeholder="Введите ник"
             {...form.register('nickname')}
-            {...getTextFieldError(form.formState.errors, 'nickname')}
+            {...getTextFieldError(
+              form.formState.errors,
+              'nickname',
+              'Будет отображаться в играх'
+            )}
           />
 
           {!props.skipRatingInput && (

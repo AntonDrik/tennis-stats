@@ -1,19 +1,19 @@
-import { ILeaderboardItem } from '@tennis-stats/types';
+import { ILeaderboard } from '@tennis-stats/types';
 import { useMemo } from 'react';
 
 function usePlayoffActiveUsers(
-  leaderboard: ILeaderboardItem[] | undefined,
+  leaderboard: ILeaderboard | undefined,
   removedUsersIds: number[]
 ) {
   return useMemo(() => {
-    if (!leaderboard) {
+    if (!leaderboard?.toursLeaderboard) {
       return [];
     }
 
-    return leaderboard
+    return leaderboard.toursLeaderboard
       .filter((item) => !removedUsersIds.includes(item.user.id))
       .map((item) => item.user);
-  }, [leaderboard, removedUsersIds]);
+  }, [leaderboard?.toursLeaderboard, removedUsersIds]);
 }
 
 export default usePlayoffActiveUsers;

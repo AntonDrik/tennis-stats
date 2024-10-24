@@ -18,3 +18,8 @@ export interface ILeaderboardItem {
   wins: number;
   total: number;
 }
+
+export interface ILeaderboard {
+  toursLeaderboard: ILeaderboardItem[];
+  playoffLeaderboard: ILeaderboardItem[];
+}

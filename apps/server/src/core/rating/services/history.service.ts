@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@tennis-stats/entities';
+import { RatingHistory, User } from '@tennis-stats/entities';
 import { toFixedNumber } from '@tennis-stats/helpers';
 import { IAvgRatingByDay } from '@tennis-stats/types';
 import RatingHistoryRepository from '../repositories/history.repository';
@@ -21,7 +21,7 @@ class RatingHistoryService {
     return this.repository.executeQuery<IAvgRatingByDay[]>(query);
   }
 
-  async getDailyRatingDiff(user: User): Promise<string> {
+  public async getDailyRatingDiff(user: User): Promise<string> {
     const prevDayRecord = await this.repository
       .findPrevDayRating(user.id)
       .catch(() => null);
@@ -35,6 +35,15 @@ class RatingHistoryService {
     const ratingDiff = toFixedNumber(user.rating - prevRating, 1);
 
     return ratingDiff > 0 ? `+${ratingDiff}` : String(ratingDiff);
+  }
+
+  public async createHistoryItem(user: User) {
+    const history = new RatingHistory();
+    history.user = user;
+    history.rating = user.rating;
+    history.date = new Date();
+
+    await history.save();
   }
 }
 

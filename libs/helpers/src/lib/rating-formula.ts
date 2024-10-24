@@ -11,7 +11,7 @@ function calculateRating(
   looserRating: number,
   matchScore: IMatchScore
 ): IRatingPayload {
-  const tourMultiplier = getTournamentMultiplier();
+  const tourMultiplier = getTournamentMultiplier(); // Фиксированное значение 0.2. Т.к в ближайшее время avg турнира не будет превышать 250
   const scoreMultiplier = getScoreMultiplier(matchScore);
 
   const delta =

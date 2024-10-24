@@ -6,6 +6,7 @@ import { IAuthResponse, ITokenPayload, IUser } from '@tennis-stats/types';
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { InvalidCredentialsException, UserExistException } from '../common/exceptions';
+import { RatingHistoryService } from '../core/rating';
 import { UsersAuthRepository, UsersRepository } from '../core/users';
 import {
   refreshCookieOptions,
@@ -21,6 +22,7 @@ class AuthService {
   constructor(
     private usersRepository: UsersRepository,
     private userAuthRepository: UsersAuthRepository,
+    private ratingHistoryService: RatingHistoryService,
     private jwtService: JwtService
   ) {}
 
@@ -57,6 +59,8 @@ class AuthService {
     user.auth = auth;
 
     await user.save();
+
+    await this.ratingHistoryService.createHistoryItem(user);
   }
 
   public async logout(request: Request, response: Response): Promise<boolean> {
