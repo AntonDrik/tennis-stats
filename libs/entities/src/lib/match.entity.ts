@@ -6,9 +6,10 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { GameSet } from './game-set.entity';
+import { RatingHistory } from './rating-history.entity';
 import { Tour } from './tour.entity';
 import { User } from './user.entity';
 
@@ -42,13 +43,16 @@ export class Match extends BaseEntity implements IMatch {
 
   @OneToMany(() => GameSet, (gameSet) => gameSet.match, {
     eager: true,
-    cascade: true,
+    cascade: true
   })
   gameSets: GameSet[];
 
+  @OneToMany(() => RatingHistory, (ratingHistory) => ratingHistory.match)
+  ratingHistory: RatingHistory[]
+
   totalScore: IMatchScore = {
     user1: 0,
-    user2: 0,
+    user2: 0
   };
 
   isFinished: boolean;
@@ -89,7 +93,7 @@ export class Match extends BaseEntity implements IMatch {
 
     return {
       winner: isWinnerUser1 ? this.user1 : this.user2,
-      looser: isWinnerUser1 ? this.user2 : this.user1,
+      looser: isWinnerUser1 ? this.user2 : this.user1
     };
   }
 

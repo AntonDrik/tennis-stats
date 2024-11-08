@@ -2,7 +2,7 @@ import { Flex } from '@radix-ui/themes';
 import { ITour } from '@tennis-stats/types';
 import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { updateTournamentAtom } from '../../../../core/store';
+import { updateTournamentStateAtom } from '../../../../core/store';
 import { MatchCard } from '../../../../shared/components/Tournament';
 
 interface IProps {
@@ -10,7 +10,7 @@ interface IProps {
 }
 
 function TourTab(props: IProps) {
-  const updateTournamentState = useSetAtom(updateTournamentAtom);
+  const updateTournamentState = useSetAtom(updateTournamentStateAtom);
 
   useEffect(() => {
     updateTournamentState({ selectedTour: props.tour });

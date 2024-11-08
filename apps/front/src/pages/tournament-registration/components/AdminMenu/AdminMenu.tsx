@@ -7,7 +7,7 @@ import { appRoutes } from '../../../../routes/routes.constant';
 import { useModal } from '../../../../shared/components';
 import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { PlayIcon, PlusIcon } from '../../../../shared/svg-icons';
-import { tabsAtom } from '../../../tournament/states/Tabs.state';
+import { tournamentActiveTabAtom } from '../../../tournament/states/active-tab.state';
 import AddUsersToTournamentModal from '../../modals/AddUserModal/AddUserModal';
 import StartTournamentModal from '../../modals/StartTournamentModal/StartTournamentModal';
 
@@ -16,7 +16,7 @@ interface IProps {
 }
 
 function RegistrationAdminMenu(props: IProps) {
-  const setTournamentTab = useSetAtom(tabsAtom);
+  const setTournamentActiveTab = useSetAtom(tournamentActiveTabAtom);
 
   const modal = useModal();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function RegistrationAdminMenu(props: IProps) {
     modal.open(
       <StartTournamentModal
         onSuccess={(tournamentId) => {
-          setTournamentTab('0');
+          setTournamentActiveTab('0');
           navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
         }}
       />

@@ -15,7 +15,7 @@ const tournamentAtom = atom<ITournamentState>({
   selectedGameSet: null,
 });
 
-const updateTournamentAtom = atom(
+const updateTournamentStateAtom = atom(
   null,
   (get, set, update: Partial<ITournamentState>) => {
     const currentState = get(tournamentAtom);
@@ -27,4 +27,4 @@ const updateTournamentAtom = atom(
   }
 );
 
-export { tournamentAtom, updateTournamentAtom, ITournamentState };
+export { tournamentAtom, updateTournamentStateAtom, ITournamentState };

@@ -5,12 +5,15 @@ import * as ReactDOM from 'react-dom/client';
 import App from './App';
 import { fetchMe } from './core/api/user/useMeQuery';
 import { meStore, updateMeStore } from './core/store';
+import { Spinner } from './shared/components';
 import { InfoIcon } from './shared/svg-icons';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
-void (async function () {
+void (async function() {
   try {
+    root.render(<Spinner page />);
+
     const user = await fetchMe().catch(() => null);
     updateMeStore(user);
 
@@ -23,10 +26,11 @@ void (async function () {
     );
   } catch (err) {
     root.render(
-      <Callout.Root color="red">
+      <Callout.Root color='red'>
         <Callout.Icon>
           <InfoIcon />
         </Callout.Icon>
+
         <Callout.Text>Произошла ошибка</Callout.Text>
       </Callout.Root>
     );

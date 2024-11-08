@@ -6,7 +6,7 @@ interface IMainLayoutState {
 }
 
 const mainLayoutAtom = atom<IMainLayoutState>({
-  isHiddenMenu: false,
+  isHiddenMenu: true,
   isOpenedMenu: false,
 });
 

@@ -14,7 +14,7 @@ import {
   ACCESS_COOKIE_NAME,
   REFRESH_COOKIE_NAME,
   ACCESS_COOKIE_LIFE_TIME,
-  REFRESH_COOKIE_LIFE_TIME,
+  REFRESH_COOKIE_LIFE_TIME
 } from './constants';
 
 @Injectable()
@@ -67,7 +67,9 @@ class AuthService {
     const accessToken = request.cookies[ACCESS_COOKIE_NAME];
     const payload = (await this.jwtService.decode(accessToken)) as ITokenPayload;
 
-    await this.userAuthRepository.updateRefreshToken(payload?.userId, null);
+    if (Number.isFinite(payload?.userId)) {
+      await this.userAuthRepository.updateRefreshToken(payload.userId, null);
+    }
 
     response.clearCookie(
       ACCESS_COOKIE_NAME,
@@ -83,11 +85,13 @@ class AuthService {
 
   public async setJwtCookie(user: IUser, response: Response): Promise<IAuthResponse> {
     const tokenPayload: ITokenPayload = { userId: user.id };
+
     const access_token = this.jwtService.sign(tokenPayload, {
-      expiresIn: ACCESS_COOKIE_LIFE_TIME,
+      expiresIn: ACCESS_COOKIE_LIFE_TIME
     });
+
     const refresh_token = this.jwtService.sign(
-      {},
+      tokenPayload,
       { expiresIn: REFRESH_COOKIE_LIFE_TIME }
     );
 

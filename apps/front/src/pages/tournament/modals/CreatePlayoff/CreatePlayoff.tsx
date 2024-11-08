@@ -7,10 +7,11 @@ import {
   ScrollArea,
   SegmentedControl,
   Spinner,
-  Text,
+  Text
 } from '@radix-ui/themes';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { IUser } from '@tennis-stats/types';
+import { useSetAtom } from 'jotai/index';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
@@ -18,11 +19,13 @@ import { useCreatePlayoffMutation, useGetLeaderboardQuery } from '../../../../co
 import {
   TextField,
   useModal,
-  Spinner as LargeSpinner,
+  Spinner as LargeSpinner
 } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
 import { getTextFieldError } from '../../../../utils';
+import { tournamentActiveTabAtom } from '../../states/active-tab.state';
+import { leaderboardTabAtom } from '../LeaderboardModal/LeaderboardModal.state';
 import usePlayoffActiveUsers from './hooks/usePlayoffActiveUsers';
 
 interface IProps {
@@ -30,6 +33,9 @@ interface IProps {
 }
 
 function CreatePlayoff(props: IProps) {
+  const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
+  const setActiveTab = useSetAtom(tournamentActiveTabAtom);
+
   const createPlayoffMutation = useCreatePlayoffMutation();
   const leaderboard = useGetLeaderboardQuery(props.tournamentId);
 
@@ -39,9 +45,9 @@ function CreatePlayoff(props: IProps) {
     mode: 'all',
     defaultValues: {
       setsCount: 2,
-      activeUsersIds: [],
+      activeUsersIds: []
     },
-    resolver: classValidatorResolver(CreatePlayoffDto),
+    resolver: classValidatorResolver(CreatePlayoffDto)
   });
 
   const modal = useModal();
@@ -54,6 +60,9 @@ function CreatePlayoff(props: IProps) {
   const submit = (form: CreatePlayoffDto) => {
     createPlayoffMutation.mutateAsync(form).then(() => {
       toast.success('Плей-офф успешно создан');
+      setLeaderboardTab('playoff');
+      setActiveTab('-1');
+
       modal.close();
     });
   };
@@ -79,7 +88,7 @@ function CreatePlayoff(props: IProps) {
               Таблица лидеров
             </Text>
 
-            <ScrollArea scrollbars="vertical" style={{ maxHeight: '358px' }}>
+            <ScrollArea scrollbars='vertical' style={{ maxHeight: '358px' }}>
               {leaderboard.isLoading && <LargeSpinner />}
 
               <Box pr={'3'}>
@@ -110,8 +119,8 @@ function CreatePlayoff(props: IProps) {
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <SegmentedControl.Item value="1/8">1/8</SegmentedControl.Item>
-                <SegmentedControl.Item value="1/4">1/4</SegmentedControl.Item>
+                <SegmentedControl.Item value='1/8'>1/8</SegmentedControl.Item>
+                <SegmentedControl.Item value='1/4'>1/4</SegmentedControl.Item>
               </SegmentedControl.Root>
             )}
           />

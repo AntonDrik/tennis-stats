@@ -12,8 +12,8 @@ class RatingService {
   public async calculateAndSaveRating(tournament: Tournament, manager: EntityManager) {
     const data = this.calculateRating(tournament);
 
-    for (const [id, rating] of data.dictionary) {
-      await manager.update(User, { id }, { rating });
+    for (const [userId, rating] of data.dictionary) {
+      await manager.update(User, { id: userId }, { rating });
     }
 
     await allSynchronously(
@@ -52,12 +52,14 @@ class RatingService {
             rating: newWinnerRating,
             visual: rating.visual,
             date: match.endDate,
+            match
           },
           {
             user: { id: looser.id },
             rating: newLooserRating,
             visual: rating.visual,
             date: match.endDate,
+            match
           }
         );
       });

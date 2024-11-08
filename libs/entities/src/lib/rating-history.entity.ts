@@ -1,3 +1,4 @@
+import { Match } from './match.entity';
 import { User } from './user.entity';
 import { IRatingHistory } from '@tennis-stats/types';
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -18,4 +19,7 @@ export class RatingHistory extends BaseEntity implements IRatingHistory {
 
   @Column('varchar', { nullable: true })
   visual: string;
+
+  @ManyToOne(() => Match, { cascade: true })
+  match: Match;
 }

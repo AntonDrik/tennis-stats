@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { User } from '@tennis-stats/entities';
 import { DataSource, Equal, In } from 'typeorm';
 import { UserNotFoundException } from '../../common/exceptions';
@@ -10,38 +10,27 @@ class UsersRepository extends BaseRepository<User> {
     super(User, dataSource);
   }
 
-  public findByRefreshToken(token: string) {
-    return this.findOne({
-      relations: ['auth'],
-      where: {
-        auth: {
-          refreshToken: Equal(token),
-        },
-      },
-    });
-  }
-
   public findByLogin(login: string) {
     return this.findOne({
       relations: ['auth'],
       where: {
-        auth: { login },
-      },
+        auth: { login: Equal(login) }
+      }
     });
   }
 
-  public async findById(id: number): Promise<User> {
-    const user = await this.findOneBy({ id });
+  public async findById(id: number, exception?: HttpException): Promise<User> {
+    const user = await this.findOneBy({ id: Equal(Number(id)) });
 
     if (!user) {
-      throw new UserNotFoundException(id);
+      throw exception ?? new UserNotFoundException(id);
     }
 
     return user;
   }
 
   public async findByNickname(nickname: string): Promise<User> {
-    const user = await this.findOneBy({ nickname });
+    const user = await this.findOneBy({ nickname: Equal(nickname) });
 
     if (!user) {
       throw new UserNotFoundException(nickname);
@@ -52,7 +41,7 @@ class UsersRepository extends BaseRepository<User> {
 
   public findByIds(ids: number[]) {
     return this.findBy({
-      id: In(ids),
+      id: In(ids)
     });
   }
 }

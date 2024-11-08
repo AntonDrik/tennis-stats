@@ -1,4 +1,5 @@
 import { IGameSet } from './game-set';
+import { IRatingHistory } from './rating-history';
 import { ITour } from './tour';
 import { IUser } from './user';
 
@@ -16,6 +17,7 @@ interface IMatch {
   number: number;
   gameSets: IGameSet[];
   isPlayoff: boolean;
+  ratingHistory?: IRatingHistory[];
 
   // computed
   totalScore: IMatchScore;

@@ -19,9 +19,10 @@ function Page({ title, scrollTop = false, children }: IProps): JSX.Element {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <Helmet titleTemplate="%s | Tennis stats">
+      <Helmet titleTemplate='%s'>
         <title>{title}</title>
       </Helmet>
+
       <Box p={'4'}>{children}</Box>
     </ErrorBoundary>
   );

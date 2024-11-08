@@ -25,7 +25,7 @@ class PairsGeneratorService {
 
       result.push({
         user1: user1[0],
-        user2: user2[0],
+        user2: user2[0]
       });
     }
 
@@ -49,7 +49,7 @@ class PairsGeneratorService {
 
     const result = [
       ...this.generateByRandom(firstPart),
-      ...this.generateByRandom(secondPart),
+      ...this.generateByRandom(secondPart)
     ];
 
     return shuffleArray(result);
@@ -77,7 +77,7 @@ class PairsGeneratorService {
     chunkedUsers.forEach((chunk) => {
       result.push({
         user1: chunk[0],
-        user2: chunk[1],
+        user2: chunk[1]
       });
     });
 
@@ -91,13 +91,29 @@ class PairsGeneratorService {
 
     let left = 0;
     let right = users.length - 1;
+
+    let resultLeft = 0;
+    let resultRight = Math.ceil(right / 2) - 1;
+
     const result: IPair[] = [];
 
     while (left < right) {
-      result.push({
-        user1: users[left],
-        user2: users[right],
-      });
+
+      if (left % 2 === 0) {
+        result[resultLeft] = {
+          user1: users[left],
+          user2: users[right]
+        };
+
+        resultLeft++;
+      } else {
+        result[resultRight] = {
+          user1: users[left],
+          user2: users[right]
+        };
+
+        resultRight--;
+      }
 
       left++;
       right--;

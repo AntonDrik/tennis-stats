@@ -2,7 +2,7 @@ import ms from 'ms'
 
 
 const ACCESS_COOKIE_LIFE_TIME = '5m'
-const REFRESH_COOKIE_LIFE_TIME = '7d'
+const REFRESH_COOKIE_LIFE_TIME = '16d'
 
 const ACCESS_COOKIE_NAME = 'Authentication'
 const REFRESH_COOKIE_NAME = 'Refresh'

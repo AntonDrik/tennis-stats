@@ -8,7 +8,8 @@ import { tournamentAtom } from '../../../../core/store';
 import { useConfirmModal } from '../../../../shared/components';
 import { CloseIcon } from '../../../../shared/svg-icons';
 import { useCanManageTournament } from '../../hooks';
-import { tabsAtom } from '../../states/Tabs.state';
+import { leaderboardTabAtom } from '../../modals/LeaderboardModal/LeaderboardModal.state';
+import { tournamentActiveTabAtom } from '../../states/active-tab.state';
 
 import Styled from './Tabs.styles';
 
@@ -17,7 +18,8 @@ interface IProps {
 }
 
 function TournamentTabs(props: IProps) {
-  const setTabsState = useSetAtom(tabsAtom);
+  const setActiveTab = useSetAtom(tournamentActiveTabAtom);
+  const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
   const tournamentState = useAtomValue(tournamentAtom);
 
   const removePlayoffMutation = useRemovePlayoffMutation();
@@ -29,13 +31,13 @@ function TournamentTabs(props: IProps) {
     title: `Вы действительно хотите удалить тур № ${tournamentState.selectedTour?.number}?`,
     description: 'Таблица лидеров будет перестроена',
     confirmTitle: 'Да, удалить',
-    denyTitle: 'Нет, отменить',
+    denyTitle: 'Нет, отменить'
   });
 
   const removePlayoffConfirmModal = useConfirmModal({
     title: 'Вы действительно хотите удалить плей-офф?',
     confirmTitle: 'Да, удалить',
-    denyTitle: 'Нет, отменить',
+    denyTitle: 'Нет, отменить'
   });
 
   const hasPlayoffMatches = useMemo(() => {
@@ -46,7 +48,7 @@ function TournamentTabs(props: IProps) {
     removeTourConfirmModal(() => {
       removeTourMutation.mutateAsync().then(() => {
         toast.success('Тур успешно удален');
-        setTabsState('0');
+        setActiveTab('0');
       });
     });
   };
@@ -55,7 +57,8 @@ function TournamentTabs(props: IProps) {
     removePlayoffConfirmModal(() => {
       removePlayoffMutation.mutateAsync().then(() => {
         toast.success('Плей-офф успешно удален');
-        setTabsState('0');
+        setActiveTab('0');
+        setLeaderboardTab('tours');
       });
     });
   };

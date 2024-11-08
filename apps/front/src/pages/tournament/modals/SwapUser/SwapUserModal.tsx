@@ -4,14 +4,14 @@ import { Button, Dialog, Flex, SegmentedControl, Text } from '@radix-ui/themes';
 import * as React from 'react';
 import { toast } from 'react-hot-toast';
 import { useSwapUserOnMatchMutation } from '../../../../core/api';
-import { tournamentAtom, updateTournamentAtom } from '../../../../core/store';
+import { tournamentAtom, updateTournamentStateAtom } from '../../../../core/store';
 import { useModal } from '../../../../shared/components';
 import { UsersSelect } from '../../../../shared/components/Inputs';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 
 function SwapUserModal() {
   const tournamentState = useAtomValue(tournamentAtom);
-  const updateTournamentState = useSetAtom(updateTournamentAtom);
+  const updateTournamentState = useSetAtom(updateTournamentStateAtom);
 
   const selectedMatch = tournamentState.selectedMatch;
 

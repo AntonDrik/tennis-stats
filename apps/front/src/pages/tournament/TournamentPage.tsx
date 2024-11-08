@@ -1,11 +1,8 @@
 import { Box, Tabs } from '@radix-ui/themes';
 import { ETournamentStatus } from '@tennis-stats/types';
-import { useAtom, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import { Navigate, useParams } from 'react-router-dom';
 import { useGetTournamentQuery } from '../../core/api';
-import { updateTournamentAtom } from '../../core/store';
-import { useBackButton } from '../../layouts/MainLayout';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
 import TournamentHeader from './components/Header/Header';
@@ -13,7 +10,8 @@ import PlayoffTab from './components/PlayoffTab/PlayoffTab';
 import TournamentTabs from './components/Tabs/Tabs';
 import TourTab from './components/TourTab/TourTab';
 import { useCanManageTournament } from './hooks';
-import { tabsAtom } from './states/Tabs.state';
+import useInitializeState from './hooks/useInitializeState';
+import { tournamentActiveTabAtom } from './states/active-tab.state';
 
 type IRouteParams = {
   id: string;
@@ -22,38 +20,16 @@ type IRouteParams = {
 function TournamentPage() {
   const params = useParams<IRouteParams>();
 
-  const tournament = useGetTournamentQuery(params?.id, { staleTime: 100 });
+  const tournament = useGetTournamentQuery(params?.id, {
+    staleTime: 100,
+    refetchOnWindowFocus: true
+  });
 
-  const [tabsState, setTabsState] = useAtom(tabsAtom);
-  const updateTournamentState = useSetAtom(updateTournamentAtom);
+  const [activeTab, setActiveTab] = useAtom(tournamentActiveTabAtom);
 
   const canManageTournament = useCanManageTournament(tournament.data);
 
-  useBackButton({
-    title: 'К списку Турниров',
-    link: appRoutes.TOURNAMENTS,
-  });
-
-  useEffect(() => {
-    if (!tournament.data) {
-      return;
-    }
-
-    const hasTours = tournament.data.tours.length;
-
-    if (!hasTours) {
-      updateTournamentState({
-        selectedTournament: tournament.data,
-        selectedTour: null,
-        selectedMatch: null,
-        selectedGameSet: null,
-      });
-    } else {
-      updateTournamentState({
-        selectedTournament: tournament.data,
-      });
-    }
-  }, [tournament.data]);
+  useInitializeState(tournament.data);
 
   if (tournament.isLoading) {
     return <Spinner />;
@@ -74,11 +50,11 @@ function TournamentPage() {
         canManageTournament={canManageTournament}
       />
 
-      <Tabs.Root value={tabsState} onValueChange={(value) => setTabsState(value)}>
+      <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)}>
         <TournamentTabs tours={tournament.data.tours} />
 
         <Box pt={'3'}>
-          {tournament.data.tours.map((tour, index) => (
+          {tournament.data.tours.filter((tour) => !tour.playOffStage).map((tour, index) => (
             <Tabs.Content key={`tour-${tour.id}`} value={`${index}`}>
               <TourTab tour={tour} />
             </Tabs.Content>

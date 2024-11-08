@@ -1,15 +1,19 @@
 import { Box, Dialog, Flex, ScrollArea, Tabs } from '@radix-ui/themes';
+import { useAtom } from 'jotai';
 import React from 'react';
 import { useGetLeaderboardQuery } from '../../../../core/api';
 import { Spinner } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
+import { leaderboardTabAtom } from './LeaderboardModal.state';
 
 interface IProps {
   tournamentId: number;
 }
 
 function LeaderboardModal(props: IProps) {
+  const [activeTab, setActiveTab] = useAtom(leaderboardTabAtom)
+
   const leaderboard = useGetLeaderboardQuery(props.tournamentId);
 
   const hasPlayoffLeaderborad = (leaderboard.data?.playoffLeaderboard.length ?? 0) > 0;
@@ -21,7 +25,7 @@ function LeaderboardModal(props: IProps) {
       {leaderboard.isLoading && <Spinner />}
       <Dialog.Title align={'center'}>Таблица лидеров</Dialog.Title>
 
-      <Tabs.Root defaultValue="tours">
+      <Tabs.Root  value={activeTab} onValueChange={(value) => setActiveTab(value)}>
         <Tabs.List>
           <Tabs.Trigger value="tours">Туры</Tabs.Trigger>
           <Tabs.Trigger value="playoff" disabled={!hasPlayoffLeaderborad}>

@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { IGameSet, IMatch } from '@tennis-stats/types';
-import { tournamentAtom, updateTournamentAtom } from '../../../../core/store';
+import { tournamentAtom, updateTournamentStateAtom } from '../../../../core/store';
 import { useCanManageTournament } from '../../../../pages/tournament/hooks';
 import { EditGameSetModal, FinishGameSetModal } from '../../GameSet';
 import { useModal } from '../../Modals';
@@ -18,7 +18,7 @@ interface IProps {
 
 function MatchCard({ match, isPlayoffCard }: IProps) {
   const tournamentState = useAtomValue(tournamentAtom);
-  const updateTournamentState = useSetAtom(updateTournamentAtom);
+  const updateTournamentState = useSetAtom(updateTournamentStateAtom);
 
   const [isSettingsOpened, setIsSettingsOpened] = useState<boolean>(false);
 
