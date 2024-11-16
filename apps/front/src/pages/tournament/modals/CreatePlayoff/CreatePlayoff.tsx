@@ -7,7 +7,7 @@ import {
   ScrollArea,
   SegmentedControl,
   Spinner,
-  Text
+  Text,
 } from '@radix-ui/themes';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { IUser } from '@tennis-stats/types';
@@ -19,7 +19,7 @@ import { useCreatePlayoffMutation, useGetLeaderboardQuery } from '../../../../co
 import {
   TextField,
   useModal,
-  Spinner as LargeSpinner
+  Spinner as LargeSpinner,
 } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
@@ -36,8 +36,8 @@ function CreatePlayoff(props: IProps) {
   const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
   const setActiveTab = useSetAtom(tournamentActiveTabAtom);
 
-  const createPlayoffMutation = useCreatePlayoffMutation();
   const leaderboard = useGetLeaderboardQuery(props.tournamentId);
+  const createPlayoffMutation = useCreatePlayoffMutation(props.tournamentId);
 
   const [removedUsersIds, setRemovedUsersIds] = useState<number[]>([]);
 
@@ -45,9 +45,9 @@ function CreatePlayoff(props: IProps) {
     mode: 'all',
     defaultValues: {
       setsCount: 2,
-      activeUsersIds: []
+      activeUsersIds: [],
     },
-    resolver: classValidatorResolver(CreatePlayoffDto)
+    resolver: classValidatorResolver(CreatePlayoffDto),
   });
 
   const modal = useModal();
@@ -88,7 +88,7 @@ function CreatePlayoff(props: IProps) {
               Таблица лидеров
             </Text>
 
-            <ScrollArea scrollbars='vertical' style={{ maxHeight: '358px' }}>
+            <ScrollArea scrollbars="vertical" style={{ maxHeight: '358px' }}>
               {leaderboard.isLoading && <LargeSpinner />}
 
               <Box pr={'3'}>
@@ -119,8 +119,8 @@ function CreatePlayoff(props: IProps) {
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <SegmentedControl.Item value='1/8'>1/8</SegmentedControl.Item>
-                <SegmentedControl.Item value='1/4'>1/4</SegmentedControl.Item>
+                <SegmentedControl.Item value="1/8">1/8</SegmentedControl.Item>
+                <SegmentedControl.Item value="1/4">1/4</SegmentedControl.Item>
               </SegmentedControl.Root>
             )}
           />

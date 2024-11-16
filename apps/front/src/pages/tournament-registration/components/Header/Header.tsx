@@ -5,20 +5,21 @@ import React, { useMemo } from 'react';
 
 interface IProps {
   tournament: ITournament;
-  registeredUsersCount: number;
 }
 
-function TournamentRegistrationHeader({ tournament, registeredUsersCount }: IProps) {
+function TournamentRegistrationHeader({ tournament }: IProps) {
+  const joinedUsersCount = tournament.registeredUsers.length;
+
   const badgeLabel = useMemo(() => {
     const parsedDate = parseISOWithFormat(tournament.date, 'dd.MM.yyyy');
-    const usersStat = `${registeredUsersCount}/${tournament.playersCount}`;
+    const usersStat = `${joinedUsersCount}/${tournament.playersCount}`;
 
     return `Дата: ${parsedDate} | Участники: ${usersStat}`;
-  }, [tournament.date, tournament.playersCount, registeredUsersCount]);
+  }, [tournament.date, tournament.playersCount, joinedUsersCount]);
 
   const isFull = useMemo(() => {
-    return registeredUsersCount === tournament.playersCount;
-  }, [registeredUsersCount, tournament.playersCount]);
+    return joinedUsersCount === tournament.playersCount;
+  }, [joinedUsersCount, tournament.playersCount]);
 
   return (
     <Flex direction={'column'} align={'center'} gap={'2'}>

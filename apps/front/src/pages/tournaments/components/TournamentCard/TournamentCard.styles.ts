@@ -7,7 +7,7 @@ const Card = styled(Box)({
   cursor: 'pointer',
   borderRadius: 'var(--radius-4)',
   backgroundColor: 'var(--sage-2)',
-  border: '1px solid var(--sage-7)',
+  border: '1px solid var(--sage-4)',
   padding: 'var(--space-3)',
 
   '&:hover': {

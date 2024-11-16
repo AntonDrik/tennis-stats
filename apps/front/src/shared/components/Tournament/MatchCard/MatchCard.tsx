@@ -29,7 +29,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
   const isEmptyMatch = !match.user1 || !match.user2;
   const isCanOpenSettings = tournamentState.selectedMatch?.id === match.id;
 
-  const toggleSettings = () => {
+  const selectCard = () => {
     if (isPlayoffCard || !canManageTournament) {
       return;
     }
@@ -60,7 +60,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
   return (
     <Styled.Container
       $isOpened={isCanOpenSettings && isSettingsOpened}
-      onClick={toggleSettings}
+      onClick={selectCard}
     >
       <Styled.Row>
         <MatchUsernameBlock

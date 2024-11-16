@@ -2,14 +2,14 @@ import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { useMutation, useQueryClient } from 'react-query';
 import axiosFetcher from '../axios/fetcher';
 
-function useCreatePlayoffMutation() {
+function useCreatePlayoffMutation(tournamentId: number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation(
     ['create-tournament-playoff'],
     (dto: CreatePlayoffDto) =>
       axiosFetcher.post<void, CreatePlayoffDto>(
-        '/tournaments/opened/create-playoff',
+        `/tournaments/${tournamentId}/create-playoff`,
         dto
       ),
     {

@@ -44,7 +44,7 @@ const routes = createBrowserRouter(
         />
 
         <Route
-          path={appRoutes.TOURNAMENT_REGISTRATION}
+          path={appRoutes.TOURNAMENT_REGISTRATION()}
           element={<TournamentRegistrationPage fallback={<Spinner page />} />}
         />
 

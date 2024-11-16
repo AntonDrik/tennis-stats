@@ -7,10 +7,8 @@ import { PairsGeneratorModule } from '../pairs-generator';
 import { RatingModule } from '../rating';
 import { TourModule } from '../tours';
 import { UsersModule } from '../users';
-import OpenedTournamentController from './controllers/opened-tournament.controller';
 import TournamentsController from './controllers/tournaments.controller';
 import TournamentsRepository from './repositories/tournaments.repository';
-import OpenedTournamentService from './services/opened-tournament.service';
 import PlayoffService from './services/playoff.service';
 import TournamentsService from './services/tournaments.service';
 
@@ -24,10 +22,10 @@ import TournamentsService from './services/tournaments.service';
     PairsGeneratorModule,
     RatingModule,
   ],
-  controllers: [OpenedTournamentController, TournamentsController],
+  controllers: [TournamentsController],
   providers: [
     TournamentsService,
-    OpenedTournamentService,
+    TournamentsService,
     TournamentsRepository,
     PlayoffService,
   ],

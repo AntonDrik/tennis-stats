@@ -7,7 +7,8 @@ const appRoutes = {
 
   TOURNAMENT_BY_ID: (id?: number) => (id ? `/tournaments/${id}` : '/tournaments/:id'),
 
-  TOURNAMENT_REGISTRATION: '/tournaments/registration',
+  TOURNAMENT_REGISTRATION: (id?: number) =>
+    id ? `/tournaments/${id}/registration` : '/tournaments/:id/registration',
 
   STATS: '/stats',
 

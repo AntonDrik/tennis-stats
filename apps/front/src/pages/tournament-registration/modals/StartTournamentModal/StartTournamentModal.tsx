@@ -22,11 +22,12 @@ import { useMediaQuery } from '../../../../shared/hooks';
 import Styled from './StartTournamentModal.styles';
 
 interface IProps {
+  tournamentId: number;
   onSuccess?: (tournamentId: number) => void;
 }
 
 function StartTournamentModal(props: IProps) {
-  const startTournament = useStartTournamentMutation();
+  const startTournament = useStartTournamentMutation(props.tournamentId);
 
   const modal = useModal();
   const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');

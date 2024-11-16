@@ -1,11 +1,12 @@
+import { ITournament } from '@tennis-stats/types';
 import { useModal } from '../../../shared/components';
 import UpsertTournamentModal from '../modals/UpsertTournamentModal/UpsertTournamentModal';
 
-function useUpsertTournamentModal(playersCount?: number) {
+function useUpsertTournamentModal(tournament?: ITournament) {
   const modal = useModal();
 
   return {
-    open: () => modal.open(<UpsertTournamentModal playersCount={playersCount} />),
+    open: () => modal.open(<UpsertTournamentModal tournament={tournament} />),
   };
 }
 

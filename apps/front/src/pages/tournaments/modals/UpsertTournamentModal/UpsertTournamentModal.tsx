@@ -1,4 +1,5 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { ITournament } from '@tennis-stats/types';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
@@ -14,26 +15,30 @@ import { TextField, useModal } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { getTextFieldError } from '../../../../utils';
 
-function UpsertTournamentModal(props: Partial<UpsertTournamentDto>) {
+export interface IProps {
+  tournament?: ITournament;
+}
+
+function UpsertTournamentModal(props?: IProps) {
   const createTournament = useCreateTournamentMutation();
-  const updateTournament = useEditTournamentMutation();
+  const updateTournament = useEditTournamentMutation(props?.tournament?.id);
 
   const modal = useModal();
   const form = useForm<UpsertTournamentDto>({
     mode: 'onChange',
-    defaultValues: { playersCount: props.playersCount ?? 2 },
+    defaultValues: { playersCount: props?.tournament?.playersCount ?? 20 },
     resolver: classValidatorResolver(UpsertTournamentDto),
   });
 
+  const isUpdateModel = Boolean(props?.tournament);
   const isLoading = createTournament.isLoading || updateTournament.isLoading;
-  const isUpdateModel = props.playersCount;
 
   const submit = (form: UpsertTournamentDto) => {
     if (!isUpdateModel) {
       createTournament.mutateAsync(form).then((tournament) => {
         modal.close();
         toast.success(`Турнир успешно создан`);
-        void routes.navigate(appRoutes.TOURNAMENT_REGISTRATION);
+        void routes.navigate(appRoutes.TOURNAMENT_REGISTRATION(tournament.id));
       });
 
       return;

@@ -1,16 +1,27 @@
 import { Table } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
+import { toast } from 'react-hot-toast';
+import { useLeaveTournamentMutation } from '../../../../core/api';
 import { meAtom } from '../../../../core/store';
 import AdminActionsCell from './components/AdminActionsCell/AdminActionsCell';
 
 interface IProps {
+  tournamentId: number;
   isAdmin?: boolean;
   usersList: IUser[];
 }
 
 function RegistrationTable(props: IProps) {
   const me = useAtomValue(meAtom);
+
+  const leaveTournamentMutation = useLeaveTournamentMutation(props.tournamentId);
+
+  const leaveTournament = (user: IUser) => {
+    leaveTournamentMutation.mutateAsync({ id: user.id }).then(() => {
+      toast.success('Вы успешно удалили пользователя из турнира');
+    });
+  };
 
   return (
     <Table.Root variant={'surface'} size={'1'}>
@@ -41,7 +52,7 @@ function RegistrationTable(props: IProps) {
 
               {props.isAdmin && (
                 <Table.Cell width={'30px'}>
-                  <AdminActionsCell user={user} />
+                  <AdminActionsCell user={user} onLeaveTournament={leaveTournament} />
                 </Table.Cell>
               )}
             </Table.Row>

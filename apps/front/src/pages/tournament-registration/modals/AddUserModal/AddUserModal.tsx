@@ -21,11 +21,12 @@ import Styled from './AddUserModal.styles';
 import useNotJoinedUsers from './hooks/useNotJoinedUsers';
 
 interface IProps {
+  tournamentId: number;
   joinedUsers: IUser[];
 }
 
 function AddUsersToTournamentModal(props: IProps) {
-  const joinTournamentMutation = useJoinTournamentMutation();
+  const joinTournamentMutation = useJoinTournamentMutation(props.tournamentId);
 
   const [selectedUsersIds, setSelectedUsersIds] = useState<number[]>([]);
 

@@ -3,39 +3,11 @@ import { UpsertTournamentDto, GetTournamentsQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { ETournamentStatus } from '@tennis-stats/types';
 import { DataSource, Repository } from 'typeorm';
-import { TournamentNotFoundException } from '../../../common/exceptions';
 
 @Injectable()
 class TournamentsRepository extends Repository<Tournament> {
   constructor(dataSource: DataSource) {
     super(Tournament, dataSource.createEntityManager());
-  }
-
-  public async findById(id: number): Promise<Tournament> {
-    const tournament = await this.findOneBy({ id });
-
-    if (!tournament) {
-      throw new TournamentNotFoundException();
-    }
-
-    return tournament;
-  }
-
-  public async findByStatus(
-    status: ETournamentStatus[],
-    error?: string
-  ): Promise<Tournament> {
-    const tournaments = await this.findTournamentsByQuery({
-      status,
-    });
-
-    const tournament = tournaments[0];
-
-    if (!tournament) {
-      throw new TournamentNotFoundException(error);
-    }
-
-    return tournament;
   }
 
   public async findLast(): Promise<Tournament | null> {
@@ -48,19 +20,29 @@ class TournamentsRepository extends Repository<Tournament> {
   }
 
   public findTournamentsByQuery(query: GetTournamentsQuery): Promise<Tournament[]> {
-    const builder = this.createQueryBuilder('tournament')
-      .leftJoinAndSelect('tournament.tours', 'tours')
-      .leftJoinAndSelect('tournament.registeredUsers', 'registeredUsers')
-      .leftJoinAndSelect('tournament.leaderboard', 'leaderboard')
-      .leftJoinAndSelect('leaderboard.user', 'leaderboardUser')
-      .leftJoinAndSelect('tours.matches', 'matches')
-      .leftJoinAndSelect('matches.user1', 'matchUser1')
-      .leftJoinAndSelect('matches.user2', 'matchUser2')
-      .leftJoinAndSelect('matches.gameSets', 'gameSets')
-      .leftJoinAndSelect('gameSets.player1', 'player1')
-      .leftJoinAndSelect('gameSets.player2', 'player2')
-      .leftJoinAndSelect('player1.user', 'user1')
-      .leftJoinAndSelect('player2.user', 'user2');
+    const builder = this.createQueryBuilder('tournament').leftJoinAndSelect(
+      'tournament.registeredUsers',
+      'registeredUsers'
+    );
+
+    if (query.withMatches) {
+      builder
+        .leftJoinAndSelect('tournament.tours', 'tours')
+        .leftJoinAndSelect('tours.matches', 'matches')
+        .leftJoinAndSelect('matches.user1', 'matchUser1')
+        .leftJoinAndSelect('matches.user2', 'matchUser2')
+        .leftJoinAndSelect('matches.gameSets', 'gameSets')
+        .leftJoinAndSelect('gameSets.player1', 'player1')
+        .leftJoinAndSelect('gameSets.player2', 'player2')
+        .leftJoinAndSelect('player1.user', 'user1')
+        .leftJoinAndSelect('player2.user', 'user2');
+    }
+
+    if (query.withLeaderboard) {
+      builder
+        .leftJoinAndSelect('tournament.leaderboard', 'leaderboard')
+        .leftJoinAndSelect('leaderboard.user', 'leaderboardUser');
+    }
 
     if (Number.isFinite(query.id)) {
       builder.where('tournament.id = :id', { id: query.id });
@@ -85,10 +67,6 @@ class TournamentsRepository extends Repository<Tournament> {
     tournament.playersCount = dto.playersCount;
 
     return tournament;
-  }
-
-  public executeQuery<T>(query: string): Promise<T[]> {
-    return this.query(query);
   }
 }
 

@@ -1,17 +1,9 @@
-import {
-  HttpException,
-  HttpExceptionOptions,
-  HttpStatus,
-} from '@nestjs/common';
-import { IUser } from '@tennis-stats/types';
+import { HttpException, HttpExceptionOptions, HttpStatus } from '@nestjs/common';
+import { ETournamentStatus } from '@tennis-stats/types';
 
 export class HasUnfinishedTournamentException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
-    super(
-      `Имеется незавершенный турнир`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      options
-    );
+    super(`Имеется незавершенный турнир`, HttpStatus.INTERNAL_SERVER_ERROR, options);
   }
 }
 
@@ -21,26 +13,19 @@ export class TournamentNotFoundException extends HttpException {
   }
 }
 
-export class OpenedTournamentNotFoundException extends HttpException {
-  constructor(options?: HttpExceptionOptions) {
+export class TournamentNotMatchStatusException extends HttpException {
+  constructor(status: ETournamentStatus, options?: HttpExceptionOptions) {
     super(
-      `Открытый к регистрации турнир не найден`,
+      `Неверная операция для турнира со статусом [${status}]`,
       HttpStatus.NOT_FOUND,
       options
     );
   }
 }
 
-export class UsersRegisteredInTournamentException extends HttpException {
-  constructor(
-    usersIds: number[],
-    tournamentUsers: IUser[],
-    options?: HttpExceptionOptions
-  ) {
-    const invalidNicknames = tournamentUsers
-      .filter((user) => usersIds.includes(user.id))
-      .map((user) => user.nickname)
-      .join(', ');
+export class UsersAlreadyJoinedTournamentException extends HttpException {
+  constructor(tournamentUsers: string[], options?: HttpExceptionOptions) {
+    const invalidNicknames = tournamentUsers.join(', ');
 
     super(
       `Данные пользователи уже зарегистрированы на турнире: [${invalidNicknames}]`,
@@ -50,7 +35,7 @@ export class UsersRegisteredInTournamentException extends HttpException {
   }
 }
 
-export class UsersLimitTournamentException extends HttpException {
+export class UsersLimitExceedException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
     super(
       `Достигнуто максимальное количество пользователей в турнире`,
@@ -62,30 +47,6 @@ export class UsersLimitTournamentException extends HttpException {
 
 export class UnableUpdateTournamentException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
-    super(
-      `Неудалось обновить турнир`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      options
-    );
-  }
-}
-
-export class UnableCancelTournamentException extends HttpException {
-  constructor(message: string, options?: HttpExceptionOptions) {
-    super(
-      `Ошибка при попытке отменить турнир: ${message}`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      options
-    );
-  }
-}
-
-export class UnableDeleteTournamentException extends HttpException {
-  constructor(message: string, options?: HttpExceptionOptions) {
-    super(
-      `Ошибка при попытке удалить турнир: ${message}`,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      options
-    );
+    super(`Не удалось обновить турнир`, HttpStatus.INTERNAL_SERVER_ERROR, options);
   }
 }

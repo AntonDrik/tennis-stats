@@ -22,7 +22,7 @@ function TournamentPage() {
 
   const tournament = useGetTournamentQuery(params?.id, {
     staleTime: 100,
-    refetchOnWindowFocus: true
+    refetchOnWindowFocus: true,
   });
 
   const [activeTab, setActiveTab] = useAtom(tournamentActiveTabAtom);
@@ -40,7 +40,7 @@ function TournamentPage() {
   }
 
   if (tournament.data.status === ETournamentStatus.REGISTRATION) {
-    return <Navigate to={appRoutes.TOURNAMENT_REGISTRATION} />;
+    return <Navigate to={appRoutes.TOURNAMENT_REGISTRATION(tournament.data.id)} />;
   }
 
   return (
@@ -51,14 +51,16 @@ function TournamentPage() {
       />
 
       <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)}>
-        <TournamentTabs tours={tournament.data.tours} />
+        <TournamentTabs tournamentId={tournament.data.id} tours={tournament.data.tours} />
 
         <Box pt={'3'}>
-          {tournament.data.tours.filter((tour) => !tour.playOffStage).map((tour, index) => (
-            <Tabs.Content key={`tour-${tour.id}`} value={`${index}`}>
-              <TourTab tour={tour} />
-            </Tabs.Content>
-          ))}
+          {tournament.data.tours
+            .filter((tour) => !tour.playOffStage)
+            .map((tour, index) => (
+              <Tabs.Content key={`tour-${tour.id}`} value={`${index}`}>
+                <TourTab tour={tour} />
+              </Tabs.Content>
+            ))}
 
           <Tabs.Content value={'-1'}>
             <PlayoffTab tournament={tournament.data} />

@@ -8,7 +8,7 @@ import { useModal } from '../../../../shared/components';
 import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { ChevronLeftIcon } from '../../../../shared/svg-icons';
 import LeaderboardModal from '../../modals/LeaderboardModal/LeaderboardModal';
-import TournamentSettingsMenu from './components/SettingsMenu/SettingsMenu';
+import TournamentActionsMenu from './components/ActionsMenu/ActionsMenu';
 
 interface IProps {
   tournament: ITournament;
@@ -47,7 +47,7 @@ function TournamentHeader(props: IProps) {
         </Flex>
 
         {props.canManageTournament && (
-          <TournamentSettingsMenu tournament={props.tournament} />
+          <TournamentActionsMenu tournament={props.tournament} />
         )}
       </Flex>
 

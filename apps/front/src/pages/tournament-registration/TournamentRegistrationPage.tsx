@@ -1,10 +1,11 @@
-import { Box, Button, Flex, ScrollArea } from '@radix-ui/themes';
+import { Button, Flex } from '@radix-ui/themes';
+import { ETournamentStatus } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import {
-  useGetOpenedTournamentQuery,
+  useGetTournamentQuery,
   useJoinTournamentMutation,
   useLeaveTournamentMutation,
 } from '../../core/api';
@@ -19,15 +20,26 @@ import RegistrationAdminMenu from './components/AdminMenu/AdminMenu';
 import TournamentRegistrationHeader from './components/Header/Header';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 
+type IRouteParams = {
+  id: string;
+};
+
 function TournamentRegistrationPage() {
+  const params = useParams<IRouteParams>();
+
   const me = useAtomValue(meAtom);
 
-  const openedTournament = useGetOpenedTournamentQuery();
-  const joinTournamentMutation = useJoinTournamentMutation();
-  const leaveTournamentMutation = useLeaveTournamentMutation();
+  const tournament = useGetTournamentQuery(params?.id, {
+    queryHash: 'tournament-registration',
+    staleTime: 100,
+    refetchOnWindowFocus: true,
+  });
 
-  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
+  const joinTournamentMutation = useJoinTournamentMutation(tournament.data?.id);
+  const leaveTournamentMutation = useLeaveTournamentMutation(tournament.data?.id);
+
   const permissions = useUserPermissions();
+  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const confirmUnregister = useConfirmModal({
     title: 'Отмена регистрации',
@@ -36,11 +48,10 @@ function TournamentRegistrationPage() {
     denyTitle: 'Назад',
   });
 
-  const joinedList = useMemo(() => {
-    return (openedTournament.data?.registeredUsers ?? []).sort(
-      (a, b) => b.rating - a.rating
-    );
-  }, [openedTournament.data]);
+  const joinedList = useMemo(
+    () => tournament.data?.registeredUsers ?? [],
+    [tournament.data]
+  );
 
   const isRegistered = useMemo(() => {
     return Boolean(joinedList.find((user) => user.id === me?.id));
@@ -65,51 +76,39 @@ function TournamentRegistrationPage() {
     link: appRoutes.TOURNAMENTS,
   });
 
-  if (openedTournament.isLoading) {
+  if (tournament.isLoading) {
     return <Spinner />;
   }
 
-  if (!openedTournament.data) {
+  if (tournament.data?.status !== ETournamentStatus.REGISTRATION) {
     return <Navigate to={appRoutes.TOURNAMENTS} />;
   }
 
   return (
     <Page title={'Регистрация на турнир'}>
       <Flex direction={'column'} gap={'4'}>
-        <TournamentRegistrationHeader
-          tournament={openedTournament.data}
-          registeredUsersCount={joinedList.length}
-        />
+        <TournamentRegistrationHeader tournament={tournament.data} />
 
         <Flex justify={'between'}>
-          {!isRegistered && (
-            <Button
-              variant={'solid'}
-              size={isMobileDevice ? '2' : '3'}
-              color={'green'}
-              onClick={joinTournament}
-            >
-              Зарегистрироваться
-            </Button>
-          )}
-
-          {isRegistered && (
-            <Button
-              variant={'solid'}
-              size={isMobileDevice ? '2' : '3'}
-              color={'red'}
-              onClick={leaveTournament}
-            >
-              Отменить регистрацию
-            </Button>
-          )}
+          <Button
+            variant={'solid'}
+            size={isMobileDevice ? '2' : '3'}
+            color={!isRegistered ? 'green' : 'red'}
+            onClick={!isRegistered ? joinTournament : leaveTournament}
+          >
+            {!isRegistered ? 'Зарегистрироваться' : 'Отменить регистрацию'}
+          </Button>
 
           {permissions.canCrudTournament && (
-            <RegistrationAdminMenu joinedUsers={joinedList} />
+            <RegistrationAdminMenu
+              tournamentId={tournament.data.id}
+              joinedUsers={joinedList}
+            />
           )}
         </Flex>
 
         <RegistrationTable
+          tournamentId={tournament.data.id}
           isAdmin={permissions.canCrudTournament}
           usersList={joinedList}
         />

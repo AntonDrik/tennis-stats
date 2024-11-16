@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
-import { User } from '@tennis-stats/entities';
+import { Tournament, User } from '@tennis-stats/entities';
 import { allSynchronously, getPlayoffStageInfo } from '@tennis-stats/helpers';
 import { ETournamentStatus, ETourType, TPlayOffStage } from '@tennis-stats/types';
 import { MatchService } from '../../match';
 import { PairsGeneratorService } from '../../pairs-generator';
 import ToursRepository from '../../tours/repository/tours.repository';
 import { UsersService } from '../../users';
+import checkStatus from '../helpers/check-tournament-status';
 import TournamentsRepository from '../repositories/tournaments.repository';
-import OpenedTournamentService from './opened-tournament.service';
 
 @Injectable()
 class PlayoffService {
@@ -16,18 +16,14 @@ class PlayoffService {
     private matchService: MatchService,
     private usersService: UsersService,
     private tournamentRepository: TournamentsRepository,
-    private openedTournamentService: OpenedTournamentService,
     private toursRepository: ToursRepository,
     private pairsGeneratorService: PairsGeneratorService
   ) {}
 
-  async createPlayoff(dto: CreatePlayoffDto) {
-    const activeUsers = await this.usersService.getUsersForPlayoff(dto);
+  async createPlayoff(tournament: Tournament, dto: CreatePlayoffDto) {
+    checkStatus(tournament, [ETournamentStatus.ACTIVE]);
 
-    const tournament = await this.tournamentRepository.findByStatus(
-      [ETournamentStatus.ACTIVE],
-      'Не найден турнир с активным статусом'
-    );
+    const activeUsers = await this.usersService.getUsersForPlayoff(dto);
 
     const nextRounds = getPlayoffStageInfo(dto.stage).nextRounds;
 
@@ -41,11 +37,8 @@ class PlayoffService {
     return tournament;
   }
 
-  async removePlayoff() {
-    const tournament = await this.tournamentRepository.findByStatus(
-      [ETournamentStatus.PLAYOFF],
-      'Турнир с активным плейофф не найден'
-    );
+  async removePlayoff(tournament: Tournament) {
+    checkStatus(tournament, [ETournamentStatus.PLAYOFF]);
 
     tournament.status = ETournamentStatus.ACTIVE;
     tournament.tours = tournament.tours.filter((tour) => tour.type === ETourType.SIMPLE);

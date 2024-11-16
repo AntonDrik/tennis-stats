@@ -1,17 +1,14 @@
 import { Flex, IconButton } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
-import { toast } from 'react-hot-toast';
-import { useLeaveTournamentMutation } from '../../../../../../core/api';
 import { useConfirmModal } from '../../../../../../shared/components/Modals';
 import { TrashIcon } from '../../../../../../shared/svg-icons';
 
 interface IProps {
   user: IUser;
+  onLeaveTournament: (user: IUser) => void;
 }
 
 function AdminActionsCell(props: IProps) {
-  const leaveTournament = useLeaveTournamentMutation();
-
   const confirm = useConfirmModal({
     title: `${props.user.nickname}`,
     description: 'Вы действительно хотите убрать пользователя из турнира?',
@@ -20,11 +17,7 @@ function AdminActionsCell(props: IProps) {
   });
 
   const handleClick = () => {
-    confirm(() => {
-      leaveTournament.mutateAsync({ id: props.user.id }).then(() => {
-        toast.success('Вы успешно удалили пользователя из турнира');
-      });
-    });
+    confirm(() => props.onLeaveTournament(props.user));
   };
 
   return (

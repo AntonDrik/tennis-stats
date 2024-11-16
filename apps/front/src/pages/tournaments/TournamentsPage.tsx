@@ -16,6 +16,7 @@ function TournamentsPage() {
 
   const { data: tournamentsList, isLoading } = useGetTournamentsListQuery({
     sortByDate: true,
+    withLeaderboard: true,
   });
 
   return (

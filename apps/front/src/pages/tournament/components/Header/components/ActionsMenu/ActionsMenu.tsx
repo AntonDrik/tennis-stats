@@ -19,8 +19,8 @@ interface IProps {
   tournament: ITournament;
 }
 
-function TournamentSettingsMenu({ tournament }: IProps) {
-  const finishTournamentMutation = useFinishTournamentMutation();
+function TournamentActionsMenu({ tournament }: IProps) {
+  const finishTournamentMutation = useFinishTournamentMutation(tournament.id);
 
   const modal = useModal();
   const navigate = useNavigate();
@@ -98,4 +98,4 @@ function TournamentSettingsMenu({ tournament }: IProps) {
   );
 }
 
-export default TournamentSettingsMenu;
+export default TournamentActionsMenu;

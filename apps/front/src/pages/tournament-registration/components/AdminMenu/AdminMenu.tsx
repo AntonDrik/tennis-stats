@@ -12,6 +12,7 @@ import AddUsersToTournamentModal from '../../modals/AddUserModal/AddUserModal';
 import StartTournamentModal from '../../modals/StartTournamentModal/StartTournamentModal';
 
 interface IProps {
+  tournamentId: number;
   joinedUsers: IUser[];
 }
 
@@ -25,6 +26,7 @@ function RegistrationAdminMenu(props: IProps) {
   const openStartTournamentModal = () => {
     modal.open(
       <StartTournamentModal
+        tournamentId={props.tournamentId}
         onSuccess={(tournamentId) => {
           setTournamentActiveTab('0');
           navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
@@ -34,7 +36,12 @@ function RegistrationAdminMenu(props: IProps) {
   };
 
   const openAddUsersModal = () => {
-    modal.open(<AddUsersToTournamentModal joinedUsers={props.joinedUsers} />);
+    modal.open(
+      <AddUsersToTournamentModal
+        tournamentId={props.tournamentId}
+        joinedUsers={props.joinedUsers}
+      />
+    );
   };
 
   return (

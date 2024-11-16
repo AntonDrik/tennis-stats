@@ -1,27 +1,27 @@
 import { Badge } from '@radix-ui/themes';
-import { ETournamentStatus, ITournament } from '@tennis-stats/types';
+import { ETournamentStatus } from '@tennis-stats/types';
 import { useCallback } from 'react';
 
 interface IProps {
-  tournament: ITournament;
+  status: ETournamentStatus;
 }
 
-function TournamentStatusChip({ tournament }: IProps) {
+function TournamentStatusChip({ status }: IProps) {
   const getStatusChip = useCallback(() => {
-    if (tournament.status === ETournamentStatus.REGISTRATION) {
+    if (status === ETournamentStatus.REGISTRATION) {
       return <Badge color="orange">Регистрация</Badge>;
     }
 
-    if (tournament.status === ETournamentStatus.PLAYOFF) {
+    if (status === ETournamentStatus.PLAYOFF) {
       return <Badge color="purple">Плей-офф</Badge>;
     }
 
-    if (tournament.status === ETournamentStatus.ACTIVE) {
+    if (status === ETournamentStatus.ACTIVE) {
       return <Badge color="blue">Активный</Badge>;
     }
 
     return <Badge color="green">Завершен</Badge>;
-  }, [tournament.status]);
+  }, [status]);
 
   return getStatusChip();
 }

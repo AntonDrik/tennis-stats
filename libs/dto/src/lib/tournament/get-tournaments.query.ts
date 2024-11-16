@@ -23,6 +23,16 @@ class GetTournamentsQuery {
   @IsOptional()
   @IsIn(tournamentStatus)
   status?: ETournamentStatus[];
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  withMatches?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  withLeaderboard?: boolean;
 }
 
 export default GetTournamentsQuery;

@@ -7,8 +7,10 @@ import { tournamentActiveTabAtom } from '../states/active-tab.state';
 
 function useInitializeState(tournament: ITournament | undefined) {
   const updateTournamentState = useSetAtom(updateTournamentStateAtom);
+
   const [activeTab, setActiveTab] = useAtom(tournamentActiveTabAtom);
-  const setLeaderboardTab = useSetAtom(leaderboardTabAtom)
+
+  const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
 
   const resetTabsState = () => {
     if (!tournament) {
@@ -24,7 +26,6 @@ function useInitializeState(tournament: ITournament | undefined) {
 
     if (!hasPlayoff) {
       setActiveTab('0');
-      setLeaderboardTab('tours')
     }
   };
 
@@ -35,23 +36,27 @@ function useInitializeState(tournament: ITournament | undefined) {
 
     resetTabsState();
 
-    const hasTours = tournament.tours.length;
-
-    if (!hasTours) {
+    if (!tournament.tours.length) {
       updateTournamentState({
         selectedTournament: tournament,
         selectedTour: null,
         selectedMatch: null,
-        selectedGameSet: null
+        selectedGameSet: null,
       });
-    } else {
-      updateTournamentState({
-        selectedTournament: tournament
-      });
+
+      return;
     }
+
+    updateTournamentState({
+      selectedTournament: tournament,
+    });
   }, [tournament]);
 
-}
+  useEffect(() => {
+    const isSelectedPlayoff = Number(activeTab) === -1;
 
+    setLeaderboardTab(isSelectedPlayoff ? 'playoff' : 'tours');
+  }, [activeTab]);
+}
 
 export default useInitializeState;

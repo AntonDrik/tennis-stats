@@ -16,8 +16,8 @@ interface IProps {
 }
 
 function TournamentDropdownMenu(props: IProps) {
-  const tournamentModal = useUpsertTournamentModal(props.tournament.playersCount);
-  const deleteTournament = useDeleteTournamentMutation();
+  const deleteTournament = useDeleteTournamentMutation(props.tournament.id);
+  const updateTournamentModal = useUpsertTournamentModal(props.tournament);
 
   const deleteTournamentConfirmModal = useConfirmModal({
     title: 'Вы действительно хотите удалить турнир?',
@@ -25,10 +25,16 @@ function TournamentDropdownMenu(props: IProps) {
     denyTitle: 'Нет, отменить',
   });
 
+  const isDisabledEdit = props.tournament.status !== ETournamentStatus.REGISTRATION;
+
   const editClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    tournamentModal.open();
+    if (isDisabledEdit) {
+      return;
+    }
+
+    updateTournamentModal.open();
   };
 
   const deleteClick = (e: React.MouseEvent) => {
@@ -50,10 +56,7 @@ function TournamentDropdownMenu(props: IProps) {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        <DropdownMenu.Item
-          disabled={props.tournament.status !== ETournamentStatus.REGISTRATION}
-          onClick={editClick}
-        >
+        <DropdownMenu.Item disabled={isDisabledEdit} onClick={editClick}>
           <EditIcon />
           Редактировать
         </DropdownMenu.Item>

@@ -16,16 +16,22 @@ interface IProps {
 }
 
 function TournamentCard(props: IProps) {
-  const permissions = useUserPermissions();
   const navigate = useNavigate();
+  const permissions = useUserPermissions();
 
   const showMenu =
-    props.tournament.status !== ETournamentStatus.FINISHED &&
-    permissions.canCrudTournament;
+    permissions.canCrudTournament &&
+    props.tournament.status !== ETournamentStatus.FINISHED;
 
   const navigateToTournament = useCallback(() => {
+    if (props.tournament.status === ETournamentStatus.REGISTRATION) {
+      navigate(appRoutes.TOURNAMENT_REGISTRATION(props.tournament.id));
+
+      return;
+    }
+
     navigate(appRoutes.TOURNAMENT_BY_ID(props.tournament.id));
-  }, [props.tournament.id]);
+  }, [props.tournament.id, props.tournament.status]);
 
   return (
     <Styled.Card onClick={() => navigateToTournament()}>
@@ -35,7 +41,7 @@ function TournamentCard(props: IProps) {
             {parseISOWithFormat(props.tournament.date, 'dd.MM.yyyy')}
           </Text>
 
-          <TournamentStatusChip tournament={props.tournament} />
+          <TournamentStatusChip status={props.tournament.status} />
         </Flex>
 
         {showMenu && <TournamentDropdownMenu tournament={props.tournament} />}

@@ -5,7 +5,7 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import { Tournament } from '@tennis-stats/entities';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Equal } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
 
 @Injectable()
@@ -14,7 +14,7 @@ class TournamentPipe implements PipeTransform {
 
   async transform(value: number): Promise<Tournament | null> {
     const tournament = await this.entity.getRepository(Tournament).findOne({
-      where: { id: value },
+      where: { id: Equal(value) },
       order: {
         tours: {
           id: 'ASC',
@@ -24,6 +24,9 @@ class TournamentPipe implements PipeTransform {
               id: 'ASC',
             },
           },
+        },
+        registeredUsers: {
+          rating: 'ASC',
         },
       },
     });

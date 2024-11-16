@@ -14,16 +14,17 @@ import { tournamentActiveTabAtom } from '../../states/active-tab.state';
 import Styled from './Tabs.styles';
 
 interface IProps {
+  tournamentId: number;
   tours: ITour[];
 }
 
 function TournamentTabs(props: IProps) {
+  const tournamentState = useAtomValue(tournamentAtom);
   const setActiveTab = useSetAtom(tournamentActiveTabAtom);
   const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
-  const tournamentState = useAtomValue(tournamentAtom);
 
-  const removePlayoffMutation = useRemovePlayoffMutation();
   const removeTourMutation = useRemoveTourMutation(tournamentState);
+  const removePlayoffMutation = useRemovePlayoffMutation(props.tournamentId);
 
   const canManageTournament = useCanManageTournament();
 
@@ -31,13 +32,13 @@ function TournamentTabs(props: IProps) {
     title: `Вы действительно хотите удалить тур № ${tournamentState.selectedTour?.number}?`,
     description: 'Таблица лидеров будет перестроена',
     confirmTitle: 'Да, удалить',
-    denyTitle: 'Нет, отменить'
+    denyTitle: 'Нет, отменить',
   });
 
   const removePlayoffConfirmModal = useConfirmModal({
     title: 'Вы действительно хотите удалить плей-офф?',
     confirmTitle: 'Да, удалить',
-    denyTitle: 'Нет, отменить'
+    denyTitle: 'Нет, отменить',
   });
 
   const hasPlayoffMatches = useMemo(() => {
