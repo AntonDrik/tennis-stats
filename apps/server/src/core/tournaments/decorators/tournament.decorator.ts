@@ -26,7 +26,7 @@ class TournamentPipe implements PipeTransform {
           },
         },
         registeredUsers: {
-          rating: 'ASC',
+          rating: 'DESC',
         },
       },
     });

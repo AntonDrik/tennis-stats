@@ -5,12 +5,14 @@ import { LeaderboardModule } from '../leaderboard';
 import { MatchModule } from '../match';
 import { PairsGeneratorModule } from '../pairs-generator';
 import { RatingModule } from '../rating';
+import { TournamentSystemsModule } from '../tournament-systems';
 import { TourModule } from '../tours';
 import { UsersModule } from '../users';
 import TournamentsController from './controllers/tournaments.controller';
+import ToursController from './controllers/tours.controller';
 import TournamentsRepository from './repositories/tournaments.repository';
 import PlayoffService from './services/playoff.service';
-import TournamentsService from './services/tournaments.service';
+import TournamentService from './services/tournament.service';
 
 @Module({
   imports: [
@@ -21,11 +23,12 @@ import TournamentsService from './services/tournaments.service';
     LeaderboardModule,
     PairsGeneratorModule,
     RatingModule,
+    TournamentSystemsModule,
   ],
-  controllers: [TournamentsController],
+  controllers: [TournamentsController, ToursController],
   providers: [
-    TournamentsService,
-    TournamentsService,
+    TournamentService,
+    TournamentService,
     TournamentsRepository,
     PlayoffService,
   ],

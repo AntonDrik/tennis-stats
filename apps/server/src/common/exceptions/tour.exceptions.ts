@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpExceptionOptions,
-  HttpStatus,
-} from '@nestjs/common';
+import { HttpException, HttpExceptionOptions, HttpStatus } from '@nestjs/common';
 
 export class TourNotFoundException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
@@ -14,6 +10,16 @@ export class UnableAddTourException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
     super(
       'Нельзя добавить тур. Турнир неактивен',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      options
+    );
+  }
+}
+
+export class MaxToursExceedException extends HttpException {
+  constructor(options?: HttpExceptionOptions) {
+    super(
+      'Достигнуто максимальное количество туров',
       HttpStatus.INTERNAL_SERVER_ERROR,
       options
     );

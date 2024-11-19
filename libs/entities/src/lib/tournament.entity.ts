@@ -1,6 +1,5 @@
-import { ETournamentStatus, ITournament } from '@tennis-stats/types';
+import { ETournamentStatus, ETournamentType, ITournament } from '@tennis-stats/types';
 import {
-  AfterLoad,
   BaseEntity,
   Column,
   Entity,
@@ -21,6 +20,9 @@ export class Tournament extends BaseEntity implements ITournament {
 
   @Column('datetime', { nullable: true })
   date: Date;
+
+  @Column('varchar', { default: ETournamentType.SWISS_SYSTEM })
+  type: ETournamentType;
 
   @Column('varchar', { default: ETournamentStatus.REGISTRATION })
   status: ETournamentStatus;
@@ -46,16 +48,6 @@ export class Tournament extends BaseEntity implements ITournament {
   @ManyToMany(() => User, (user) => user.id, { eager: true, cascade: true })
   @JoinTable()
   registeredUsers: User[];
-
-  isUnfinished: boolean;
-
-  @AfterLoad()
-  setVariables() {
-    this.isUnfinished =
-      this.status === ETournamentStatus.ACTIVE ||
-      this.status === ETournamentStatus.PLAYOFF ||
-      this.status === ETournamentStatus.REGISTRATION;
-  }
 
   get nextTourNumber() {
     const simpleTours = this.tours?.filter((tour) => tour?.number);

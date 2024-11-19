@@ -8,14 +8,12 @@ import { PairsGeneratorService } from '../../pairs-generator';
 import ToursRepository from '../../tours/repository/tours.repository';
 import { UsersService } from '../../users';
 import checkStatus from '../helpers/check-tournament-status';
-import TournamentsRepository from '../repositories/tournaments.repository';
 
 @Injectable()
 class PlayoffService {
   constructor(
     private matchService: MatchService,
     private usersService: UsersService,
-    private tournamentRepository: TournamentsRepository,
     private toursRepository: ToursRepository,
     private pairsGeneratorService: PairsGeneratorService
   ) {}
@@ -50,11 +48,7 @@ class PlayoffService {
     const pairs = this.pairsGeneratorService.generateFirstWithLast(activeUsers);
     const matches = await this.matchService.createMatches(pairs, dto.setsCount, true);
 
-    return this.toursRepository.createPlayOffTourEntity(
-      dto.setsCount,
-      dto.stage,
-      matches
-    );
+    return this.toursRepository.createPlayOffTourEntity(dto.stage, matches);
   }
 
   private createRestTours(setsCount: number, restStages: TPlayOffStage[]) {
@@ -65,7 +59,7 @@ class PlayoffService {
           setsCount
         );
 
-        return this.toursRepository.createPlayOffTourEntity(setsCount, stage, matches);
+        return this.toursRepository.createPlayOffTourEntity(stage, matches);
       })
     );
   }

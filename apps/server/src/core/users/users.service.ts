@@ -30,13 +30,13 @@ class UsersService {
     );
   }
 
-  public getJoinedUsers(tournament: Tournament) {
+  public async getJoinedUsers(tournament: Tournament) {
     const joinedUsersIds = tournament.registeredUsers?.map((user) => user.id) ?? [];
 
-    return this.getEvenUsersList(joinedUsersIds);
+    return this.getListOfEvenUsers(joinedUsersIds);
   }
 
-  public async getUsersForPlayoff(dto: CreatePlayoffDto) {
+  public getUsersForPlayoff(dto: CreatePlayoffDto) {
     let ids = dto.activeUsersIds;
 
     if (dto.stage === '1/8') {
@@ -47,9 +47,7 @@ class UsersService {
       ids = ids.slice(0, 8);
     }
 
-    const users = await this.getEvenUsersList(ids);
-
-    return users.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    return this.getListOfEvenUsers(ids);
   }
 
   public async createPlayer(userId: number) {
@@ -67,14 +65,16 @@ class UsersService {
    * Возвращает entity пользователей по списку ID.
    * Если пользователей нечетное кол-во, то добавляет Халяву
    */
-  private async getEvenUsersList(joinedUsersIds: number[]) {
+  private async getListOfEvenUsers(joinedUsersIds: number[]) {
     const users = await this.repository.findByIds(joinedUsersIds);
 
     if (users.length % 2 !== 0) {
       return [...users, await this.getSystemUser()];
     }
 
-    return users;
+    return users.sort(
+      (a, b) => joinedUsersIds.indexOf(a.id) - joinedUsersIds.indexOf(b.id)
+    );
   }
 
   private getSystemUser() {

@@ -5,8 +5,6 @@ import { MatchModule } from '../match';
 import { PairsGeneratorModule } from '../pairs-generator';
 import { UsersModule } from '../users';
 import ToursRepository from './repository/tours.repository';
-import ToursService from './services/tours.service';
-import ToursController from './controllers/tours.controller';
 
 @Module({
   imports: [
@@ -15,8 +13,8 @@ import ToursController from './controllers/tours.controller';
     UsersModule,
     PairsGeneratorModule,
   ],
-  controllers: [ToursController],
-  providers: [ToursService, ToursRepository],
+  controllers: [],
+  providers: [ToursRepository],
   exports: [ToursRepository],
 })
 class ToursModule {}

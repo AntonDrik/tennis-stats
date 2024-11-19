@@ -1,41 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import {
+  CreateTourDto,
   GetTournamentsQuery,
   IdDto,
   StartTournamentDto,
   TournamentRegistrationDto,
   UpsertTournamentDto,
 } from '@tennis-stats/dto';
-import { Tournament } from '@tennis-stats/entities';
+import { Tour, Tournament } from '@tennis-stats/entities';
 import { ETournamentStatus } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import {
-  HasUnfinishedTournamentException,
   UnableUpdateTournamentException,
   UsersAlreadyJoinedTournamentException,
   UsersLimitExceedException,
 } from '../../../common/exceptions';
+import {
+  UnableAddTourException,
+  UnableRemoveTourException,
+} from '../../../common/exceptions/tour.exceptions';
 import { LeaderboardService } from '../../leaderboard';
-import { MatchService } from '../../match';
-import { PairsGeneratorService } from '../../pairs-generator';
 import { RatingService } from '../../rating';
-import ToursRepository from '../../tours/repository/tours.repository';
-import { UsersRepository, UsersService } from '../../users';
+import TournamentSystemsFacade from '../../tournament-systems/services/facade.service';
+import { TourRepository } from '../../tours';
+import { UsersRepository } from '../../users';
 import checkStatus from '../helpers/check-tournament-status';
 import TournamentsRepository from '../repositories/tournaments.repository';
 
 @Injectable()
-class TournamentsService {
+class TournamentService {
   constructor(
     private dataSource: DataSource,
     private repository: TournamentsRepository,
     private usersRepository: UsersRepository,
-    private usersService: UsersService,
-    private toursRepository: ToursRepository,
-    private matchService: MatchService,
+    private tourRepository: TourRepository,
     private leaderboardService: LeaderboardService,
     private ratingService: RatingService,
-    private pairsGeneratorService: PairsGeneratorService
+    private tournamentSystemsFacade: TournamentSystemsFacade
   ) {}
 
   public getTournamentsList(query: GetTournamentsQuery) {
@@ -46,12 +47,6 @@ class TournamentsService {
    * Создание турнира
    */
   public async createTournament(dto: UpsertTournamentDto): Promise<Tournament> {
-    const lastTournament = await this.repository.findLast();
-
-    if (lastTournament?.isUnfinished) {
-      throw new HasUnfinishedTournamentException();
-    }
-
     const tourEntity = this.repository.createEntity(dto);
     await tourEntity.save();
 
@@ -64,19 +59,14 @@ class TournamentsService {
   public async startTournament(tournament: Tournament, dto: StartTournamentDto) {
     checkStatus(tournament, [ETournamentStatus.REGISTRATION]);
 
-    const users = await this.usersService.getJoinedUsers(tournament);
+    const entity = await this.tournamentSystemsFacade.initialize(tournament, dto);
 
-    const pairs = this.pairsGeneratorService.generateByRating(users);
-    const matches = await this.matchService.createMatches(pairs, dto.setsCount);
-    const tour = this.toursRepository.createSimpleTourEntity(dto.setsCount, 1, matches);
+    entity.handleRating = dto.handleRating;
+    entity.status = ETournamentStatus.ACTIVE;
 
-    tournament.tours = [tour];
-    tournament.handleRating = dto.handleRating;
-    tournament.status = ETournamentStatus.ACTIVE;
+    await entity.save();
 
-    await tournament.save();
-
-    return tournament;
+    return entity;
   }
 
   /**
@@ -118,6 +108,9 @@ class TournamentsService {
     return tournament;
   }
 
+  /**
+   * Удаляет турнир и все связанные записи. НЕ сбрасывает уже подсчитанный рейтинг игроков
+   */
   public async deleteTournament(tournament: Tournament) {
     await tournament.remove();
   }
@@ -156,6 +149,37 @@ class TournamentsService {
 
     await tournament.save();
   }
+
+  /**
+   * Добавляет тур в турнир. Логика добавления разная в зависимости от турнирной системы
+   */
+  public async addTour(tournament: Tournament, dto: CreateTourDto) {
+    checkStatus(tournament, [ETournamentStatus.ACTIVE], new UnableAddTourException());
+
+    const tour = await this.tournamentSystemsFacade.createNewTour(tournament, dto);
+
+    tournament.tours.push(tour);
+    await tournament.save();
+
+    return tour;
+  }
+
+  /**
+   * Удаляет тур из турнира
+   */
+  public async removeTour(tournament: Tournament, tour: Tour | number) {
+    if (tournament.status !== ETournamentStatus.ACTIVE) {
+      throw new UnableRemoveTourException();
+    }
+
+    if (typeof tour === 'number') {
+      tour = await this.tourRepository.findById(tour);
+    }
+
+    await tour.remove();
+
+    return tour;
+  }
 }
 
-export default TournamentsService;
+export default TournamentService;

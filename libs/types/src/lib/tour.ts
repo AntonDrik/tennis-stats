@@ -15,7 +15,6 @@ type TPlayOffStage = '1/64' | '1/32' | '1/16' | '1/8' | '1/4' | '1/2' | '1/1';
 
 interface ITour {
   id: number;
-  setsCount: number;
   matches: IMatch[];
   type: ETourType;
   number?: number;

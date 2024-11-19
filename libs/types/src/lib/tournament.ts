@@ -9,9 +9,15 @@ enum ETournamentStatus {
   FINISHED = 'FINISHED',
 }
 
+enum ETournamentType {
+  ROUND_ROBIN = 'ROUND_ROBIN',
+  SWISS_SYSTEM = 'SWISS_SYSTEM',
+}
+
 interface ITournament {
   id: number;
   date: Date;
+  type: ETournamentType;
   status: ETournamentStatus;
   leaderboard: ITournamentLeaderboard[];
   playersCount: number;
@@ -20,4 +26,4 @@ interface ITournament {
   handleRating: boolean;
 }
 
-export { ITournament, ETournamentStatus };
+export { ITournament, ETournamentStatus, ETournamentType };

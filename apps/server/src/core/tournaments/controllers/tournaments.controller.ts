@@ -14,13 +14,13 @@ import { ForbiddenException } from '../../../common/exceptions';
 import { matchPermissions } from '../../../common/utils';
 import { LeaderboardService } from '../../leaderboard';
 import { TournamentById } from '../decorators/tournament.decorator';
-import TournamentsService from '../services/tournaments.service';
+import TournamentService from '../services/tournament.service';
 import PlayoffService from '../services/playoff.service';
 
 @Controller('tournaments')
 class TournamentsController {
   constructor(
-    private tournamentsService: TournamentsService,
+    private tournamentsService: TournamentService,
     private leaderboardService: LeaderboardService,
     private playoffService: PlayoffService
   ) {}
@@ -34,6 +34,15 @@ class TournamentsController {
   @Permissions([EPermission.TOURNAMENT_CRUD])
   createTournament(@Body() dto: UpsertTournamentDto) {
     return this.tournamentsService.createTournament(dto);
+  }
+
+  @Get('/:id')
+  getTournament(@TournamentById() tournament: Tournament) {
+    return tournament;
+  }
+  @Get('/:id/leaderboard')
+  getLeaderboard(@TournamentById() tournament: Tournament) {
+    return this.leaderboardService.getLeaderboard(tournament);
   }
 
   @Post('/:id/start')
@@ -106,16 +115,6 @@ class TournamentsController {
     }
 
     return this.tournamentsService.leaveTournament(tournament, dto);
-  }
-
-  @Get('/:id/leaderboard')
-  getLeaderboard(@TournamentById() tournament: Tournament) {
-    return this.leaderboardService.getLeaderboard(tournament);
-  }
-
-  @Get('/:id')
-  getTournament(@TournamentById() tournament: Tournament) {
-    return tournament;
   }
 }
 

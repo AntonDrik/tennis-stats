@@ -20,38 +20,24 @@ class ToursRepository extends Repository<Tour> {
     return tour as Tour;
   }
 
-  public createSimpleTourEntity(
-    setsCount: number,
-    number: number,
-    matchEntities: Match[]
-  ): Tour {
+  public createSimpleTourEntity(number: number, matchEntities: Match[]): Tour {
     const tour = new Tour();
 
     tour.type = ETourType.SIMPLE;
-    tour.setsCount = setsCount;
     tour.number = number;
     tour.matches = matchEntities;
 
     return tour;
   }
 
-  public createPlayOffTourEntity(
-    setsCount: number,
-    stage: TPlayOffStage,
-    matchEntities: Match[]
-  ): Tour {
+  public createPlayOffTourEntity(stage: TPlayOffStage, matchEntities: Match[]): Tour {
     const tour = new Tour();
 
     tour.type = ETourType.PLAY_OFF;
     tour.playOffStage = stage;
-    tour.setsCount = setsCount;
     tour.matches = matchEntities;
 
     return tour;
-  }
-
-  public executeQuery<T>(query: string): Promise<T[]> {
-    return this.query(query);
   }
 }
 

@@ -7,8 +7,8 @@ import {
   MatchNotFinishedException,
   UserNotFoundException,
 } from '../../../common/exceptions';
+import { IPair } from '../../pairs-generator';
 import { UsersService } from '../../users';
-import { IPair } from '../interfaces/pair.interface';
 import GameSetRepository from '../repositories/game-set.repository';
 
 @Injectable()

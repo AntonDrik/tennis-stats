@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { StartTournamentDto } from '@tennis-stats/dto';
-import { ETourGenerator } from '@tennis-stats/types';
+import { ETourGenerator, ETournamentType } from '@tennis-stats/types';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useStartTournamentMutation } from '../../../../core/api';
@@ -38,6 +38,7 @@ function StartTournamentModal(props: IProps) {
       handleRating: true,
       setsCount: 1,
       pairsGenerator: ETourGenerator.BY_RATING,
+      tournamentType: ETournamentType.ROUND_ROBIN,
     },
     resolver: classValidatorResolver(StartTournamentDto),
   });

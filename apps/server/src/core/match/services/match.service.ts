@@ -10,9 +10,9 @@ import { EPermission, TPlayOffStage } from '@tennis-stats/types';
 import { DataSource, EntityManager } from 'typeorm';
 import { GameSetFinishedException } from '../../../common/exceptions';
 import { matchPermissions } from '../../../common/utils';
+import { IPair } from '../../pairs-generator';
 import { UsersService } from '../../users';
 import getNextPlayoffStageMatchId from '../helpers/get-next-playoff-stage-match-id.helper';
-import { IPair } from '../interfaces/pair.interface';
 import GameSetService from './game-set.service';
 
 @Injectable()
@@ -133,7 +133,7 @@ class MatchService {
 
     const player = await this.usersService.createPlayer(winner.id);
 
-    const newGameSets = nextMatch.gameSets.map((gameSet) => {
+    const updatedGameSets = nextMatch.gameSets.map((gameSet) => {
       return GameSet.create({
         ...gameSet,
         [`player${userNumber}`]: player,
@@ -141,7 +141,7 @@ class MatchService {
     });
 
     nextMatch[`user${userNumber}`] = winner;
-    nextMatch.gameSets = newGameSets;
+    nextMatch.gameSets = updatedGameSets;
 
     await manager.save(nextMatch);
   }

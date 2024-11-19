@@ -21,9 +21,6 @@ export class Tour extends BaseEntity implements ITour {
   @Column('varchar', { nullable: false })
   type: ETourType;
 
-  @Column('varchar', { nullable: false })
-  setsCount: number;
-
   @OneToMany(() => Match, (match) => match.tour, {
     eager: true,
     cascade: true,

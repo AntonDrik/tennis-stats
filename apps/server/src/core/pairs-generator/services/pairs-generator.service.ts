@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Tournament, User } from '@tennis-stats/entities';
 import { chunk, shuffleArray } from '@tennis-stats/helpers';
+import { c } from 'vitest/dist/reporters-5f784f42';
 import { IsOddUsersException } from '../../../common/exceptions';
 import { LeaderboardService } from '../../leaderboard';
-import { IPair } from '../../match/interfaces/pair.interface';
+import { IPair } from '../interfaces';
 
 @Injectable()
 class PairsGeneratorService {
@@ -25,7 +26,7 @@ class PairsGeneratorService {
 
       result.push({
         user1: user1[0],
-        user2: user2[0]
+        user2: user2[0],
       });
     }
 
@@ -49,7 +50,7 @@ class PairsGeneratorService {
 
     const result = [
       ...this.generateByRandom(firstPart),
-      ...this.generateByRandom(secondPart)
+      ...this.generateByRandom(secondPart),
     ];
 
     return shuffleArray(result);
@@ -77,7 +78,7 @@ class PairsGeneratorService {
     chunkedUsers.forEach((chunk) => {
       result.push({
         user1: chunk[0],
-        user2: chunk[1]
+        user2: chunk[1],
       });
     });
 
@@ -98,18 +99,17 @@ class PairsGeneratorService {
     const result: IPair[] = [];
 
     while (left < right) {
-
       if (left % 2 === 0) {
         result[resultLeft] = {
           user1: users[left],
-          user2: users[right]
+          user2: users[right],
         };
 
         resultLeft++;
       } else {
         result[resultRight] = {
           user1: users[left],
-          user2: users[right]
+          user2: users[right],
         };
 
         resultRight--;
@@ -120,6 +120,17 @@ class PairsGeneratorService {
     }
 
     return result;
+  }
+
+  public toPairs(users: User[][]): IPair[] {
+    return users.reduce((acc, curr) => {
+      acc.push({
+        user1: curr[0],
+        user2: curr[1],
+      });
+
+      return acc;
+    }, [] as IPair[]);
   }
 }
 
