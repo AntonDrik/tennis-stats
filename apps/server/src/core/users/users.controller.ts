@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { IUser } from '@tennis-stats/types';
 import { CurrentUser } from '../../auth/decorators';
 import { IdParam } from '../../common/decorators';
@@ -14,8 +14,8 @@ class UsersController {
   ) {}
 
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  getAllWithRating() {
+    return this.usersService.getAllWithRating();
   }
 
   @Get('/me')
@@ -26,6 +26,11 @@ class UsersController {
   @Get('/:id')
   getUser(@IdParam() id: number) {
     return this.usersRepository.findById(id);
+  }
+
+  @Post('/reset-rating')
+  resetRating() {
+    return this.usersService.resetRating();
   }
 }
 

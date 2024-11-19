@@ -3,18 +3,19 @@ import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { Player, Tournament } from '@tennis-stats/entities';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
-import { RatingHistoryService } from '../rating';
+import { RatingHistoryService, RatingService } from '../rating';
 import UsersRepository from './users.repository';
 
 @Injectable()
 class UsersService {
   constructor(
     private dataSource: DataSource,
+    private ratingService: RatingService,
     private ratingHistoryService: RatingHistoryService,
     private repository: UsersRepository
   ) {}
 
-  public async getAll(): Promise<IUserWithRatingDiff[]> {
+  public async getAllWithRating(): Promise<IUserWithRatingDiff[]> {
     const users = await this.repository.find();
 
     const promise = users.map(async (user) => {
@@ -61,6 +62,15 @@ class UsersService {
     player.score = 0;
 
     return player;
+  }
+
+  // TODO: сделать отдельный модуль Settings и перенести эту ручку туда
+  public async resetRating() {
+    const allUsers = await this.repository.find();
+
+    await this.dataSource.transaction(async (manager) => {
+      await this.ratingService.resetRating(allUsers, manager);
+    });
   }
 
   /**

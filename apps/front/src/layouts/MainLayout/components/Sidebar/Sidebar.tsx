@@ -1,7 +1,7 @@
 import { useSetAtom, useAtomValue } from 'jotai';
 import React, { useEffect, useMemo } from 'react';
 import { appRoutes } from '../../../../routes/routes.constant';
-import { DashboardIcon, PersonIcon } from '../../../../shared/svg-icons';
+import { DashboardIcon, PersonIcon, SettingsIcon } from '../../../../shared/svg-icons';
 import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
 
 import { MenuSection } from './components';
@@ -28,6 +28,13 @@ function SideBar() {
             title: 'Пользователи',
             link: appRoutes.USERS,
             icon: <PersonIcon fill={'var(--sage-12)'} />,
+          },
+          {
+            type: 'link',
+            title: 'Настройки',
+            link: appRoutes.SETTINGS,
+            icon: <SettingsIcon fill={'var(--sage-12)'} />,
+            adminOnly: true,
           },
         ],
       },

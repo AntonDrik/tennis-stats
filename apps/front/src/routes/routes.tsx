@@ -21,6 +21,7 @@ const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsP
 const TournamentRegistrationPage = loadable(
   () => import('../pages/tournament-registration/TournamentRegistrationPage')
 );
+const SettingsPage = loadable(() => import('../pages/settings/SettingsPage'));
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
@@ -53,8 +54,10 @@ const routes = createBrowserRouter(
           element={<TournamentPage fallback={<Spinner page />} />}
         />
 
-        {/*<Route path={appRoutes.STATS} element={<StatsPage />} />*/}
-        {/*<Route path={appRoutes.PROFILE()} element={<ProfilePage />} />*/}
+        <Route
+          path={appRoutes.SETTINGS}
+          element={<SettingsPage fallback={<Spinner page />} />}
+        />
       </Route>
     </Route>
   )

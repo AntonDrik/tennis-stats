@@ -47,7 +47,7 @@ function AvatarAndMenu() {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Text>
-          <Avatar fallback={me?.nickname.substring(0, 1) ?? 'A'} radius={'full'} />
+          <Avatar fallback={me.nickname.substring(0, 1)} radius={'full'} />
         </Text>
       </DropdownMenu.Trigger>
 

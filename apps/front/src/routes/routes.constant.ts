@@ -12,6 +12,8 @@ const appRoutes = {
   STATS: '/stats',
 
   PROFILE: (id?: number) => (id ? `/profile/${id}` : 'profile/:id'),
+
+  SETTINGS: '/settings',
 };
 
 export { appRoutes };

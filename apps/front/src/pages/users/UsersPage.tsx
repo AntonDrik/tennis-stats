@@ -86,7 +86,7 @@ export default function UsersPage() {
                   <Table.Row
                     key={user.id}
                     style={{
-                      backgroundColor: me?.id === user.id ? 'var(--indigo-3)' : 'inherit',
+                      backgroundColor: me.id === user.id ? 'var(--indigo-3)' : 'inherit',
                     }}
                   >
                     <Table.RowHeaderCell

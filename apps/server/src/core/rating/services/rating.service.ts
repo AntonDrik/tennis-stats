@@ -23,6 +23,24 @@ class RatingService {
     );
   }
 
+  public async resetRating(users: User[], manager: EntityManager): Promise<void> {
+    const ratingToReset = 1000;
+
+    await allSynchronously(
+      users.map((user) => async () => {
+        await manager.update(User, { id: user.id }, { rating: ratingToReset });
+
+        await manager.insert(RatingHistory, {
+          user,
+          date: new Date(),
+          rating: ratingToReset,
+          match: undefined,
+          visual: '',
+        });
+      })
+    );
+  }
+
   private calculateRating(tournament: Tournament) {
     const dictionary = new Map<TUserId, TNewRating>();
     const historyEntities: QueryDeepPartialEntity<RatingHistory>[] = [];
@@ -52,14 +70,14 @@ class RatingService {
             rating: newWinnerRating,
             visual: rating.visual,
             date: match.endDate,
-            match
+            match,
           },
           {
             user: { id: looser.id },
             rating: newLooserRating,
             visual: rating.visual,
             date: match.endDate,
-            match
+            match,
           }
         );
       });

@@ -1,5 +1,5 @@
 import { EPermission } from '@tennis-stats/types';
-import { useStore } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { meAtom } from '../../core/store';
 
 interface IPermissions {
@@ -8,8 +8,7 @@ interface IPermissions {
 }
 
 function useUserPermissions(): IPermissions {
-  const store = useStore();
-  const user = store.get(meAtom);
+  const user = useAtomValue(meAtom);
 
   const permissions = new Set(user?.permissions.map(({ value }) => value) ?? []);
 

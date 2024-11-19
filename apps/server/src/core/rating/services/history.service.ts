@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RatingHistory, User } from '@tennis-stats/entities';
 import { toFixedNumber } from '@tennis-stats/helpers';
 import { IAvgRatingByDay } from '@tennis-stats/types';
-import RatingHistoryRepository from '../repositories/history.repository';
+import RatingHistoryRepository from '../repositories/rating-history.repository';
 import { getAvgRatingByDaysQuery } from '../repositories/sql';
 
 @Injectable()

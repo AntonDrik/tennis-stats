@@ -1,7 +1,7 @@
-import { ArrayNotEmpty, IsNumber } from 'class-validator';
+import { ArrayNotEmpty, IsPositive } from 'class-validator';
 
 class TournamentRegistrationDto {
-  @IsNumber({}, { each: true })
+  @IsPositive({ each: true })
   @ArrayNotEmpty()
   usersIds: number[];
 }

@@ -14,8 +14,19 @@ class UsersRepository extends BaseRepository<User> {
     return this.findOne({
       relations: ['auth'],
       where: {
-        auth: { login: Equal(login) }
-      }
+        auth: { login: Equal(login) },
+      },
+    });
+  }
+
+  public findByRefreshToken(token: string): Promise<User | null> {
+    return this.findOne({
+      relations: ['auth'],
+      where: {
+        auth: {
+          refreshToken: Equal(token),
+        },
+      },
     });
   }
 
@@ -41,7 +52,7 @@ class UsersRepository extends BaseRepository<User> {
 
   public findByIds(ids: number[]) {
     return this.findBy({
-      id: In(ids)
+      id: In(ids),
     });
   }
 }

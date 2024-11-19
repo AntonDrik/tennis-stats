@@ -1,4 +1,5 @@
 import { Box, Button, Flex, ScrollArea } from '@radix-ui/themes';
+import { IUser } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
@@ -43,18 +44,18 @@ function TournamentRegistrationPage() {
   }, [openedTournament.data]);
 
   const isRegistered = useMemo(() => {
-    return Boolean(joinedList.find((user) => user.id === me?.id));
-  }, [joinedList, me?.id]);
+    return Boolean(joinedList.find((user) => user.id === me.id));
+  }, [joinedList, me.id]);
 
   const joinTournament = () => {
-    joinTournamentMutation.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
+    joinTournamentMutation.mutateAsync({ usersIds: [me.id] }).then(() => {
       toast.success('Вы успешно присоединились к турниру');
     });
   };
 
   const leaveTournament = () => {
     confirmUnregister(() => {
-      leaveTournamentMutation.mutateAsync({ id: me?.id ?? -1 }).then(() => {
+      leaveTournamentMutation.mutateAsync({ id: me.id }).then(() => {
         toast.success('Вы успешно покинули турнир');
       });
     });

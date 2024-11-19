@@ -6,10 +6,8 @@ import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersRepository } from '../../core/users';
 
-
 @Injectable()
 export default class JwtStrategy extends PassportStrategy(Strategy) {
-
   constructor(
     private configService: ConfigService,
     private usersRepository: UsersRepository
@@ -17,12 +15,12 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([JwtStrategy.getTokenFromCookie]),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_SECRET_KEY')
+      secretOrKey: configService.get('JWT_SECRET_KEY'),
     });
   }
 
-  async validate(payload: ITokenPayload) {
-    return await this.usersRepository.findById(
+  validate(payload: ITokenPayload) {
+    return this.usersRepository.findById(
       payload.userId,
       new UnauthorizedException('Ошибка авторизации')
     );

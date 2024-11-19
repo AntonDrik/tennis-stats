@@ -5,11 +5,13 @@ export type IMenuLinkItem = {
   title: string;
   link: string;
   icon: ReactElement;
+  adminOnly?: boolean;
 };
 
 export type IMenuComponentItem = {
   type: 'component';
   component: ReactElement;
+  adminOnly?: boolean;
 };
 
 export type TMenuItem = IMenuLinkItem | IMenuComponentItem;
