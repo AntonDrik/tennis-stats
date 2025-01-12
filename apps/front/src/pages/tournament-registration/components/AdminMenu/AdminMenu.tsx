@@ -1,24 +1,20 @@
 import { Button, DropdownMenu } from '@radix-ui/themes';
-import { IUser } from '@tennis-stats/types';
-import { useSetAtom } from 'jotai';
+import { ITournament, IUser } from '@tennis-stats/types';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../../routes/routes.constant';
 import { useModal } from '../../../../shared/components';
 import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { PlayIcon, PlusIcon } from '../../../../shared/svg-icons';
-import { tournamentActiveTabAtom } from '../../../tournament/states/active-tab.state';
 import AddUsersToTournamentModal from '../../modals/AddUserModal/AddUserModal';
 import StartTournamentModal from '../../modals/StartTournamentModal/StartTournamentModal';
 
 interface IProps {
-  tournamentId: number;
+  tournament: ITournament;
   joinedUsers: IUser[];
 }
 
 function RegistrationAdminMenu(props: IProps) {
-  const setTournamentActiveTab = useSetAtom(tournamentActiveTabAtom);
-
   const modal = useModal();
   const navigate = useNavigate();
   const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
@@ -26,9 +22,8 @@ function RegistrationAdminMenu(props: IProps) {
   const openStartTournamentModal = () => {
     modal.open(
       <StartTournamentModal
-        tournamentId={props.tournamentId}
+        tournament={props.tournament}
         onSuccess={(tournamentId) => {
-          setTournamentActiveTab('0');
           navigate(appRoutes.TOURNAMENT_BY_ID(tournamentId));
         }}
       />
@@ -38,7 +33,7 @@ function RegistrationAdminMenu(props: IProps) {
   const openAddUsersModal = () => {
     modal.open(
       <AddUsersToTournamentModal
-        tournamentId={props.tournamentId}
+        tournamentId={props.tournament.id}
         joinedUsers={props.joinedUsers}
       />
     );

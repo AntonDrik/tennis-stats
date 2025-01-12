@@ -1,18 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Match, User } from '@tennis-stats/entities';
-import {
-  allSynchronously,
-  createArray,
-  getPlayoffStageInfo,
-} from '@tennis-stats/helpers';
+import { createArray, getPlayoffStageInfo } from '@tennis-stats/helpers';
 import { EPermission, TPlayOffStage } from '@tennis-stats/types';
-import { DataSource, EntityManager } from 'typeorm';
-import { GameSetFinishedException } from '../../../common/exceptions';
+import { DataSource, EntityManager, Equal } from 'typeorm';
+import { GameSetFinishedException, UnableReplaceUsersInMatch } from '../../../common/exceptions';
+import { IPair } from '../../../common/types';
 import { matchPermissions } from '../../../common/utils';
-import { IPair } from '../../pairs-generator';
 import { UsersService } from '../../users';
-import getNextPlayoffStageMatchId from '../helpers/get-next-playoff-stage-match-id.helper';
 import GameSetService from './game-set.service';
 
 @Injectable()
@@ -23,7 +18,7 @@ class MatchService {
     private usersService: UsersService
   ) {}
 
-  public isUserCanCrudMatch(user: User, match: Match) {
+  public isUserCanCrudMatch(user: User, match: Match): boolean {
     if (matchPermissions([EPermission.TOURNAMENT_CRUD], user)) {
       return true;
     }
@@ -31,41 +26,41 @@ class MatchService {
     return match.user1?.id === user.id || match.user2?.id === user.id;
   }
 
-  public async createMatches(pairs: IPair[], setsCount: number, isPlayoff = false) {
-    return allSynchronously(
-      pairs.map((pair, index) => async () => {
-        const gameSets = await this.gameSetService.createGameSets(setsCount, pair);
+  public createMatch(pair: IPair, setsCount: number, index: number, isPlayoff = false): Match {
+    const gameSets = this.gameSetService.createGameSets(setsCount, pair);
 
-        const match = new Match();
-        match.user1 = pair.user1;
-        match.user2 = pair.user2;
-        match.number = index + 1;
-        match.isPlayoff = isPlayoff;
-        match.gameSets = gameSets;
+    const match = new Match();
+    match.user1 = pair.user1;
+    match.user2 = pair.user2;
+    match.number = index;
+    match.isPlayoff = isPlayoff;
+    match.gameSets = gameSets;
 
-        return match;
-      })
-    );
+    return match;
   }
 
-  public async createMatchesForPlayoffStage(stage: TPlayOffStage, setsCount: number) {
+  public createMatches(pairs: IPair[], setsCount: number, isPlayoff = false): Match[] {
+    return pairs.map((pair, index) => {
+      return this.createMatch(pair, setsCount, index + 1, isPlayoff);
+    });
+  }
+
+  public createEmptyPlayoffStage(stage: TPlayOffStage, setsCount: number): Match[] {
     const stageInfo = getPlayoffStageInfo(stage);
 
-    return allSynchronously(
-      createArray(stageInfo.matchesCount).map((index) => async () => {
-        const gameSets = await this.gameSetService.createGameSets(setsCount);
+    return createArray(stageInfo.matchesCount).map((index) => {
+      const gameSets = this.gameSetService.createGameSets(setsCount);
 
-        const match = new Match();
-        match.number = index + 1;
-        match.isPlayoff = true;
-        match.gameSets = gameSets;
+      const match = new Match();
+      match.number = index + 1;
+      match.isPlayoff = true;
+      match.gameSets = gameSets;
 
-        return match;
-      })
-    );
+      return match;
+    });
   }
 
-  public async finishGameSet(match: Match, gameSet: GameSet, dto: GameSetScoreDto) {
+  public async finishGameSet(match: Match, gameSet: GameSet, dto: GameSetScoreDto): Promise<void> {
     if (gameSet.isFinished) {
       throw new GameSetFinishedException();
     }
@@ -87,8 +82,27 @@ class MatchService {
     });
   }
 
-  private async handleFinishedMatch(match: Match, manager: EntityManager) {
-    const winnerLooser = match.getWinnerLooser();
+  public replaceUser(match: Match, currentUser: User, newUser: User): Match {
+    const userKey = match.helpers.getUserKeyByUserId(currentUser.id);
+
+    if (!userKey) {
+      throw new UnableReplaceUsersInMatch();
+    }
+
+    const newPlayer = this.usersService.createPlayer(newUser);
+
+    const updatedGameSets = match.gameSets.map((gameSet) => {
+      return this.gameSetService.replaceUser(gameSet, currentUser.id, newPlayer);
+    });
+
+    match.gameSets = updatedGameSets;
+    match[userKey] = newUser;
+
+    return match;
+  }
+
+  private async handleFinishedMatch(match: Match, manager: EntityManager): Promise<void> {
+    const winnerLooser = match.helpers.getWinnerLooser();
 
     if (!winnerLooser) {
       await this.addGameSetToMatch(match, manager);
@@ -104,7 +118,9 @@ class MatchService {
   }
 
   private async addGameSetToMatch(match: Match, manager: EntityManager) {
-    const gameSet = await this.gameSetService.createGameSet(match.nextGameSetNumber, {
+    const nextGameSetNumber = match.helpers.getNextGameSetNumber();
+
+    const gameSet = this.gameSetService.createGameSet(nextGameSetNumber, {
       user1: match.user1,
       user2: match.user2,
     });
@@ -114,16 +130,12 @@ class MatchService {
     await manager.save(Match, match);
   }
 
-  private async setWinnerToNextPlayoffStage(
-    match: Match,
-    winner: User,
-    manager: EntityManager
-  ) {
-    const nextMatchId = getNextPlayoffStageMatchId(match);
+  private async setWinnerToNextPlayoffStage(match: Match, winner: User, manager: EntityManager) {
+    const nextMatchId = match.helpers.getNextPlayoffStageMatchId();
     const userNumber = match.number % 2 === 0 ? 2 : 1;
 
     const nextMatch = await manager.findOne(Match, {
-      where: { id: nextMatchId },
+      where: { id: Equal(nextMatchId) },
       relations: ['gameSets'],
     });
 
@@ -131,7 +143,7 @@ class MatchService {
       return;
     }
 
-    const player = await this.usersService.createPlayer(winner.id);
+    const player = this.usersService.createPlayer(winner);
 
     const updatedGameSets = nextMatch.gameSets.map((gameSet) => {
       return GameSet.create({
@@ -143,7 +155,7 @@ class MatchService {
     nextMatch[`user${userNumber}`] = winner;
     nextMatch.gameSets = updatedGameSets;
 
-    await manager.save(nextMatch);
+    await manager.save(Match, nextMatch);
   }
 }
 

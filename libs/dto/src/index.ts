@@ -16,6 +16,7 @@ export { default as UpsertTournamentDto } from './lib/tournament/upsert-tourname
 export { default as GetTournamentsQuery } from './lib/tournament/get-tournaments.query';
 export { default as TournamentRegistrationDto } from './lib/tournament/tournament-registration.dto';
 export { default as StartTournamentDto } from './lib/tournament/start-tournament.dto';
+export { default as PlayoffStartOptionsDto } from './lib/tournament/playoff-start-options.dto';
 export { default as CreatePlayoffDto } from './lib/tournament/create-playoff.dto';
 
 export { default as SwapUserDto } from './lib/match/SwapUserDto';

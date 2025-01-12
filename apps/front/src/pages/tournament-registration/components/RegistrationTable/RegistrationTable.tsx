@@ -1,6 +1,7 @@
 import { Table } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
+import { memo } from 'react';
 import { toast } from 'react-hot-toast';
 import { useLeaveTournamentMutation } from '../../../../core/api';
 import { meAtom } from '../../../../core/store';
@@ -63,4 +64,4 @@ function RegistrationTable(props: IProps) {
   );
 }
 
-export default RegistrationTable;
+export default memo(RegistrationTable);

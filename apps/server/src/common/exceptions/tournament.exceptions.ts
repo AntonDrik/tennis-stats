@@ -1,9 +1,13 @@
 import { HttpException, HttpExceptionOptions, HttpStatus } from '@nestjs/common';
 import { ETournamentStatus } from '@tennis-stats/types';
 
-export class HasUnfinishedTournamentException extends HttpException {
+export class JoinedUsersNotExistException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
-    super(`Имеется незавершенный турнир`, HttpStatus.INTERNAL_SERVER_ERROR, options);
+    super(
+      `Невозможно начать турнир, отсутствуют зарегистрированные пользователи`,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      options
+    );
   }
 }
 
@@ -47,6 +51,12 @@ export class UsersLimitExceedException extends HttpException {
 
 export class UnableUpdateTournamentException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
-    super(`Не удалось обновить турнир`, HttpStatus.INTERNAL_SERVER_ERROR, options);
+    super(`Не удалось изменить турнир`, HttpStatus.INTERNAL_SERVER_ERROR, options);
+  }
+}
+
+export class UnableAddUserToTournamentException extends HttpException {
+  constructor(options?: HttpExceptionOptions) {
+    super('Нельзя добавить пользователя на турнир', HttpStatus.CONFLICT, options);
   }
 }

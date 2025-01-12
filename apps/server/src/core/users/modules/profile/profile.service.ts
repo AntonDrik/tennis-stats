@@ -4,7 +4,7 @@ import { IProfile } from '@tennis-stats/types';
 import { startOfDay } from 'date-fns';
 import { LessThan } from 'typeorm';
 import GameSetRepository from '../../../match/repositories/game-set.repository';
-import UsersRepository from '../../users.repository';
+import UsersRepository from '../../repositories/users.repository';
 import { getWinPercent } from './helpers';
 
 @Injectable()

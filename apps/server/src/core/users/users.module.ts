@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Player, User, UserAuth } from '@tennis-stats/entities';
 import { RatingModule } from '../rating';
-import UsersAuthRepository from './users-auth.repository';
-import UsersRepository from './users.repository';
-import UsersController from './users.controller';
-import UsersService from './users.service';
+import UsersAuthRepository from './repositories/users-auth.repository';
+import UsersRepository from './repositories/users.repository';
+import UsersController from './controllers/users.controller';
+import UsersService from './services/users.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Player, UserAuth]), RatingModule],

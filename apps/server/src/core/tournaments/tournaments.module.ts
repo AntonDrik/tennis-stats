@@ -1,36 +1,39 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tournament } from '@tennis-stats/entities';
+import { Tour, Tournament } from '@tennis-stats/entities';
 import { LeaderboardModule } from '../leaderboard';
 import { MatchModule } from '../match';
-import { PairsGeneratorModule } from '../pairs-generator';
 import { RatingModule } from '../rating';
-import { TournamentSystemsModule } from '../tournament-systems';
-import { TourModule } from '../tours';
 import { UsersModule } from '../users';
 import TournamentsController from './controllers/tournaments.controller';
 import ToursController from './controllers/tours.controller';
 import TournamentsRepository from './repositories/tournaments.repository';
-import PlayoffService from './services/playoff.service';
+import ToursRepository from './repositories/tours.repository';
+import TournamentUsersManagerService from './services/tournament-users-manager.service';
+import PlayoffTournamentService from './systems/playoff-tournament.service';
+import RoundRobinTournamentService from './systems/round-robin-tournament.service';
+import SwissTournamentService from './systems/swiss-tournament.service';
+import ToursService from './services/tour.service';
 import TournamentService from './services/tournament.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tournament]),
+    TypeOrmModule.forFeature([Tournament, Tour]),
     UsersModule,
-    TourModule,
     MatchModule,
     LeaderboardModule,
-    PairsGeneratorModule,
     RatingModule,
-    TournamentSystemsModule,
   ],
   controllers: [TournamentsController, ToursController],
   providers: [
     TournamentService,
-    TournamentService,
+    ToursService,
     TournamentsRepository,
-    PlayoffService,
+    ToursRepository,
+    TournamentUsersManagerService,
+    RoundRobinTournamentService,
+    SwissTournamentService,
+    PlayoffTournamentService,
   ],
   exports: [],
 })

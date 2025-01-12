@@ -4,7 +4,6 @@ import { IsBoolean, IsIn, IsNumber, IsOptional } from 'class-validator';
 
 const tournamentStatus = [
   ETournamentStatus.ACTIVE,
-  ETournamentStatus.PLAYOFF,
   ETournamentStatus.REGISTRATION,
   ETournamentStatus.FINISHED,
 ];

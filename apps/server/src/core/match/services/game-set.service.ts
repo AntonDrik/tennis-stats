@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Match, Player } from '@tennis-stats/entities';
-import { allSynchronously, createArray } from '@tennis-stats/helpers';
+import { createArray } from '@tennis-stats/helpers';
 import { EntityManager } from 'typeorm';
 import {
   MatchNotFinishedException,
+  UnableReplaceUsersInMatch,
   UserNotFoundException,
 } from '../../../common/exceptions';
-import { IPair } from '../../pairs-generator';
+import { IPair } from '../../../common/types';
 import { UsersService } from '../../users';
 import GameSetRepository from '../repositories/game-set.repository';
 
@@ -18,13 +19,13 @@ class GameSetService {
     private usersService: UsersService
   ) {}
 
-  public async createGameSet(number: number, pair?: IPair): Promise<GameSet> {
+  public createGameSet(number: number, pair?: IPair): GameSet {
     if (!pair) {
       return this.repository.createEntity(number);
     }
 
-    const player1 = await this.usersService.createPlayer(pair.user1.id);
-    const player2 = await this.usersService.createPlayer(pair.user2.id);
+    const player1 = this.usersService.createPlayer(pair.user1);
+    const player2 = this.usersService.createPlayer(pair.user2);
 
     if (!player1 || !player2) {
       throw new UserNotFoundException();
@@ -33,12 +34,10 @@ class GameSetService {
     return this.repository.createEntity(number, player1, player2);
   }
 
-  public async createGameSets(setsCount: number, pair?: IPair): Promise<GameSet[]> {
-    return allSynchronously(
-      createArray(setsCount).map((i) => async () => {
-        return await this.createGameSet(i + 1, pair);
-      })
-    );
+  public createGameSets(setsCount: number, pair?: IPair): GameSet[] {
+    return createArray(setsCount).map((i) => {
+      return this.createGameSet(i + 1, pair);
+    });
   }
 
   public async finishGameSet(
@@ -89,6 +88,23 @@ class GameSetService {
     await gameSet.save();
 
     return gameSet;
+  }
+
+  public replaceUser(
+    gameSet: GameSet,
+    currentUserId: number,
+    newPlayer: Player
+  ): GameSet {
+    const playerKey = gameSet.getPlayerKeyByUserId(currentUserId);
+
+    if (!playerKey) {
+      throw new UnableReplaceUsersInMatch();
+    }
+
+    return GameSet.create({
+      ...gameSet,
+      [playerKey]: newPlayer,
+    });
   }
 }
 

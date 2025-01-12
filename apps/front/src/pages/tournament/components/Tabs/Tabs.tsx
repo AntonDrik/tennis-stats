@@ -3,12 +3,11 @@ import { ITour } from '@tennis-stats/types';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import { useRemovePlayoffMutation, useRemoveTourMutation } from '../../../../core/api';
+import { useDetachPlayoffMutation, useRemoveTourMutation } from '../../../../core/api';
 import { tournamentAtom } from '../../../../core/store';
 import { useConfirmModal } from '../../../../shared/components';
 import { CloseIcon } from '../../../../shared/svg-icons';
 import { useCanManageTournament } from '../../hooks';
-import { leaderboardTabAtom } from '../../modals/LeaderboardModal/LeaderboardModal.state';
 import { tournamentActiveTabAtom } from '../../states/active-tab.state';
 
 import Styled from './Tabs.styles';
@@ -21,10 +20,9 @@ interface IProps {
 function TournamentTabs(props: IProps) {
   const tournamentState = useAtomValue(tournamentAtom);
   const setActiveTab = useSetAtom(tournamentActiveTabAtom);
-  const setLeaderboardTab = useSetAtom(leaderboardTabAtom);
 
   const removeTourMutation = useRemoveTourMutation(tournamentState);
-  const removePlayoffMutation = useRemovePlayoffMutation(props.tournamentId);
+  const detachPlayoffMutation = useDetachPlayoffMutation(props.tournamentId);
 
   const canManageTournament = useCanManageTournament();
 
@@ -56,10 +54,9 @@ function TournamentTabs(props: IProps) {
 
   const removePlayoff = () => {
     removePlayoffConfirmModal(() => {
-      removePlayoffMutation.mutateAsync().then(() => {
+      detachPlayoffMutation.mutateAsync().then(() => {
         toast.success('Плей-офф успешно удален');
         setActiveTab('0');
-        setLeaderboardTab('tours');
       });
     });
   };

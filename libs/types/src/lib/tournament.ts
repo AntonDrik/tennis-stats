@@ -5,13 +5,13 @@ import { IUser } from './user';
 enum ETournamentStatus {
   REGISTRATION = 'REGISTRATION',
   ACTIVE = 'ACTIVE',
-  PLAYOFF = 'PLAYOFF',
   FINISHED = 'FINISHED',
 }
 
 enum ETournamentType {
   ROUND_ROBIN = 'ROUND_ROBIN',
   SWISS_SYSTEM = 'SWISS_SYSTEM',
+  PLAYOFF = 'PLAYOFF',
 }
 
 interface ITournament {

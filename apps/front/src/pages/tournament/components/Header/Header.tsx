@@ -1,18 +1,17 @@
 import { Button, Flex, Heading, IconButton } from '@radix-ui/themes';
 import { parseISOWithFormat } from '@tennis-stats/helpers';
 import { ITournament } from '@tennis-stats/types';
-import React, { memo } from 'react';
+import React, { memo, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../../routes/routes.constant';
 import { useModal } from '../../../../shared/components';
 import useMediaQuery from '../../../../shared/hooks/useMediaQuery';
 import { ChevronLeftIcon } from '../../../../shared/svg-icons';
 import LeaderboardModal from '../../modals/LeaderboardModal/LeaderboardModal';
-import TournamentActionsMenu from './components/ActionsMenu/ActionsMenu';
 
 interface IProps {
   tournament: ITournament;
-  canManageTournament: boolean;
+  actions?: ReactElement | null;
 }
 
 function TournamentHeader(props: IProps) {
@@ -46,9 +45,7 @@ function TournamentHeader(props: IProps) {
           </Heading>
         </Flex>
 
-        {props.canManageTournament && (
-          <TournamentActionsMenu tournament={props.tournament} />
-        )}
+        {props.actions}
       </Flex>
 
       <Button

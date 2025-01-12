@@ -1,17 +1,12 @@
-import { Box, Tabs } from '@radix-ui/themes';
-import { ETournamentStatus } from '@tennis-stats/types';
-import { useAtom } from 'jotai';
+import { ETournamentStatus, ETournamentType, ITournament } from '@tennis-stats/types';
+import { useCallback } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useGetTournamentQuery } from '../../core/api';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
-import TournamentHeader from './components/Header/Header';
-import PlayoffTab from './components/PlayoffTab/PlayoffTab';
-import TournamentTabs from './components/Tabs/Tabs';
-import TourTab from './components/TourTab/TourTab';
-import { useCanManageTournament } from './hooks';
-import useInitializeState from './hooks/useInitializeState';
-import { tournamentActiveTabAtom } from './states/active-tab.state';
+import PlayoffTournament from './containers/PlayoffTournament/PlayoffTournament';
+import TournamentWithTours from './containers/TournamentWithTours/TournamentWithTours';
+import useInitializeTournamentState from './hooks/useInitializeTournamentState';
 
 type IRouteParams = {
   id: string;
@@ -25,11 +20,17 @@ function TournamentPage() {
     refetchOnWindowFocus: true,
   });
 
-  const [activeTab, setActiveTab] = useAtom(tournamentActiveTabAtom);
+  const tournamentTemplate = useCallback((_tournament: ITournament) => {
+    const dict = {
+      [ETournamentType.SWISS_SYSTEM]: <TournamentWithTours tournament={_tournament} />,
+      [ETournamentType.ROUND_ROBIN]: <TournamentWithTours tournament={_tournament} />,
+      [ETournamentType.PLAYOFF]: <PlayoffTournament tournament={_tournament} />,
+    };
 
-  const canManageTournament = useCanManageTournament(tournament.data);
+    return dict[_tournament.type];
+  }, []);
 
-  useInitializeState(tournament.data);
+  useInitializeTournamentState(tournament.data);
 
   if (tournament.isLoading) {
     return <Spinner />;
@@ -45,28 +46,7 @@ function TournamentPage() {
 
   return (
     <Page title={`Турнир № ${tournament.data.id}`}>
-      <TournamentHeader
-        tournament={tournament.data}
-        canManageTournament={canManageTournament}
-      />
-
-      <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)}>
-        <TournamentTabs tournamentId={tournament.data.id} tours={tournament.data.tours} />
-
-        <Box pt={'3'}>
-          {tournament.data.tours
-            .filter((tour) => !tour.playOffStage)
-            .map((tour, index) => (
-              <Tabs.Content key={`tour-${tour.id}`} value={`${index}`}>
-                <TourTab tour={tour} />
-              </Tabs.Content>
-            ))}
-
-          <Tabs.Content value={'-1'}>
-            <PlayoffTab tournament={tournament.data} />
-          </Tabs.Content>
-        </Box>
-      </Tabs.Root>
+      {tournamentTemplate(tournament.data)}
     </Page>
   );
 }

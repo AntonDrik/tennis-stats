@@ -7,6 +7,7 @@ import {
 import { Tournament } from '@tennis-stats/entities';
 import { EntityManager, Equal } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
+import TournamentsRepository from '../repositories/tournaments.repository';
 
 @Injectable()
 class TournamentPipe implements PipeTransform {

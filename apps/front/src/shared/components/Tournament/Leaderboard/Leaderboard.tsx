@@ -1,5 +1,6 @@
 import { IconButton, Table, Text } from '@radix-ui/themes';
 import { ILeaderboardItem, IUser } from '@tennis-stats/types';
+import { memo } from 'react';
 import { TrashIcon } from '../../../svg-icons';
 
 interface IProps {
@@ -85,4 +86,4 @@ function Leaderboard(props: IProps) {
   );
 }
 
-export default Leaderboard;
+export default memo(Leaderboard);

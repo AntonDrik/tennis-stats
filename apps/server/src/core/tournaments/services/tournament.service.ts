@@ -1,42 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import {
-  CreateTourDto,
   GetTournamentsQuery,
-  IdDto,
+  PlayoffStartOptionsDto,
   StartTournamentDto,
-  TournamentRegistrationDto,
   UpsertTournamentDto,
 } from '@tennis-stats/dto';
-import { Tour, Tournament } from '@tennis-stats/entities';
-import { ETournamentStatus } from '@tennis-stats/types';
+import { Tournament } from '@tennis-stats/entities';
+import { ETournamentStatus, ETournamentType } from '@tennis-stats/types';
 import { DataSource } from 'typeorm';
 import {
+  JoinedUsersNotExistException,
   UnableUpdateTournamentException,
-  UsersAlreadyJoinedTournamentException,
-  UsersLimitExceedException,
 } from '../../../common/exceptions';
-import {
-  UnableAddTourException,
-  UnableRemoveTourException,
-} from '../../../common/exceptions/tour.exceptions';
 import { LeaderboardService } from '../../leaderboard';
 import { RatingService } from '../../rating';
-import TournamentSystemsFacade from '../../tournament-systems/services/facade.service';
-import { TourRepository } from '../../tours';
-import { UsersRepository } from '../../users';
+import { UsersService } from '../../users';
 import checkStatus from '../helpers/check-tournament-status';
 import TournamentsRepository from '../repositories/tournaments.repository';
+import PlayoffTournamentService from '../systems/playoff-tournament.service';
+import RoundRobinTournamentService from '../systems/round-robin-tournament.service';
+import SwissTournamentService from '../systems/swiss-tournament.service';
 
+/**
+ * Сервис с общими методами для турнира.
+ * Реализует основные функции турнира:
+ * 1. Создание
+ * 2. Редактирование (доступно только на этапе регистрации)
+ * 3. Завершение турнира
+ * 4. Удаление
+ * 5. Регистрация на турнир
+ */
 @Injectable()
 class TournamentService {
   constructor(
     private dataSource: DataSource,
     private repository: TournamentsRepository,
-    private usersRepository: UsersRepository,
-    private tourRepository: TourRepository,
     private leaderboardService: LeaderboardService,
     private ratingService: RatingService,
-    private tournamentSystemsFacade: TournamentSystemsFacade
+    private usersService: UsersService,
+    private roundRobinTournamentService: RoundRobinTournamentService,
+    private swissTournamentService: SwissTournamentService,
+    private playoffTournamentService: PlayoffTournamentService
   ) {}
 
   public getTournamentsList(query: GetTournamentsQuery) {
@@ -59,7 +63,26 @@ class TournamentService {
   public async startTournament(tournament: Tournament, dto: StartTournamentDto) {
     checkStatus(tournament, [ETournamentStatus.REGISTRATION]);
 
-    const entity = await this.tournamentSystemsFacade.initialize(tournament, dto);
+    if (!tournament.registeredUsers.length) {
+      throw new JoinedUsersNotExistException();
+    }
+
+    let entity = await this.optimizeTournamentUsers(tournament);
+
+    if (dto.tournamentType === ETournamentType.ROUND_ROBIN) {
+      entity = this.roundRobinTournamentService.initialize(entity, dto);
+    }
+
+    if (dto.tournamentType === ETournamentType.SWISS_SYSTEM) {
+      entity = this.swissTournamentService.initialize(entity, dto);
+    }
+
+    if (dto.tournamentType === ETournamentType.PLAYOFF) {
+      entity = await this.playoffTournamentService.createPlayoff(entity, {
+        ...(dto.playoffOptions as PlayoffStartOptionsDto),
+        setsCount: dto.setsCount,
+      });
+    }
 
     entity.handleRating = dto.handleRating;
     entity.status = ETournamentStatus.ACTIVE;
@@ -73,7 +96,7 @@ class TournamentService {
    * Завершение турнира. Сохранение первой тройки лидеров
    */
   public async finishTournament(tournament: Tournament) {
-    checkStatus(tournament, [ETournamentStatus.ACTIVE, ETournamentStatus.PLAYOFF]);
+    checkStatus(tournament, [ETournamentStatus.ACTIVE]);
 
     await this.dataSource.transaction(async (manager) => {
       await this.leaderboardService.saveLeaderboard(tournament, manager);
@@ -116,69 +139,16 @@ class TournamentService {
   }
 
   /**
-   * Регистрирует пользователей на турнир. Доступно только на стадии регистрации
+   * Добавляет халяву в турнир по необходимости
    */
-  public async joinTournament(tournament: Tournament, dto: TournamentRegistrationDto) {
-    checkStatus(tournament, [ETournamentStatus.REGISTRATION]);
+  private async optimizeTournamentUsers(tournament: Tournament) {
+    if (tournament.registeredUsers.length % 2 !== 0) {
+      const systemUser = await this.usersService.getSystemUser();
 
-    const { isUsersLengthExceed, intersectedUsers } = dto.validate(tournament);
-
-    if (isUsersLengthExceed) {
-      throw new UsersLimitExceedException();
+      tournament.registeredUsers.push(systemUser);
     }
 
-    if (intersectedUsers.length) {
-      throw new UsersAlreadyJoinedTournamentException(intersectedUsers);
-    }
-
-    const users = await this.usersRepository.findByIds(dto.usersIds);
-
-    tournament.registeredUsers.push(...users);
-    await tournament.save();
-  }
-
-  /**
-   * Отменяет регистрацию пользователей на турнир. Доступно только на стадии регистрации
-   */
-  public async leaveTournament(tournament: Tournament, dto: IdDto) {
-    checkStatus(tournament, [ETournamentStatus.REGISTRATION]);
-
-    tournament.registeredUsers = tournament.registeredUsers.filter(
-      (user) => user.id !== dto.id
-    );
-
-    await tournament.save();
-  }
-
-  /**
-   * Добавляет тур в турнир. Логика добавления разная в зависимости от турнирной системы
-   */
-  public async addTour(tournament: Tournament, dto: CreateTourDto) {
-    checkStatus(tournament, [ETournamentStatus.ACTIVE], new UnableAddTourException());
-
-    const tour = await this.tournamentSystemsFacade.createNewTour(tournament, dto);
-
-    tournament.tours.push(tour);
-    await tournament.save();
-
-    return tour;
-  }
-
-  /**
-   * Удаляет тур из турнира
-   */
-  public async removeTour(tournament: Tournament, tour: Tour | number) {
-    if (tournament.status !== ETournamentStatus.ACTIVE) {
-      throw new UnableRemoveTourException();
-    }
-
-    if (typeof tour === 'number') {
-      tour = await this.tourRepository.findById(tour);
-    }
-
-    await tour.remove();
-
-    return tour;
+    return tournament;
   }
 }
 

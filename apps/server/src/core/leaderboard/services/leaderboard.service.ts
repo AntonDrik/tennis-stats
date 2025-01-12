@@ -16,13 +16,11 @@ class LeaderboardService {
     const tourMatches = matches.filter((match) => !match.isPlayoff);
     const playoffMatches = matches.filter((match) => match.isPlayoff);
 
-    const toursLeaderboard = this
-      .composeTable(tourMatches)
-      .sort(byStats);
+    const toursLeaderboard = this.composeTable(tourMatches).sort(byStats);
 
-    const playoffLeaderboard = this
-      .composeTable(playoffMatches)
-      .sort(byStatsOrToursResults(toursLeaderboard));
+    const playoffLeaderboard = this.composeTable(playoffMatches).sort(
+      byStatsOrToursResults(toursLeaderboard)
+    );
 
     return { toursLeaderboard, playoffLeaderboard };
   }
@@ -74,7 +72,7 @@ class LeaderboardService {
       const points = new LeaderboardItem(user, {
         games: Number(match.isFinished),
         scoreDiff: matchScoreDiff,
-        wins: match.isWinner(user) ? 1 : 0
+        wins: match.helpers.isWinner(user) ? 1 : 0,
       });
 
       collection.set(user.id, points);
@@ -86,7 +84,7 @@ class LeaderboardService {
       points.increaseGames();
     }
 
-    if (match.isWinner(user)) {
+    if (match.helpers.isWinner(user)) {
       points.increaseWin();
     }
 
@@ -120,12 +118,10 @@ function byStats(a: ILeaderboardItem, b: ILeaderboardItem) {
   );
 }
 
-
 function byStatsOrToursResults(toursLeaderboard: ILeaderboardItem[]) {
   const users = toursLeaderboard.map((item) => item.user.id);
 
   return (a: ILeaderboardItem, b: ILeaderboardItem) => {
-
     return (
       b.wins - a.wins ||
       b.total - a.total ||

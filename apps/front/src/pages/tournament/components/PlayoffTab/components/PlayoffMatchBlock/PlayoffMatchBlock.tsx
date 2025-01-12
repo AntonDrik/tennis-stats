@@ -15,7 +15,9 @@ function PlayoffMatchBlock(props: IProps) {
   return (
     <Styled.GridBrick>
       {!props.isFirst && <Styled.BeforeLine />}
+
       <MatchCard match={match} isPlayoffCard />
+
       {!props.isLast && <Styled.AfterLine />}
 
       {!props.isLast && (

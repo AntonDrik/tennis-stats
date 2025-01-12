@@ -18,7 +18,7 @@ import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { useMultiCheckboxState } from '../../../../shared/hooks';
 
 import Styled from './AddUserModal.styles';
-import useNotJoinedUsers from './hooks/useNotJoinedUsers';
+import useExtendedUsers from './hooks/useExtendedUsers';
 
 interface IProps {
   tournamentId: number;
@@ -31,12 +31,11 @@ function AddUsersToTournamentModal(props: IProps) {
   const [selectedUsersIds, setSelectedUsersIds] = useState<number[]>([]);
 
   const modal = useModal();
-  const notJoinedUsers = useNotJoinedUsers(props.joinedUsers);
-  const checkboxState = useMultiCheckboxState(selectedUsersIds, notJoinedUsers);
+  const users = useExtendedUsers(props.joinedUsers);
+  const checkboxState = useMultiCheckboxState(selectedUsersIds, users.notJoinedList);
 
-  const isSelectedUser = (user: IUser) => {
-    return selectedUsersIds.includes(user.id);
-  };
+  const isSelectedUser = (user: IUser) => selectedUsersIds.includes(user.id);
+  const isJoinedUser = (user: IUser) => users.joinedIdsList.includes(user.id);
 
   const addUsersToTournament = () => {
     joinTournamentMutation.mutateAsync({ usersIds: selectedUsersIds }).then(() => {
@@ -46,18 +45,18 @@ function AddUsersToTournamentModal(props: IProps) {
   };
 
   const handleRowClick = (user: IUser) => {
-    if (isSelectedUser(user)) {
-      const newList = selectedUsersIds.filter((userId) => userId !== user.id);
-      setSelectedUsersIds(newList);
+    if (isSelectedUser(user) || isJoinedUser(user)) {
+      setSelectedUsersIds((prev) => prev.filter((userId) => userId !== user.id));
 
       return;
     }
+
     setSelectedUsersIds((prev) => [...prev, user.id]);
   };
 
   const handleMultiCheckboxChange = (checked: boolean | 'indeterminate') => {
     if (checked) {
-      setSelectedUsersIds(notJoinedUsers.map((user) => user.id));
+      setSelectedUsersIds(users.notJoinedList.map((user) => user.id));
     } else {
       setSelectedUsersIds([]);
     }
@@ -91,12 +90,13 @@ function AddUsersToTournamentModal(props: IProps) {
               </Table.Header>
 
               <Table.Body>
-                {notJoinedUsers.map((user) => {
+                {users.allList.map((user) => {
                   return (
                     <Styled.Row key={user.id} onClick={() => handleRowClick(user)}>
                       <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
                         <Checkbox
-                          checked={isSelectedUser(user)}
+                          checked={isSelectedUser(user) || isJoinedUser(user)}
+                          disabled={isJoinedUser(user)}
                           style={{ marginTop: 0.5 }}
                         />
                       </Table.RowHeaderCell>

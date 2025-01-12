@@ -7,7 +7,6 @@ import { SeederModule, SqliteProviderModule } from './database';
 import { EnvConfigModule } from './config/env';
 import { UsersModule } from './core/users';
 import { MatchModule } from './core/match';
-import { TourModule } from './core/tours';
 import { AuthModule } from './auth';
 import { ProfileModule } from './core/users/modules/profile';
 import { PermissionsModule } from './core/users/modules/permissions';
@@ -20,7 +19,6 @@ import { PermissionsModule } from './core/users/modules/permissions';
     UsersModule,
     ProfileModule,
     TournamentsModule,
-    TourModule,
     MatchModule,
     AuthModule,
     PermissionsModule,

@@ -7,9 +7,9 @@ export class TourNotFoundException extends HttpException {
 }
 
 export class UnableAddTourException extends HttpException {
-  constructor(options?: HttpExceptionOptions) {
+  constructor(message?: string, options?: HttpExceptionOptions) {
     super(
-      'Нельзя добавить тур. Турнир неактивен',
+      message ?? 'Нельзя добавить тур. Турнир неактивен',
       HttpStatus.INTERNAL_SERVER_ERROR,
       options
     );

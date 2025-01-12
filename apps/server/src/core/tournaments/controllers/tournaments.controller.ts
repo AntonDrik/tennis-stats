@@ -8,21 +8,24 @@ import {
   GetTournamentsQuery,
 } from '@tennis-stats/dto';
 import { Tournament, User } from '@tennis-stats/entities';
-import { EPermission } from '@tennis-stats/types';
+import { EPermission, ETournamentStatus } from '@tennis-stats/types';
 import { CurrentUser, Permissions } from '../../../auth/decorators';
 import { ForbiddenException } from '../../../common/exceptions';
 import { matchPermissions } from '../../../common/utils';
 import { LeaderboardService } from '../../leaderboard';
 import { TournamentById } from '../decorators/tournament.decorator';
+import checkStatus from '../helpers/check-tournament-status';
+import TournamentUsersManagerService from '../services/tournament-users-manager.service';
 import TournamentService from '../services/tournament.service';
-import PlayoffService from '../services/playoff.service';
+import PlayoffTournamentService from '../systems/playoff-tournament.service';
 
 @Controller('tournaments')
 class TournamentsController {
   constructor(
     private tournamentsService: TournamentService,
+    private tournamentUsersManagerService: TournamentUsersManagerService,
     private leaderboardService: LeaderboardService,
-    private playoffService: PlayoffService
+    private playoffService: PlayoffTournamentService
   ) {}
 
   @Get()
@@ -40,6 +43,7 @@ class TournamentsController {
   getTournament(@TournamentById() tournament: Tournament) {
     return tournament;
   }
+
   @Get('/:id/leaderboard')
   getLeaderboard(@TournamentById() tournament: Tournament) {
     return this.leaderboardService.getLeaderboard(tournament);
@@ -75,15 +79,19 @@ class TournamentsController {
     return this.tournamentsService.deleteTournament(tournament);
   }
 
-  @Post('/:id/create-playoff')
+  @Post('/:id/attach-playoff')
   @Permissions([EPermission.TOURNAMENT_CRUD])
-  createPlayoff(@TournamentById() tournament: Tournament, @Body() dto: CreatePlayoffDto) {
-    return this.playoffService.createPlayoff(tournament, dto);
+  attachPlayoff(@TournamentById() tournament: Tournament, @Body() dto: CreatePlayoffDto) {
+    checkStatus(tournament, [ETournamentStatus.ACTIVE]);
+
+    return this.playoffService.attachPlayoff(tournament, dto);
   }
 
-  @Delete('/:id/remove-playoff')
+  @Delete('/:id/detach-playoff')
   @Permissions([EPermission.TOURNAMENT_CRUD])
-  removePlayoff(@TournamentById() tournament: Tournament) {
+  detachPlayoff(@TournamentById() tournament: Tournament) {
+    checkStatus(tournament, [ETournamentStatus.ACTIVE]);
+
     return this.playoffService.removePlayoff(tournament);
   }
 
@@ -99,7 +107,7 @@ class TournamentsController {
       throw new ForbiddenException();
     }
 
-    return this.tournamentsService.joinTournament(tournament, dto);
+    return this.tournamentUsersManagerService.joinTournament(tournament, dto);
   }
 
   @Post('/:id/leave')
@@ -114,7 +122,13 @@ class TournamentsController {
       throw new ForbiddenException();
     }
 
-    return this.tournamentsService.leaveTournament(tournament, dto);
+    return this.tournamentUsersManagerService.leaveTournament(tournament, dto);
+  }
+
+  @Post('/:id/add-user')
+  @Permissions([EPermission.TOURNAMENT_CRUD])
+  addUser(@TournamentById() tournament: Tournament, @Body() dto: IdDto) {
+    return this.tournamentUsersManagerService.addUserToActiveTournament(tournament, dto);
   }
 }
 

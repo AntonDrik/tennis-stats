@@ -11,3 +11,6 @@ export { default as getPlayoffStageInfo } from './lib/get-playoff-stage-info';
 export { default as chunk } from './lib/chunk-array';
 export { default as shuffleArray } from './lib/shuffle-array';
 export { default as toFixedNumber } from './lib/to-fixed-number';
+export { default as TournamentHelpers } from './lib/tournament-helpers';
+export { default as MatchHelpers } from './lib/match-helpers';
+export { default as TourHelpers } from './lib/tour-helpers';

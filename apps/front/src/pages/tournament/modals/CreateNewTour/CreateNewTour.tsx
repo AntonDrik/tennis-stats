@@ -1,10 +1,9 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Button, Dialog, Flex, Select as RadixSelect, Spinner } from '@radix-ui/themes';
 import { CreateTourDto } from '@tennis-stats/dto';
-import { ETourGenerator } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
 import * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useAddTourMutation } from '../../../../core/api';
 import { tournamentAtom } from '../../../../core/store';
@@ -19,10 +18,7 @@ function CreateNewTour() {
 
   const form = useForm<CreateTourDto>({
     mode: 'onChange',
-    defaultValues: {
-      setsCount: 1,
-      pairsGenerator: ETourGenerator.BY_LEADERBOARD,
-    },
+    defaultValues: { setsCount: 1 },
     resolver: classValidatorResolver(CreateTourDto),
   });
 
@@ -54,34 +50,34 @@ function CreateNewTour() {
             {...getTextFieldError(form.formState.errors, 'setsCount')}
           />
 
-          <Controller
-            name={'pairsGenerator'}
-            control={form.control}
-            render={({ field }) => (
-              <Select
-                label={'Генерация матчей'}
-                size={'3'}
-                value={field.value}
-                onValueChange={field.onChange}
-              >
-                <RadixSelect.Trigger />
+          {/*<Controller*/}
+          {/*  name={'pairsGenerator'}*/}
+          {/*  control={form.control}*/}
+          {/*  render={({ field }) => (*/}
+          {/*    <Select*/}
+          {/*      label={'Генерация матчей'}*/}
+          {/*      size={'3'}*/}
+          {/*      value={field.value}*/}
+          {/*      onValueChange={field.onChange}*/}
+          {/*    >*/}
+          {/*      <RadixSelect.Trigger />*/}
 
-                <RadixSelect.Content position={'popper'}>
-                  <RadixSelect.Item value={ETourGenerator.RANDOM}>
-                    Рандом
-                  </RadixSelect.Item>
+          {/*      <RadixSelect.Content position={'popper'}>*/}
+          {/*        <RadixSelect.Item value={ETourGenerator.RANDOM}>*/}
+          {/*          Рандом*/}
+          {/*        </RadixSelect.Item>*/}
 
-                  <RadixSelect.Item value={ETourGenerator.BY_RATING}>
-                    По рейтингу
-                  </RadixSelect.Item>
+          {/*        <RadixSelect.Item value={ETourGenerator.BY_RATING}>*/}
+          {/*          По рейтингу*/}
+          {/*        </RadixSelect.Item>*/}
 
-                  <RadixSelect.Item value={ETourGenerator.BY_LEADERBOARD}>
-                    По таблице лидеров
-                  </RadixSelect.Item>
-                </RadixSelect.Content>
-              </Select>
-            )}
-          />
+          {/*        <RadixSelect.Item value={ETourGenerator.BY_LEADERBOARD}>*/}
+          {/*          По таблице лидеров*/}
+          {/*        </RadixSelect.Item>*/}
+          {/*      </RadixSelect.Content>*/}
+          {/*    </Select>*/}
+          {/*  )}*/}
+          {/*/>*/}
         </Flex>
 
         <Flex justify={'end'} mt={'3'}>

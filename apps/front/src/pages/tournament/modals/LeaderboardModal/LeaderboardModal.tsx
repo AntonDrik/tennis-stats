@@ -12,10 +12,11 @@ interface IProps {
 }
 
 function LeaderboardModal(props: IProps) {
-  const [activeTab, setActiveTab] = useAtom(leaderboardTabAtom)
+  const [activeTab, setActiveTab] = useAtom(leaderboardTabAtom);
 
   const leaderboard = useGetLeaderboardQuery(props.tournamentId);
 
+  const hasToursLeaderboard = (leaderboard.data?.toursLeaderboard.length ?? 0) > 0;
   const hasPlayoffLeaderborad = (leaderboard.data?.playoffLeaderboard.length ?? 0) > 0;
 
   return (
@@ -25,12 +26,11 @@ function LeaderboardModal(props: IProps) {
       {leaderboard.isLoading && <Spinner />}
       <Dialog.Title align={'center'}>Таблица лидеров</Dialog.Title>
 
-      <Tabs.Root  value={activeTab} onValueChange={(value) => setActiveTab(value)}>
+      <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)}>
         <Tabs.List>
-          <Tabs.Trigger value="tours">Туры</Tabs.Trigger>
-          <Tabs.Trigger value="playoff" disabled={!hasPlayoffLeaderborad}>
-            Плей-офф
-          </Tabs.Trigger>
+          {hasToursLeaderboard && <Tabs.Trigger value="tours">Туры</Tabs.Trigger>}
+
+          {hasPlayoffLeaderborad && <Tabs.Trigger value="playoff">Плей-офф</Tabs.Trigger>}
         </Tabs.List>
 
         <Box pt="3">

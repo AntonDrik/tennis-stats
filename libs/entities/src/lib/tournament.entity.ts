@@ -1,4 +1,5 @@
 import { ETournamentStatus, ETournamentType, ITournament } from '@tennis-stats/types';
+import { TournamentHelpers } from '@tennis-stats/helpers';
 import {
   BaseEntity,
   Column,
@@ -49,10 +50,11 @@ export class Tournament extends BaseEntity implements ITournament {
   @JoinTable()
   registeredUsers: User[];
 
-  get nextTourNumber() {
-    const simpleTours = this.tours?.filter((tour) => tour?.number);
-    const lastTour = simpleTours?.[simpleTours?.length - 1];
+  get hasPlayoff(): boolean {
+    return this.tours?.some((tour) => tour.playOffStage);
+  }
 
-    return (lastTour?.number ?? 0) + 1;
+  get helpers() {
+    return new TournamentHelpers<Tournament>(this);
   }
 }

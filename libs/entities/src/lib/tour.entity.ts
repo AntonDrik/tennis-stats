@@ -1,3 +1,4 @@
+import { TourHelpers } from '@tennis-stats/helpers';
 import { ETourType, ITour, TPlayOffStage } from '@tennis-stats/types';
 import {
   BaseEntity,
@@ -32,4 +33,8 @@ export class Tour extends BaseEntity implements ITour {
 
   @Column('varchar', { nullable: true })
   playOffStage?: TPlayOffStage;
+
+  get helpers() {
+    return new TourHelpers<Tour>(this);
+  }
 }

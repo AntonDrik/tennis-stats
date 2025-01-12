@@ -4,44 +4,48 @@ import {
   Flex,
   Select as RadixSelect,
   Switch,
-  Text,
   Spinner,
 } from '@radix-ui/themes';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { StartTournamentDto } from '@tennis-stats/dto';
-import { ETourGenerator, ETournamentType } from '@tennis-stats/types';
+import { ETournamentType, ITournament } from '@tennis-stats/types';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useStartTournamentMutation } from '../../../../core/api';
 import { Select, TextField, useModal } from '../../../../shared/components';
-import { GroupBox } from '../../../../shared/components/GroupBox/GroupBox';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
-import { useMediaQuery } from '../../../../shared/hooks';
-
-import Styled from './StartTournamentModal.styles';
+import PlayoffSettings from './components/PlayoffSettings/PlayoffSettings';
 
 interface IProps {
-  tournamentId: number;
+  tournament: ITournament;
   onSuccess?: (tournamentId: number) => void;
 }
 
 function StartTournamentModal(props: IProps) {
-  const startTournament = useStartTournamentMutation(props.tournamentId);
+  const startTournament = useStartTournamentMutation(props.tournament.id);
 
   const modal = useModal();
-  const isMobileDevice = useMediaQuery('only screen and (max-width : 576px)');
 
   const form = useForm<StartTournamentDto>({
     mode: 'onChange',
     defaultValues: {
       handleRating: true,
       setsCount: 1,
-      pairsGenerator: ETourGenerator.BY_RATING,
-      tournamentType: ETournamentType.ROUND_ROBIN,
+      tournamentType: ETournamentType.SWISS_SYSTEM,
     },
     resolver: classValidatorResolver(StartTournamentDto),
   });
+
+  const tournamentType = form.watch('tournamentType');
+
+  const conditionalForm = useMemo(() => {
+    return {
+      [ETournamentType.ROUND_ROBIN]: null,
+      [ETournamentType.SWISS_SYSTEM]: null,
+      [ETournamentType.PLAYOFF]: <PlayoffSettings tournament={props.tournament} />,
+    };
+  }, [props.tournament]);
 
   const submit = (form: StartTournamentDto) => {
     startTournament.mutateAsync(form).then((tournament) => {
@@ -62,65 +66,58 @@ function StartTournamentModal(props: IProps) {
 
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(submit)}>
-          <Flex direction={'column'} gap={'5'}>
-            <GroupBox caption={'Глобальные настройки'} bgcolor={'var(--accent-1)'}>
+          <Flex direction={'column'} gap={'4'}>
+            <Flex direction={'column'} gap={'3'}>
               <Controller
                 name="handleRating"
                 control={form.control}
                 render={({ field: { value, onChange } }) => (
-                  <Text as="label" size="2">
-                    <Flex gap="2">
-                      <Switch size="2" checked={value} onCheckedChange={onChange} />
-                      Считать рейтинг
-                    </Flex>
-                  </Text>
+                  <Flex gap="2">
+                    <Switch size="2" checked={value} onCheckedChange={onChange} />
+                    Считать рейтинг
+                  </Flex>
                 )}
               />
-            </GroupBox>
 
-            <GroupBox caption={'Настройки туров'} bgcolor={'var(--accent-1)'}>
-              <Styled.TourRow mb={'2'} gap={!isMobileDevice ? '4' : '2'}>
-                <Flex align={'center'}>
-                  <Text align={'left'} mb={!isMobileDevice ? '2' : '0'} wrap={'nowrap'}>
-                    Тур № 1
-                  </Text>
-                </Flex>
+              <Controller
+                name={'tournamentType'}
+                control={form.control}
+                render={({ field }) => (
+                  <Select
+                    label={'Тип турнира'}
+                    size={'3'}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <RadixSelect.Trigger />
 
-                <TextField
-                  size={'3'}
-                  type={'number'}
-                  label={'Кол-во сетов'}
-                  {...form.register('setsCount', {
-                    valueAsNumber: true,
-                  })}
-                />
+                    <RadixSelect.Content position="popper">
+                      <RadixSelect.Item value={ETournamentType.SWISS_SYSTEM}>
+                        Швейцарская система
+                      </RadixSelect.Item>
 
-                <Controller
-                  name={'pairsGenerator'}
-                  control={form.control}
-                  render={({ field }) => (
-                    <Select
-                      label={'Генерация матчей'}
-                      size={'3'}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <RadixSelect.Trigger />
+                      <RadixSelect.Item value={ETournamentType.ROUND_ROBIN}>
+                        Круговая система (Макс.{' '}
+                        {(props.tournament.registeredUsers.length || 1) - 1} туров)
+                      </RadixSelect.Item>
 
-                      <RadixSelect.Content position="popper">
-                        <RadixSelect.Item value={ETourGenerator.RANDOM}>
-                          Рандом
-                        </RadixSelect.Item>
+                      <RadixSelect.Item value={ETournamentType.PLAYOFF}>
+                        Сетка плейофф
+                      </RadixSelect.Item>
+                    </RadixSelect.Content>
+                  </Select>
+                )}
+              />
 
-                        <RadixSelect.Item value={ETourGenerator.BY_RATING}>
-                          По рейтингу
-                        </RadixSelect.Item>
-                      </RadixSelect.Content>
-                    </Select>
-                  )}
-                />
-              </Styled.TourRow>
-            </GroupBox>
+              <TextField
+                size={'3'}
+                type={'number'}
+                label={'Кол-во сетов'}
+                {...form.register('setsCount', { valueAsNumber: true })}
+              />
+
+              {conditionalForm[tournamentType]}
+            </Flex>
 
             <Button
               variant={'solid'}

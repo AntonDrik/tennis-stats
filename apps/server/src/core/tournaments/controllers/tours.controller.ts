@@ -3,21 +3,21 @@ import { CreateTourDto } from '@tennis-stats/dto';
 import { Tour, Tournament } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { Permissions } from '../../../auth/decorators';
-import { TournamentById } from '../decorators/tournament.decorator';
 import { TourById } from '../decorators/tour.decorator';
-import TournamentService from '../services/tournament.service';
+import { TournamentById } from '../decorators/tournament.decorator';
+import ToursService from '../services/tour.service';
 
 @Controller('tournaments/:tournamentId/tours')
 class ToursController {
-  constructor(private tournamentService: TournamentService) {}
+  constructor(private toursService: ToursService) {}
 
   @Post('/add')
   @Permissions([EPermission.TOURNAMENT_CRUD])
   addTour(
     @TournamentById('tournamentId') tournament: Tournament,
     @Body() dto: CreateTourDto
-  ): Promise<Tour> {
-    return this.tournamentService.addTour(tournament, dto);
+  ) {
+    return this.toursService.addTour(tournament, dto);
   }
 
   @Delete('/:tourId')
@@ -26,7 +26,7 @@ class ToursController {
     @TournamentById('tournamentId') tournament: Tournament,
     @TourById() tour: Tour
   ) {
-    return this.tournamentService.removeTour(tournament, tour);
+    return this.toursService.removeTour(tournament, tour);
   }
 }
 

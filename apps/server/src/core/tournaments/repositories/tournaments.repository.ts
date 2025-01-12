@@ -10,15 +10,6 @@ class TournamentsRepository extends Repository<Tournament> {
     super(Tournament, dataSource.createEntityManager());
   }
 
-  public async findLast(): Promise<Tournament | null> {
-    const tournamentsList = await this.find({
-      order: { id: 'DESC' },
-      take: 1,
-    });
-
-    return tournamentsList?.[0];
-  }
-
   public findTournamentsByQuery(query: GetTournamentsQuery): Promise<Tournament[]> {
     const builder = this.createQueryBuilder('tournament').leftJoinAndSelect(
       'tournament.registeredUsers',

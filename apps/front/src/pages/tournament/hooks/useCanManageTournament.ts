@@ -8,7 +8,7 @@ function useCanManageTournament(tournament?: ITournament | undefined) {
   const permissions = useUserPermissions();
   const tournamentState = useAtomValue(tournamentAtom);
 
-  const activeTournament = tournamentState.selectedTournament ?? tournament;
+  const activeTournament = tournament ?? tournamentState.selectedTournament;
 
   return useMemo(() => {
     if (!activeTournament) {
