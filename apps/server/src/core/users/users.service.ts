@@ -27,7 +27,7 @@ class UsersService {
     const result = await Promise.all(promise);
 
     return result.sort(
-      (a, b) => b.rating - a.rating || b.nickname.localeCompare(a.nickname)
+      (a, b) => b.rating - a.rating || a.nickname.localeCompare(b.nickname)
     );
   }
 

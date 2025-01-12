@@ -39,7 +39,7 @@ function TournamentRegistrationPage() {
 
   const joinedList = useMemo(() => {
     return (openedTournament.data?.registeredUsers ?? []).sort(
-      (a, b) => b.rating - a.rating
+      (a, b) => b.rating - a.rating || a.nickname.localeCompare(b.nickname)
     );
   }, [openedTournament.data]);
 
