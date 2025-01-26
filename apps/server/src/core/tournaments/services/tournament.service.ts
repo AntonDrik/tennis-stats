@@ -14,9 +14,10 @@ import {
 } from '../../../common/exceptions';
 import { LeaderboardService } from '../../leaderboard';
 import { RatingService } from '../../rating';
+import { SeasonsService } from '../../seasons';
 import { UsersService } from '../../users';
 import checkStatus from '../helpers/check-tournament-status';
-import TournamentsRepository from '../repositories/tournaments.repository';
+import TournamentsRepository from '../../../repositories/tournaments.repository';
 import PlayoffTournamentService from '../systems/playoff-tournament.service';
 import RoundRobinTournamentService from '../systems/round-robin-tournament.service';
 import SwissTournamentService from '../systems/swiss-tournament.service';
@@ -40,21 +41,27 @@ class TournamentService {
     private usersService: UsersService,
     private roundRobinTournamentService: RoundRobinTournamentService,
     private swissTournamentService: SwissTournamentService,
-    private playoffTournamentService: PlayoffTournamentService
+    private playoffTournamentService: PlayoffTournamentService,
+    private seasonsService: SeasonsService
   ) {}
 
-  public getTournamentsList(query: GetTournamentsQuery) {
+  public getTournamentsList(query: GetTournamentsQuery): Promise<Tournament[]> {
     return this.repository.findTournamentsByQuery(query);
   }
 
   /**
    * Создание турнира
    */
-  public async createTournament(dto: UpsertTournamentDto): Promise<Tournament> {
-    const tourEntity = this.repository.createEntity(dto);
-    await tourEntity.save();
+  public async createTournament(dto: UpsertTournamentDto) {
+    const entity = this.repository.createEntity(dto);
 
-    return tourEntity;
+    if (dto.attachSeason) {
+      await this.seasonsService.attachActiveSeason(entity);
+    }
+
+    await entity.save();
+
+    return entity;
   }
 
   /**
@@ -67,7 +74,7 @@ class TournamentService {
       throw new JoinedUsersNotExistException();
     }
 
-    let entity = await this.optimizeTournamentUsers(tournament);
+    let entity = await this.normalizeTournamentUsers(tournament);
 
     if (dto.tournamentType === ETournamentType.ROUND_ROBIN) {
       entity = this.roundRobinTournamentService.initialize(entity, dto);
@@ -85,6 +92,7 @@ class TournamentService {
     }
 
     entity.handleRating = dto.handleRating;
+    entity.seasonFinal = dto.seasonFinal ?? false;
     entity.status = ETournamentStatus.ACTIVE;
 
     await entity.save();
@@ -126,6 +134,13 @@ class TournamentService {
     }
 
     tournament.playersCount = dto.playersCount;
+
+    if (dto.attachSeason) {
+      await this.seasonsService.attachActiveSeason(tournament);
+    } else {
+      tournament.season = null;
+    }
+
     await tournament.save();
 
     return tournament;
@@ -141,7 +156,7 @@ class TournamentService {
   /**
    * Добавляет халяву в турнир по необходимости
    */
-  private async optimizeTournamentUsers(tournament: Tournament) {
+  private async normalizeTournamentUsers(tournament: Tournament) {
     if (tournament.registeredUsers.length % 2 !== 0) {
       const systemUser = await this.usersService.getSystemUser();
 

@@ -21,3 +21,4 @@ export { default as WinnerIcon } from './winner-icon';
 export { default as SecondPlaceIcon } from './second-place-icon';
 export { default as ThirdPlaceIcon } from './third-place-icon';
 export { default as InfoIcon } from './info-icon';
+export { default as CalendarIcon } from './calendar-icon';

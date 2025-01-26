@@ -1,4 +1,4 @@
-import { Box } from '@radix-ui/themes';
+import { Box, Flex } from '@radix-ui/themes';
 import styled from 'styled-components';
 
 const Card = styled(Box)({
@@ -15,13 +15,10 @@ const Card = styled(Box)({
   },
 });
 
-const CardHeader = styled.div({
-  position: 'relative',
-  width: '100%',
-  textAlign: 'center',
-
-  paddingBottom: 6,
-  borderBottom: '1px solid #5EB1EF',
+const CardHeader = styled(Flex)({
+  overflow: 'auto',
+  scrollbarWidth: 'none',
+  '-ms-overflow-style': 'none',
 });
 
 export default { Card, CardHeader };

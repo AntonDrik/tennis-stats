@@ -8,9 +8,9 @@ class TournamentHelpers<T extends ITournament> {
   private matches: TMatch<T> = [];
 
   constructor(private tournament: T) {
-    this.registeredUsers = this.tournament.registeredUsers;
-    this.tours = this.tournament.tours;
-    this.matches = this.tournament.tours.flatMap((tour) => tour.matches);
+    this.registeredUsers = this.tournament.registeredUsers ?? [];
+    this.tours = this.tournament.tours ?? [];
+    this.matches = this.tours.flatMap((tour) => tour.matches);
   }
 
   public getSystemUser(): T['registeredUsers'][number] | undefined {

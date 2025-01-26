@@ -45,6 +45,7 @@ class MatchService {
     });
   }
 
+  // TODO: Вынести в отдельный файл
   public createEmptyPlayoffStage(stage: TPlayOffStage, setsCount: number): Match[] {
     const stageInfo = getPlayoffStageInfo(stage);
 
@@ -86,7 +87,7 @@ class MatchService {
     const userKey = match.helpers.getUserKeyByUserId(currentUser.id);
 
     if (!userKey) {
-      throw new UnableReplaceUsersInMatch();
+      throw new UnableReplaceUsersInMatch('userKey не найден');
     }
 
     const newPlayer = this.usersService.createPlayer(newUser);

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RatingHistory } from '@tennis-stats/entities';
-import RatingHistoryController from './controllers/history.controller';
-import RatingHistoryRepository from './repositories/history.repository';
-import RatingHistoryService from './services/history.service';
+import { RatingHistoryRepository } from '../../repositories';
+import RatingHistoryController from './controllers/rating-history.controller';
+import RatingHistoryService from './services/rating-history.service';
 import RatingService from './services/rating.service';
 
 @Module({

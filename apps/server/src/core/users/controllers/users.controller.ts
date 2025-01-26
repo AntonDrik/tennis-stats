@@ -2,16 +2,13 @@ import { Controller, Get } from '@nestjs/common';
 import { IUser } from '@tennis-stats/types';
 import { CurrentUser } from '../../../auth/decorators';
 import { IdParam } from '../../../common/decorators';
-import UsersRepository from '../repositories/users.repository';
+import UsersRepository from '../../../repositories/users.repository';
 
 import UsersService from '../services/users.service';
 
 @Controller('users')
 class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private usersRepository: UsersRepository
-  ) {}
+  constructor(private usersService: UsersService, private usersRepository: UsersRepository) {}
 
   @Get()
   getAll() {

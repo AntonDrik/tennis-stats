@@ -7,3 +7,5 @@ export * from './Inputs';
 export * from './Modals';
 export * from './GameSet';
 export * from './Auth';
+export * from './Seasons';
+export * from './Pagination';

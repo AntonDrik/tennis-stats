@@ -6,9 +6,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Season } from './season.entity';
 
 import { Tour } from './tour.entity';
 import { TournamentLeaderboard } from './tournament-leaderboard.entity';
@@ -19,7 +21,7 @@ export class Tournament extends BaseEntity implements ITournament {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('datetime', { nullable: true })
+  @Column('datetime', { nullable: false })
   date: Date;
 
   @Column('varchar', { default: ETournamentType.SWISS_SYSTEM })
@@ -33,6 +35,12 @@ export class Tournament extends BaseEntity implements ITournament {
 
   @Column('boolean', { nullable: false, default: true })
   handleRating: boolean;
+
+  @Column('boolean', { nullable: false, default: false })
+  seasonFinal: boolean;
+
+  @ManyToOne(() => Season, { nullable: true, eager: true })
+  season: Season | null;
 
   @OneToMany(() => Tour, (tour) => tour.tournament, {
     eager: true,

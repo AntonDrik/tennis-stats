@@ -6,7 +6,7 @@ import { IsOddUsersException } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
 import { LeaderboardService } from '../../leaderboard';
 import { MatchService } from '../../match';
-import ToursRepository from '../repositories/tours.repository';
+import ToursRepository from '../../../repositories/tours.repository';
 import { Tournament, Tour, User } from '@tennis-stats/entities';
 
 @Injectable()

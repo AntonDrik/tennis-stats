@@ -38,13 +38,10 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes('@radix')) {
-            return '@radix';
-          }
-
           if (id.includes('date-fns')) {
             return 'date-fns';
           }

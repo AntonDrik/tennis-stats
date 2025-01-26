@@ -40,16 +40,14 @@ function RegistrationTable(props: IProps) {
             <Table.Row
               key={user.id}
               style={{
-                backgroundColor: me?.id === user.id ? 'var(--indigo-3)' : 'inherit',
+                backgroundColor: me.id === user.id ? 'var(--indigo-3)' : 'inherit',
               }}
             >
               <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
                 {user.nickname}
               </Table.RowHeaderCell>
 
-              <Table.Cell style={{ verticalAlign: 'middle' }}>
-                {Math.round(user.rating)}
-              </Table.Cell>
+              <Table.Cell style={{ verticalAlign: 'middle' }}>{Math.round(user.rating)}</Table.Cell>
 
               {props.isAdmin && (
                 <Table.Cell width={'30px'}>

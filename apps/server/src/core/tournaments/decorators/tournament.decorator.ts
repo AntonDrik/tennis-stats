@@ -1,13 +1,7 @@
-import {
-  createParamDecorator,
-  ExecutionContext,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, Injectable, PipeTransform } from '@nestjs/common';
 import { Tournament } from '@tennis-stats/entities';
 import { EntityManager, Equal } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
-import TournamentsRepository from '../repositories/tournaments.repository';
 
 @Injectable()
 class TournamentPipe implements PipeTransform {
@@ -40,11 +34,8 @@ class TournamentPipe implements PipeTransform {
   }
 }
 
-const TournamentDecorator = createParamDecorator(
-  (param: string, ctx: ExecutionContext) => {
-    return ctx.switchToHttp().getRequest().params[param];
-  }
-);
+const TournamentDecorator = createParamDecorator((param: string, ctx: ExecutionContext) => {
+  return ctx.switchToHttp().getRequest().params[param];
+});
 
-export const TournamentById = (params = 'id') =>
-  TournamentDecorator(params, TournamentPipe);
+export const TournamentById = (params = 'id') => TournamentDecorator(params, TournamentPipe);

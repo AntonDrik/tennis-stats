@@ -3,7 +3,7 @@ import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { Player, User } from '@tennis-stats/entities';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { RatingHistoryService } from '../../rating';
-import UsersRepository from '../repositories/users.repository';
+import UsersRepository from '../../../repositories/users.repository';
 
 @Injectable()
 class UsersService {
@@ -23,7 +23,7 @@ class UsersService {
 
     const result = await Promise.all(promise);
 
-    return result.sort((a, b) => b.rating - a.rating || b.nickname.localeCompare(a.nickname));
+    return result.sort((a, b) => b.rating - a.rating || a.nickname.localeCompare(b.nickname));
   }
 
   public getUsersForPlayoff(dto: CreatePlayoffDto) {

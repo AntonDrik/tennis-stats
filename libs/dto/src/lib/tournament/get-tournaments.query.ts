@@ -32,6 +32,15 @@ class GetTournamentsQuery {
   @IsBoolean()
   @Transform(({ value }) => value === 'true')
   withLeaderboard?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true')
+  withJoinedUsers?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  seasonId?: number;
 }
 
 export default GetTournamentsQuery;

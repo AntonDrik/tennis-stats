@@ -25,26 +25,26 @@ function useTournamentRegistrationController(tournament: ITournament | undefined
   );
 
   const isMeRegistered = useMemo(() => {
-    return Boolean(joinedList.find((user) => user.id === me?.id));
-  }, [joinedList, me?.id]);
+    return Boolean(joinedList.find((user) => user.id === me.id));
+  }, [joinedList, me.id]);
 
   const joinTournament = useCallback(() => {
-    joinTournamentMutation.mutateAsync({ usersIds: [me?.id ?? -1] }).then(() => {
+    joinTournamentMutation.mutateAsync({ usersIds: [me.id] }).then(() => {
       toast.success('Вы успешно присоединились к турниру');
     });
-  }, [me?.id, tournament?.id]);
+  }, [me.id, tournament?.id]);
 
   const leaveTournament = useCallback(() => {
     confirmUnregister(() => {
-      leaveTournamentMutation.mutateAsync({ id: me?.id ?? -1 }).then(() => {
+      leaveTournamentMutation.mutateAsync({ id: me.id }).then(() => {
         toast.success('Вы успешно покинули турнир');
       });
     });
-  }, [me?.id, tournament?.id]);
+  }, [me.id, tournament?.id]);
 
   const toggleTournament = useCallback(() => {
     isMeRegistered ? leaveTournament() : joinTournament();
-  }, [isMeRegistered, me?.id, tournament?.id]);
+  }, [isMeRegistered, me.id, tournament?.id]);
 
   return {
     joinTournament,

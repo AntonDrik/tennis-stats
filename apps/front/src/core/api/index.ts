@@ -9,3 +9,4 @@ export * from './statistic';
 export * from './profile';
 export * from './tournament';
 export * from './tournament-registration';
+export * from './season';

@@ -29,7 +29,11 @@ export class IsOddUsersException extends HttpException {
 }
 
 export class UnableReplaceUsersInMatch extends HttpException {
-  constructor(options?: HttpExceptionOptions) {
-    super('Ошибка при замене пользователя', HttpStatus.INTERNAL_SERVER_ERROR, options);
+  constructor(reason?: string, options?: HttpExceptionOptions) {
+    super(
+      `Ошибка при замене пользователя ${reason ? `. Причина: ${reason}` : ''}`,
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      options
+    );
   }
 }

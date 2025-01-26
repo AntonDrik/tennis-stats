@@ -1,7 +1,7 @@
-import { IsNumber } from 'class-validator';
+import { IsPositive } from 'class-validator';
 
 class IdDto {
-  @IsNumber()
+  @IsPositive()
   id: number;
 }
 

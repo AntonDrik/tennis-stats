@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Match, RatingHistory, Tournament, User } from '@tennis-stats/entities';
 import { allSynchronously, calculateRating, toFixedNumber } from '@tennis-stats/helpers';
-import { EntityManager } from 'typeorm';
+import { IWinnerLooser } from '@tennis-stats/types';
+import { DataSource, EntityManager } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { IWinnerLooser } from '../../../../../../libs/helpers/src/lib/match-helpers';
 
 type TUserId = number;
 type TNewRating = number;
 
 @Injectable()
 class RatingService {
+  constructor(private dataSource: DataSource) {}
+
   public async calculateAndSaveRating(tournament: Tournament, manager: EntityManager) {
     const data = this.calculateRating(tournament);
 
@@ -24,6 +26,31 @@ class RatingService {
     );
   }
 
+  // public async recalculateRating() {
+  //   await this.dataSource.manager.transaction(async (manager) => {
+  //     const allUsers = await manager.find(User);
+  //     const allTournament = await manager.find(Tournament);
+  //
+  //     await manager.clear(RatingHistory);
+  //
+  //     await allSynchronously(
+  //       allUsers.map((user) => async () => {
+  //         await manager.update(User, { id: user.id }, { rating: 1000 });
+  //       })
+  //     );
+  //
+  //     await allSynchronously(
+  //       allTournament.map((tournament) => async () => {
+  //         const updatedTournament = await manager.findOneBy(Tournament, { id: tournament.id });
+  //
+  //         if (updatedTournament) {
+  //           await this.calculateAndSaveRating(updatedTournament, manager);
+  //         }
+  //       })
+  //     );
+  //   });
+  // }
+
   private calculateRating(tournament: Tournament) {
     const dictionary = new Map<TUserId, TNewRating>();
     const historyEntities: QueryDeepPartialEntity<RatingHistory>[] = [];
@@ -34,8 +61,7 @@ class RatingService {
       .filter((match) => !match.isFictive && match.isFinished)
       .sort((a, b) => a.id - b.id)
       .forEach((match) => {
-        const { winner, looser } =
-          match.helpers.getWinnerLooser() as IWinnerLooser<Match>;
+        const { winner, looser } = match.helpers.getWinnerLooser() as IWinnerLooser<Match>;
 
         const winnerRating = dictionary.get(winner.id) ?? winner.rating;
         const looserRating = dictionary.get(looser.id) ?? looser.rating;

@@ -7,7 +7,7 @@ import { appRoutes } from '../../../../routes/routes.constant';
 import { useUserPermissions } from '../../../../shared/hooks';
 import TournamentDropdownMenu from './components/DropdownMenu/DropdownMenu';
 import MiniLeaderboard from './components/MiniLeaderboard/MiniLeaderboard';
-import TournamentStatusChip from './components/StatusChip/StatusChip';
+import TournamentInfoChips from './components/InfoChips/InfoChips';
 
 import Styled from './TournamentCard.styles';
 
@@ -20,8 +20,7 @@ function TournamentCard(props: IProps) {
   const permissions = useUserPermissions();
 
   const showMenu =
-    permissions.canCrudTournament &&
-    props.tournament.status !== ETournamentStatus.FINISHED;
+    permissions.canCrudTournament && props.tournament.status !== ETournamentStatus.FINISHED;
 
   const navigateToTournament = useCallback(() => {
     if (props.tournament.status === ETournamentStatus.REGISTRATION) {
@@ -35,21 +34,29 @@ function TournamentCard(props: IProps) {
 
   return (
     <Styled.Card onClick={() => navigateToTournament()}>
-      <Flex align={'center'} justify={'between'}>
-        <Flex align={'center'} gap={'2'}>
+      <Flex align={'center'} justify={'between'} gap={'4'}>
+        <Styled.CardHeader align={'center'} gap={'2'}>
           <Text size="3" weight="bold">
             {parseISOWithFormat(props.tournament.date, 'dd.MM.yyyy')}
           </Text>
 
-          <TournamentStatusChip status={props.tournament.status} />
-        </Flex>
+          <TournamentInfoChips tournament={props.tournament} />
+        </Styled.CardHeader>
 
         {showMenu && <TournamentDropdownMenu tournament={props.tournament} />}
       </Flex>
 
       <Separator my="2" size="4" />
 
-      <MiniLeaderboard tournament={props.tournament} />
+      {props.tournament.leaderboard.length > 0 && <MiniLeaderboard tournament={props.tournament} />}
+
+      {!props.tournament.leaderboard.length && (
+        <Flex align={'center'} justify={'center'} height={'calc(100% - 42px)'}>
+          <Text align={'center'} color={'gray'}>
+            Результаты будут доступны после завершения турнира
+          </Text>
+        </Flex>
+      )}
     </Styled.Card>
   );
 }

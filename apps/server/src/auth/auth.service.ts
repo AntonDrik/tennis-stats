@@ -7,14 +7,14 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { InvalidCredentialsException, UserExistException } from '../common/exceptions';
 import { RatingHistoryService } from '../core/rating';
-import { UsersAuthRepository, UsersRepository } from '../core/users';
+import { UsersAuthRepository, UsersRepository } from '../repositories';
 import {
   refreshCookieOptions,
   accessCookieOptions,
   ACCESS_COOKIE_NAME,
   REFRESH_COOKIE_NAME,
   ACCESS_COOKIE_LIFE_TIME,
-  REFRESH_COOKIE_LIFE_TIME
+  REFRESH_COOKIE_LIFE_TIME,
 } from './constants';
 
 @Injectable()
@@ -71,14 +71,8 @@ class AuthService {
       await this.userAuthRepository.updateRefreshToken(payload.userId, null);
     }
 
-    response.clearCookie(
-      ACCESS_COOKIE_NAME,
-      accessCookieOptions(ACCESS_COOKIE_LIFE_TIME)
-    );
-    response.clearCookie(
-      REFRESH_COOKIE_NAME,
-      refreshCookieOptions(REFRESH_COOKIE_LIFE_TIME)
-    );
+    response.clearCookie(ACCESS_COOKIE_NAME, accessCookieOptions(ACCESS_COOKIE_LIFE_TIME));
+    response.clearCookie(REFRESH_COOKIE_NAME, refreshCookieOptions(REFRESH_COOKIE_LIFE_TIME));
 
     return true;
   }
@@ -87,21 +81,16 @@ class AuthService {
     const tokenPayload: ITokenPayload = { userId: user.id };
 
     const access_token = this.jwtService.sign(tokenPayload, {
-      expiresIn: ACCESS_COOKIE_LIFE_TIME
+      expiresIn: ACCESS_COOKIE_LIFE_TIME,
     });
 
-    const refresh_token = this.jwtService.sign(
-      tokenPayload,
-      { expiresIn: REFRESH_COOKIE_LIFE_TIME }
-    );
+    const refresh_token = this.jwtService.sign(tokenPayload, {
+      expiresIn: REFRESH_COOKIE_LIFE_TIME,
+    });
 
     await this.userAuthRepository.updateRefreshToken(user.id, refresh_token);
 
-    response.cookie(
-      ACCESS_COOKIE_NAME,
-      access_token,
-      accessCookieOptions(ACCESS_COOKIE_LIFE_TIME)
-    );
+    response.cookie(ACCESS_COOKIE_NAME, access_token, accessCookieOptions(ACCESS_COOKIE_LIFE_TIME));
     response.cookie(
       REFRESH_COOKIE_NAME,
       refresh_token,

@@ -6,4 +6,5 @@ export interface IPermission {
 export enum EPermission {
   CREATE_USER = 'CREATE_USER',
   TOURNAMENT_CRUD = 'TOURNAMENT_CRUD',
+  SEASONS_CRUD = 'SEASONS_CRUD',
 }

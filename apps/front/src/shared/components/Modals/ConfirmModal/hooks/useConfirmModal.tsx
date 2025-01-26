@@ -1,13 +1,14 @@
 import { ButtonProps } from '@radix-ui/themes';
 import { useModal } from '../../core';
 import ConfirmModal from '../ConfirmModal';
-import { IConfirmProps } from '../ConfirmModal.tyles';
+import { ICalloutProps, IConfirmProps } from '../ConfirmModal.tyles';
 
 export interface IConfirmModalProps {
   title: string;
   confirmTitle: string;
   denyTitle: string;
 
+  callout?: ICalloutProps;
   description?: string | null;
   confirmButtonProps?: IConfirmProps['confirmButton']['props'];
   denyButtonProps?: IConfirmProps['denyButton']['props'];
@@ -29,6 +30,7 @@ function useConfirmModal(props: IConfirmModalProps) {
       <ConfirmModal
         title={rewriteProps?.title ?? props.title}
         description={rewriteProps?.description ?? props.description}
+        callout={rewriteProps?.callout ?? props.callout}
         confirmButton={{
           caption: rewriteProps?.confirmTitle ?? props.confirmTitle,
           onClick: () => {

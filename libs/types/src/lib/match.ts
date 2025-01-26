@@ -24,8 +24,13 @@ interface IMatch {
   isFinished: boolean;
 }
 
+interface IWinnerLooser<T extends IMatch> {
+  winner: T['user1'];
+  looser: T['user1'];
+}
+
 type TMatchRatingDelta = {
   [key in string]: { userName: string; delta: string }[];
 };
 
-export { IMatch, IMatchScore, TMatchRatingDelta };
+export { IMatch, IMatchScore, TMatchRatingDelta, IWinnerLooser };

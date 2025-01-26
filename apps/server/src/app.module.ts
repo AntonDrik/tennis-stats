@@ -8,8 +8,8 @@ import { EnvConfigModule } from './config/env';
 import { UsersModule } from './core/users';
 import { MatchModule } from './core/match';
 import { AuthModule } from './auth';
+import { SeasonsModule } from './core/seasons';
 import { ProfileModule } from './core/users/modules/profile';
-import { PermissionsModule } from './core/users/modules/permissions';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { PermissionsModule } from './core/users/modules/permissions';
     TournamentsModule,
     MatchModule,
     AuthModule,
-    PermissionsModule,
+    SeasonsModule,
 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'front'),

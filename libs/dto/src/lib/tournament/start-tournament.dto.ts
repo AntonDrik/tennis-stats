@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsIn,
   IsNotEmptyObject,
+  IsOptional,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
@@ -15,11 +16,7 @@ class StartTournamentDto extends CreateTourDto {
   @Transform(({ value }) => value || value === 'true')
   handleRating: boolean;
 
-  @IsIn([
-    ETournamentType.ROUND_ROBIN,
-    ETournamentType.SWISS_SYSTEM,
-    ETournamentType.PLAYOFF,
-  ])
+  @IsIn([ETournamentType.ROUND_ROBIN, ETournamentType.SWISS_SYSTEM, ETournamentType.PLAYOFF])
   tournamentType: ETournamentType;
 
   @ValidateIf((o) => o.tournamentType === ETournamentType.PLAYOFF)
@@ -27,6 +24,11 @@ class StartTournamentDto extends CreateTourDto {
   @ValidateNested()
   @Type(() => PlayoffStartOptionsDto)
   playoffOptions?: PlayoffStartOptionsDto;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value || value === 'true')
+  seasonFinal?: boolean;
 }
 
 export default StartTournamentDto;

@@ -16,6 +16,7 @@ const MainRoute = loadable(() => import('./MainRoute'));
 
 const AuthPage = loadable(() => import('../pages/auth/AuthPage'));
 const UsersPage = loadable(() => import('../pages/users/UsersPage'));
+const SeasonsPage = loadable(() => import('../pages/seasons/SeasonsPage'));
 const TournamentPage = loadable(() => import('../pages/tournament/TournamentPage'));
 const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsPage'));
 const TournamentRegistrationPage = loadable(
@@ -33,10 +34,7 @@ const routes = createBrowserRouter(
       </Route>
 
       <Route element={<MainRoute fallback={<Spinner page />} />}>
-        <Route
-          path={appRoutes.USERS}
-          element={<UsersPage fallback={<Spinner page />} />}
-        />
+        <Route path={appRoutes.USERS} element={<UsersPage fallback={<Spinner page />} />} />
 
         <Route
           path={appRoutes.TOURNAMENTS}
@@ -53,8 +51,7 @@ const routes = createBrowserRouter(
           element={<TournamentPage fallback={<Spinner page />} />}
         />
 
-        {/*<Route path={appRoutes.STATS} element={<StatsPage />} />*/}
-        {/*<Route path={appRoutes.PROFILE()} element={<ProfilePage />} />*/}
+        <Route path={appRoutes.SEASONS} element={<SeasonsPage fallback={<Spinner page />} />} />
       </Route>
     </Route>
   )

@@ -1,18 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { GameSet } from '@tennis-stats/entities';
-import { IProfile } from '@tennis-stats/types';
-import { startOfDay } from 'date-fns';
-import { LessThan } from 'typeorm';
-import GameSetRepository from '../../../match/repositories/game-set.repository';
-import UsersRepository from '../../repositories/users.repository';
-import { getWinPercent } from './helpers';
 
 @Injectable()
 class ProfileService {
-  constructor(
-    private usersRepository: UsersRepository,
-    private gameSetRepository: GameSetRepository
-  ) {}
+  constructor() {}
 
   public async getInfo(userId: number) {
     // const user = await this.usersRepository.findById(userId);

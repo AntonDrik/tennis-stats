@@ -4,7 +4,7 @@ import { mapToArray } from '@tennis-stats/helpers';
 import { ILeaderboard, ILeaderboardItem, IScoreDiff } from '@tennis-stats/types';
 import { EntityManager } from 'typeorm';
 import { LeaderboardItem } from '../helpers/LeaderboardItem';
-import LeaderboardRepository from '../repository/leaderboard.repository';
+import LeaderboardRepository from '../../../repositories/leaderboard.repository';
 
 @Injectable()
 class LeaderboardService {
@@ -54,7 +54,7 @@ class LeaderboardService {
 
   private getValidTournamentMatches(tournament: Tournament): Match[] {
     return tournament.tours
-      .flatMap((tour) => tour.matches.flatMap((match) => match))
+      .flatMap((tour) => tour.matches)
       .filter((match) => match.user1 && match.user2);
   }
 
@@ -114,7 +114,7 @@ function byStats(a: ILeaderboardItem, b: ILeaderboardItem) {
     b.wins - a.wins ||
     b.total - a.total ||
     b.user.rating - a.user.rating ||
-    b.user.nickname.localeCompare(a.user.nickname)
+    a.user.nickname.localeCompare(b.user.nickname)
   );
 }
 
@@ -126,7 +126,7 @@ function byStatsOrToursResults(toursLeaderboard: ILeaderboardItem[]) {
       b.wins - a.wins ||
       b.total - a.total ||
       users.indexOf(a.user.id) - users.indexOf(b.user.id) ||
-      b.user.nickname.localeCompare(a.user.nickname)
+      a.user.nickname.localeCompare(b.user.nickname)
     );
   };
 }

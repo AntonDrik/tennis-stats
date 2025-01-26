@@ -5,7 +5,7 @@ import { ETournamentType } from '@tennis-stats/types';
 import { MaxToursExceedException } from '../../../common/exceptions/tour.exceptions';
 import { IPair } from '../../../common/types';
 import { MatchService } from '../../match';
-import ToursRepository from '../repositories/tours.repository';
+import ToursRepository from '../../../repositories/tours.repository';
 
 @Injectable()
 class RoundRobinTournamentService {

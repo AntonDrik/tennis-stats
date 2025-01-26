@@ -1,0 +1,55 @@
+.AccordionItem {
+  overflow: hidden;
+  border-radius: var(--radius-3);
+
+  &[data-type="ACTIVE"] {
+    & .AccordionTrigger {
+      background-color: var(--accent-a3);
+    }
+
+    & .AccordionContent {
+      background-color: var(--accent-a2);
+    }
+  }
+}
+
+.AccordionTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 50px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  background-color: var(--gray-a3);
+
+  padding: 0 12px;
+
+  &:hover {
+    background-color: var(--gray-a4);
+  }
+
+  &[data-state="open"] > .ChevronDownIcon {
+    transform: rotate(180deg);
+  }
+}
+
+.AccordionContent {
+  padding: 12px;
+  background-color: var(--gray-a2);
+}
+
+.ChevronDownIcon {
+  color: var(--gray-10);
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+
+.DataListRoot {
+  &:where(.rt-r-size-2) {
+    gap: var(--space-1);
+  }
+}

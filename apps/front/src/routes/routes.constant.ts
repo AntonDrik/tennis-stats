@@ -13,6 +13,8 @@ const appRoutes = {
   STATS: '/stats',
 
   PROFILE: (id?: number) => (id ? `/profile/${id}` : 'profile/:id'),
+
+  SEASONS: '/seasons',
 };
 
 export { appRoutes };

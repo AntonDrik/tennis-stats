@@ -1,13 +1,13 @@
-import { useSetAtom, useAtomValue } from 'jotai';
+import { Box } from '@radix-ui/themes';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { useEffect, useMemo } from 'react';
 import { appRoutes } from '../../../../routes/routes.constant';
-import { DashboardIcon, PersonIcon } from '../../../../shared/svg-icons';
+import { CalendarIcon, DashboardIcon, PersonIcon } from '../../../../shared/svg-icons';
 import { mainLayoutAtom, updateMainLayoutAtom } from '../../MainLayout.state';
 
 import { MenuSection } from './components';
 import Styled from './Sidebar.styles';
 import { IMenuSection } from './Sidebar.types';
-import { Box } from '@radix-ui/themes';
 
 function SideBar() {
   const mainLayoutState = useAtomValue(mainLayoutAtom);
@@ -28,6 +28,12 @@ function SideBar() {
             title: 'Пользователи',
             link: appRoutes.USERS,
             icon: <PersonIcon fill={'var(--sage-12)'} />,
+          },
+          {
+            type: 'link',
+            title: 'Сезоны',
+            link: appRoutes.SEASONS,
+            icon: <CalendarIcon fill={'var(--sage-12)'} />,
           },
         ],
       },

@@ -20,7 +20,7 @@ function Toaster() {
     <HotToaster
       position={'bottom-center'}
       toastOptions={{
-        duration: 5000,
+        duration: 4000,
         style: {
           borderRadius: 'var(--radius-4)',
           maxWidth: '600px',

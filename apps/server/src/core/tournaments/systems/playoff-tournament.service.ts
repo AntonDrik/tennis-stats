@@ -2,16 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlayoffDto } from '@tennis-stats/dto';
 import { Tournament, User } from '@tennis-stats/entities';
 import { getPlayoffStageInfo } from '@tennis-stats/helpers';
-import {
-  ETournamentStatus,
-  ETournamentType,
-  ETourType,
-  TPlayOffStage,
-} from '@tennis-stats/types';
+import { ETournamentStatus, ETournamentType, ETourType, TPlayOffStage } from '@tennis-stats/types';
 import { IsOddUsersException } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
 import { MatchService } from '../../match';
-import ToursRepository from '../repositories/tours.repository';
+import ToursRepository from '../../../repositories/tours.repository';
 import { UsersService } from '../../users';
 
 @Injectable()

@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, IconButton, Table, Text } from '@radix-ui/themes';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUsersQuery } from '../../core/api';
 import { meAtom } from '../../core/store';
@@ -10,6 +11,10 @@ import useMediaQuery from '../../shared/hooks/useMediaQuery';
 import useUserPermissions from '../../shared/hooks/useUserPermissions';
 import { DoubleArrowUpIcon, DoubleArrowDownIcon, PlusIcon } from '../../shared/svg-icons';
 import CreateUserModal from './modals/CreateUserModal/CreateUserModal';
+
+const cellStyle: { style: React.CSSProperties } = {
+  style: { verticalAlign: 'middle' },
+};
 
 export default function UsersPage() {
   const me = useAtomValue(meAtom);
@@ -86,25 +91,22 @@ export default function UsersPage() {
                   <Table.Row
                     key={user.id}
                     style={{
-                      backgroundColor: me?.id === user.id ? 'var(--indigo-3)' : 'inherit',
+                      backgroundColor: me.id === user.id ? 'var(--indigo-3)' : 'inherit',
                     }}
                   >
-                    <Table.RowHeaderCell
-                      width={'40px'}
-                      style={{ verticalAlign: 'middle' }}
-                    >
+                    <Table.RowHeaderCell width={'40px'} {...cellStyle}>
                       <Text weight={'medium'} size={'3'}>
                         {index + 1}
                       </Text>
                     </Table.RowHeaderCell>
 
-                    <Table.RowHeaderCell style={{ verticalAlign: 'middle' }}>
+                    <Table.RowHeaderCell {...cellStyle}>
                       <Text weight={'medium'} size={'3'}>
                         {user.nickname}
                       </Text>
                     </Table.RowHeaderCell>
 
-                    <Table.Cell style={{ verticalAlign: 'middle' }}>
+                    <Table.Cell {...cellStyle}>
                       <Text
                         style={{
                           color: ratingInfo.color,

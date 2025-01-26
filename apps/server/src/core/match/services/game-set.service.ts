@@ -10,14 +10,11 @@ import {
 } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
 import { UsersService } from '../../users';
-import GameSetRepository from '../repositories/game-set.repository';
+import GameSetRepository from '../../../repositories/game-set.repository';
 
 @Injectable()
 class GameSetService {
-  constructor(
-    private repository: GameSetRepository,
-    private usersService: UsersService
-  ) {}
+  constructor(private repository: GameSetRepository, private usersService: UsersService) {}
 
   public createGameSet(number: number, pair?: IPair): GameSet {
     if (!pair) {
@@ -68,11 +65,7 @@ class GameSetService {
     return gameSet;
   }
 
-  public async editGameSet(
-    match: Match,
-    gameSet: GameSet,
-    dto: GameSetScoreDto
-  ): Promise<GameSet> {
+  public async editGameSet(match: Match, gameSet: GameSet, dto: GameSetScoreDto): Promise<GameSet> {
     if (!match.isFinished) {
       throw new MatchNotFinishedException();
     }
@@ -90,11 +83,7 @@ class GameSetService {
     return gameSet;
   }
 
-  public replaceUser(
-    gameSet: GameSet,
-    currentUserId: number,
-    newPlayer: Player
-  ): GameSet {
+  public replaceUser(gameSet: GameSet, currentUserId: number, newPlayer: Player): GameSet {
     const playerKey = gameSet.getPlayerKeyByUserId(currentUserId);
 
     if (!playerKey) {

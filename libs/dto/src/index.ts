@@ -19,4 +19,7 @@ export { default as StartTournamentDto } from './lib/tournament/start-tournament
 export { default as PlayoffStartOptionsDto } from './lib/tournament/playoff-start-options.dto';
 export { default as CreatePlayoffDto } from './lib/tournament/create-playoff.dto';
 
-export { default as SwapUserDto } from './lib/match/SwapUserDto';
+export { default as SwapUserDto } from './lib/match/swap-user.dto';
+
+export { default as ExtendSeasonDto } from './lib/season/extend-season.dto';
+export { default as CreateSeasonDto } from './lib/season/create-season.dto';

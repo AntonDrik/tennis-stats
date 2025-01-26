@@ -1,18 +1,34 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { ITournament } from '@tennis-stats/types';
+import { format } from 'date-fns/format';
+import { isWithinInterval } from 'date-fns/isWithinInterval';
+import { ru } from 'date-fns/locale';
+import { useMemo } from 'react';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { Button, Dialog, Flex, Spinner } from '@radix-ui/themes';
+import {
+  Box,
+  Button,
+  Callout,
+  Dialog,
+  Flex,
+  Spinner,
+  Strong,
+  Switch,
+  Text,
+} from '@radix-ui/themes';
 import { UpsertTournamentDto } from '@tennis-stats/dto';
 import {
   useCreateTournamentMutation,
   useEditTournamentMutation,
+  useGetActiveSeasonQuery,
 } from '../../../../core/api';
 import routes from '../../../../routes/routes';
 import { appRoutes } from '../../../../routes/routes.constant';
-import { TextField, useModal } from '../../../../shared/components';
+import { TextField, useModal, useGetSeasonDateCaption } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
+import { InfoIcon } from '../../../../shared/svg-icons';
 import { getTextFieldError } from '../../../../utils';
 
 export interface IProps {
@@ -20,18 +36,36 @@ export interface IProps {
 }
 
 function UpsertTournamentModal(props?: IProps) {
+  const activeSeason = useGetActiveSeasonQuery();
   const createTournament = useCreateTournamentMutation();
   const updateTournament = useEditTournamentMutation(props?.tournament?.id);
 
   const modal = useModal();
+  const getSeasonDateCaption = useGetSeasonDateCaption();
+
   const form = useForm<UpsertTournamentDto>({
     mode: 'onChange',
-    defaultValues: { playersCount: props?.tournament?.playersCount ?? 20 },
+    defaultValues: {
+      playersCount: props?.tournament?.playersCount ?? 20,
+      attachSeason: !props?.tournament ? true : Boolean(props.tournament.season),
+    },
     resolver: classValidatorResolver(UpsertTournamentDto),
   });
 
   const isUpdateModel = Boolean(props?.tournament);
   const isLoading = createTournament.isLoading || updateTournament.isLoading;
+  const attachSeason = form.watch('attachSeason');
+
+  const isInvalidSeason = useMemo(() => {
+    if (!activeSeason.data) {
+      return false;
+    }
+
+    return !isWithinInterval(new Date(), {
+      start: activeSeason.data.startDate,
+      end: activeSeason.data.endDate,
+    });
+  }, [activeSeason.data]);
 
   const submit = (form: UpsertTournamentDto) => {
     if (!isUpdateModel) {
@@ -55,6 +89,11 @@ function UpsertTournamentModal(props?: IProps) {
       <DialogCloseButton />
 
       <Dialog.Title>{!isUpdateModel ? 'Создать' : 'Изменить'} турнир</Dialog.Title>
+      <Box mb={'4'}>
+        <Text>
+          Дата проведения: <Strong>{format(new Date(), 'dd LLLL yyyy', { locale: ru })}</Strong>
+        </Text>
+      </Box>
 
       <form onSubmit={form.handleSubmit(submit)}>
         <Flex direction={'column'} gap={'4'}>
@@ -69,7 +108,37 @@ function UpsertTournamentModal(props?: IProps) {
             {...getTextFieldError(form.formState.errors, 'playersCount')}
           />
 
-          <Button size={'3'} type={'submit'} disabled={isLoading}>
+          {activeSeason.data && (
+            <Controller
+              name="attachSeason"
+              control={form.control}
+              render={({ field: { value, onChange } }) => (
+                <Flex gap="2">
+                  <Switch size="2" checked={value} onCheckedChange={onChange} />
+                  Сезон [{getSeasonDateCaption(activeSeason.data)}]
+                </Flex>
+              )}
+            />
+          )}
+
+          {attachSeason && isInvalidSeason && (
+            <Callout.Root color="orange">
+              <Callout.Icon>
+                <InfoIcon />
+              </Callout.Icon>
+              <Callout.Text>
+                Дата турнира не в пределах сезона
+                <Strong> {getSeasonDateCaption(activeSeason.data, true)}</Strong>. Отредактируйте
+                или завершите текущий сезон
+              </Callout.Text>
+            </Callout.Root>
+          )}
+
+          <Button
+            size={'3'}
+            type={'submit'}
+            disabled={isLoading || (attachSeason && isInvalidSeason)}
+          >
             <Spinner loading={isLoading} />
 
             {!isUpdateModel ? 'Создать турнир' : 'Изменить турнир'}

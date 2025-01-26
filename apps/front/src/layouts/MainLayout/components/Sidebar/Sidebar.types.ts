@@ -1,3 +1,4 @@
+import { EPermission } from '@tennis-stats/types';
 import { ReactElement } from 'react';
 
 export type IMenuLinkItem = {
@@ -5,11 +6,13 @@ export type IMenuLinkItem = {
   title: string;
   link: string;
   icon: ReactElement;
+  permissions?: EPermission[];
 };
 
 export type IMenuComponentItem = {
   type: 'component';
   component: ReactElement;
+  permissions?: EPermission[];
 };
 
 export type TMenuItem = IMenuLinkItem | IMenuComponentItem;

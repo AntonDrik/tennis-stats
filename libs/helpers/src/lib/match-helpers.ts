@@ -1,10 +1,5 @@
-import { IMatch, IUser } from '@tennis-stats/types';
+import { IMatch, IUser, IWinnerLooser } from '@tennis-stats/types';
 import { getPlayoffStageInfo } from '../index';
-
-export interface IWinnerLooser<T extends IMatch> {
-  winner: T['user1'];
-  looser: T['user1'];
-}
 
 class MatchHelpers<T extends IMatch> {
   private gameSets: T['gameSets'] = [];

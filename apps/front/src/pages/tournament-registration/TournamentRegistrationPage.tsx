@@ -23,7 +23,6 @@ function TournamentRegistrationPage() {
   const tournament = useGetTournamentQuery(params?.id, {
     queryHash: 'tournament-registration',
     staleTime: 100,
-    refetchOnWindowFocus: true,
   });
 
   const permissions = useUserPermissions();

@@ -1,0 +1,59 @@
+.navigation {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+
+  &__page {
+    position: relative;
+
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+
+    background-color: var(--gray-4);
+    border-radius: var(--radius-1);
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: var(--gray-6);
+    }
+
+    & a {
+      text-decoration: none;
+      color: var(--gray-11);
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.previous {
+  margin-right: 10px;
+}
+.next {
+  margin-left: 10px;
+}
+
+.selected {
+  background-color: var(--blue-6);
+}
+
+.break {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+  justify-content: center;
+}

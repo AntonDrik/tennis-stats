@@ -11,7 +11,7 @@ function useInitializeTournamentState(tournament: ITournament | undefined) {
       return;
     }
 
-    if (!tournament.tours.length) {
+    if (!tournament.tours?.length) {
       updateTournamentState({
         selectedTournament: tournament,
         selectedTour: null,

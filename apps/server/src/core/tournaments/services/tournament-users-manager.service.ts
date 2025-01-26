@@ -10,8 +10,8 @@ import {
   UsersLimitExceedException,
 } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
+import { UsersRepository } from '../../../repositories';
 import { MatchService } from '../../match';
-import { UsersRepository } from '../../users';
 import checkStatus from '../helpers/check-tournament-status';
 
 /**
@@ -68,7 +68,7 @@ class TournamentUsersManagerService {
       throw new UnableAddUserToTournamentException();
     }
 
-    const newUser = await this.usersRepository.findById(dto.id);
+    const userToAdd = await this.usersRepository.findById(dto.id);
     const systemUser = tournament.helpers.getSystemUser();
 
     await this.dataSource.transaction(async (manager) => {
@@ -77,7 +77,7 @@ class TournamentUsersManagerService {
 
         await allSynchronously(
           systemUserMatches.map((match) => async () => {
-            const entity = this.matchService.replaceUser(match, systemUser, newUser);
+            const entity = this.matchService.replaceUser(match, systemUser, userToAdd);
 
             await manager.save(Match, entity);
           })
@@ -89,7 +89,7 @@ class TournamentUsersManagerService {
       } else {
         const halyava = await this.usersRepository.findByNickname('Халява');
 
-        const pair: IPair = { user1: newUser, user2: halyava };
+        const pair: IPair = { user1: userToAdd, user2: halyava };
 
         const updatedTours = tournament.tours.map((tour) => {
           const setsCount = tour.helpers.getSetsCount();
@@ -102,9 +102,10 @@ class TournamentUsersManagerService {
 
         tournament.tours = updatedTours;
         tournament.registeredUsers.push(halyava);
+        tournament.playersCount += 1;
       }
 
-      tournament.registeredUsers.push(newUser);
+      tournament.registeredUsers.push(userToAdd);
       await manager.save(Tournament, tournament);
     });
   }

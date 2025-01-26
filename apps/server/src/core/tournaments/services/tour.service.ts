@@ -7,7 +7,7 @@ import {
   UnableRemoveTourException,
 } from '../../../common/exceptions/tour.exceptions';
 import checkStatus from '../helpers/check-tournament-status';
-import ToursRepository from '../repositories/tours.repository';
+import ToursRepository from '../../../repositories/tours.repository';
 import RoundRobinTournamentService from '../systems/round-robin-tournament.service';
 import SwissTournamentService from '../systems/swiss-tournament.service';
 

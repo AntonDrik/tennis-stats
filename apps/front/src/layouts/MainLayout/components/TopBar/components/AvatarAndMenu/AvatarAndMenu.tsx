@@ -6,12 +6,7 @@ import { useLogoutMutation } from '../../../../../../core/api';
 import { meAtom } from '../../../../../../core/store';
 import { appearanceAtom } from '../../../../../../core/store/appearance.store';
 import { appRoutes } from '../../../../../../routes/routes.constant';
-import {
-  DarkIcon,
-  ExitIcon,
-  SunIcon,
-  PersonIcon,
-} from '../../../../../../shared/svg-icons';
+import { DarkIcon, ExitIcon, SunIcon } from '../../../../../../shared/svg-icons';
 
 const dict = {
   light: 'Темная тема',
@@ -47,7 +42,7 @@ function AvatarAndMenu() {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Text>
-          <Avatar fallback={me?.nickname.substring(0, 1) ?? 'A'} radius={'full'} />
+          <Avatar fallback={me.nickname.substring(0, 1)} radius={'full'} />
         </Text>
       </DropdownMenu.Trigger>
 

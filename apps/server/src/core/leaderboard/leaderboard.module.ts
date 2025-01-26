@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TournamentLeaderboard } from '@tennis-stats/entities';
-import LeaderboardRepository from './repository/leaderboard.repository';
+import { LeaderboardRepository } from '../../repositories';
 import LeaderboardService from './services/leaderboard.service';
 
 @Module({

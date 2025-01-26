@@ -5,6 +5,7 @@ import {
   Select as RadixSelect,
   Switch,
   Spinner,
+  Text,
 } from '@radix-ui/themes';
 import React, { useMemo } from 'react';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
@@ -56,10 +57,7 @@ function StartTournamentModal(props: IProps) {
   };
 
   return (
-    <Dialog.Content
-      maxWidth={'570px'}
-      onOpenAutoFocus={(event) => event.preventDefault()}
-    >
+    <Dialog.Content maxWidth={'570px'} onOpenAutoFocus={(event) => event.preventDefault()}>
       <DialogCloseButton />
 
       <Dialog.Title mb={'6'}>Настройте турнир</Dialog.Title>
@@ -72,12 +70,29 @@ function StartTournamentModal(props: IProps) {
                 name="handleRating"
                 control={form.control}
                 render={({ field: { value, onChange } }) => (
-                  <Flex gap="2">
-                    <Switch size="2" checked={value} onCheckedChange={onChange} />
-                    Считать рейтинг
-                  </Flex>
+                  <Text as="label">
+                    <Flex gap="2">
+                      <Switch size="2" checked={value} onCheckedChange={onChange} />
+                      Считать рейтинг
+                    </Flex>
+                  </Text>
                 )}
               />
+
+              {props.tournament.season && (
+                <Controller
+                  name="seasonFinal"
+                  control={form.control}
+                  render={({ field: { value, onChange } }) => (
+                    <Text as="label">
+                      <Flex gap="2">
+                        <Switch size="2" checked={value} onCheckedChange={onChange} />
+                        Финальный турнир сезона
+                      </Flex>
+                    </Text>
+                  )}
+                />
+              )}
 
               <Controller
                 name={'tournamentType'}
@@ -97,8 +112,8 @@ function StartTournamentModal(props: IProps) {
                       </RadixSelect.Item>
 
                       <RadixSelect.Item value={ETournamentType.ROUND_ROBIN}>
-                        Круговая система (Макс.{' '}
-                        {(props.tournament.registeredUsers.length || 1) - 1} туров)
+                        Круговая система (Макс. {(props.tournament.registeredUsers.length || 1) - 1}{' '}
+                        туров)
                       </RadixSelect.Item>
 
                       <RadixSelect.Item value={ETournamentType.PLAYOFF}>
@@ -112,7 +127,7 @@ function StartTournamentModal(props: IProps) {
               <TextField
                 size={'3'}
                 type={'number'}
-                label={'Кол-во сетов'}
+                label={'Кол-во сетов для первого тура'}
                 {...form.register('setsCount', { valueAsNumber: true })}
               />
 
