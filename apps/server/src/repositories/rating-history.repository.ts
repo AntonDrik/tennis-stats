@@ -20,6 +20,15 @@ class RatingHistoryRepository extends BaseRepository<RatingHistory> {
     });
   }
 
+  public findHistoryForUser(userId: number) {
+    return this.find({
+      relations: ['user'],
+      where: {
+        user: { id: userId },
+      },
+    });
+  }
+
   public findPrevDayRating(userId: number) {
     return this.find({
       relations: ['user'],

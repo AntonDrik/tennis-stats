@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { IdParam } from '../../../../common/decorators';
-import ProfileService from './profile.service';
+import { IdParam } from '../../../../../common/decorators';
+import ProfileService from '../services/profile.service';
 
 @Controller('/users/:id/profile')
 class ProfileController {

@@ -1,6 +1,7 @@
 import { ETournamentStatus } from '@tennis-stats/types';
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsIn, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsIn, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsTogetherOnly } from '../custom-decorators/is-together-only';
 
 const tournamentStatus = [
   ETournamentStatus.ACTIVE,
@@ -39,8 +40,13 @@ class GetTournamentsQuery {
   withJoinedUsers?: boolean;
 
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
   seasonId?: number;
+
+  @IsOptional()
+  @IsPositive()
+  @IsTogetherOnly('withMatches')
+  userId?: number;
 }
 
 export default GetTournamentsQuery;

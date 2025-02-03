@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
-import { CreateSeasonDto, ExtendSeasonDto } from '@tennis-stats/dto';
+import { Body, Controller, Delete, Get, Patch, Post, Put, Query } from '@nestjs/common';
+import { CreateSeasonDto, ExtendSeasonDto, GetSeasonsQuery } from '@tennis-stats/dto';
 import { Season } from '@tennis-stats/entities';
 import { EPermission, ISeasonWithStats } from '@tennis-stats/types';
 import { Permissions } from '../../../auth/decorators';
@@ -11,8 +11,13 @@ class SeasonsController {
   constructor(private seasonsService: SeasonsService) {}
 
   @Get()
-  getSeasons(): Promise<ISeasonWithStats[]> {
-    return this.seasonsService.getSeasons();
+  getSeasons(@Query() query: GetSeasonsQuery): Promise<Season[]> {
+    return this.seasonsService.getSeasons(query);
+  }
+
+  @Get('/with-stats')
+  getSeasonsWithStats(): Promise<ISeasonWithStats[]> {
+    return this.seasonsService.getSeasonsWithStats();
   }
 
   @Get('/active')

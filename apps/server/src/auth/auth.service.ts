@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto, RegistrationDto } from '@tennis-stats/dto';
+import { ChangePasswordDto, LoginDto, RegistrationDto } from '@tennis-stats/dto';
 import { User, UserAuth } from '@tennis-stats/entities';
-import { IAuthResponse, ITokenPayload, IUser } from '@tennis-stats/types';
+import { IAuthResponse, ITokenPayload, IUser, RequiredFields } from '@tennis-stats/types';
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
+import { v } from 'vitest/dist/reporters-5f784f42';
 import { InvalidCredentialsException, UserExistException } from '../common/exceptions';
 import { RatingHistoryService } from '../core/rating';
 import { UsersAuthRepository, UsersRepository } from '../repositories';
@@ -29,15 +30,11 @@ class AuthService {
   public async login(dto: LoginDto, response: Response): Promise<IAuthResponse> {
     const user = await this.usersRepository.findByLogin(dto.login);
 
-    if (!user || !user.auth) {
+    if (!user) {
       throw new InvalidCredentialsException();
     }
 
-    const isValidPassword = await bcrypt.compare(dto.password, user.auth.password);
-
-    if (!isValidPassword) {
-      throw new InvalidCredentialsException();
-    }
+    await this.validatePassword(dto.password, user.auth?.password);
 
     return this.setJwtCookie(user, response);
   }
@@ -61,6 +58,30 @@ class AuthService {
     await user.save();
 
     await this.ratingHistoryService.createHistoryItem(user);
+  }
+
+  public async changePassword(dto: ChangePasswordDto): Promise<void> {
+    const foundUser = (await this.usersRepository.findById(dto.userId, {
+      relations: ['auth'],
+    })) as RequiredFields<User, 'auth'>;
+
+    await this.validatePassword(
+      dto.oldPassword,
+      foundUser.auth?.password,
+      'Неверный текущий пароль'
+    );
+
+    foundUser.auth.password = await bcrypt.hash(dto.newPassword, 10);
+    await foundUser.save();
+  }
+
+  public async resetPassword(userId: number): Promise<void> {
+    const foundUser = (await this.usersRepository.findById(userId, {
+      relations: ['auth'],
+    })) as RequiredFields<User, 'auth'>;
+
+    foundUser.auth.password = await bcrypt.hash('1234', 10);
+    await foundUser.save();
   }
 
   public async logout(request: Request, response: Response): Promise<boolean> {
@@ -98,6 +119,22 @@ class AuthService {
     );
 
     return { user, accessToken: access_token };
+  }
+
+  private async validatePassword(
+    dtoPassword: string,
+    passwordFromDB: string | undefined,
+    errorMessage?: string
+  ): Promise<void> {
+    if (passwordFromDB === undefined) {
+      throw new InvalidCredentialsException(errorMessage);
+    }
+
+    const isValidPassword = await bcrypt.compare(dtoPassword, passwordFromDB);
+
+    if (!isValidPassword) {
+      throw new InvalidCredentialsException(errorMessage);
+    }
   }
 }
 

@@ -16,6 +16,7 @@ const MainRoute = loadable(() => import('./MainRoute'));
 
 const AuthPage = loadable(() => import('../pages/auth/AuthPage'));
 const UsersPage = loadable(() => import('../pages/users/UsersPage'));
+const ProfilePage = loadable(() => import('../pages/profile/ProfilePage'));
 const SeasonsPage = loadable(() => import('../pages/seasons/SeasonsPage'));
 const TournamentPage = loadable(() => import('../pages/tournament/TournamentPage'));
 const TournamentsPage = loadable(() => import('../pages/tournaments/TournamentsPage'));
@@ -52,6 +53,8 @@ const routes = createBrowserRouter(
         />
 
         <Route path={appRoutes.SEASONS} element={<SeasonsPage fallback={<Spinner page />} />} />
+
+        <Route path={appRoutes.PROFILE()} element={<ProfilePage fallback={<Spinner page />} />} />
       </Route>
     </Route>
   )

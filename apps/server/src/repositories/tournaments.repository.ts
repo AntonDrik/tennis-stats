@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { UpsertTournamentDto, GetTournamentsQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { ETournamentStatus } from '@tennis-stats/types';
-import { parseISO } from 'date-fns/parseISO';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -54,6 +53,10 @@ class TournamentsRepository extends Repository<Tournament> {
 
     if (Number.isFinite(query.seasonId)) {
       builder.where('season.id = :seasonId', { seasonId: query.seasonId });
+    }
+
+    if (Number.isFinite(query.userId) && query.withMatches) {
+      builder.where('matchUser1.id = :userId OR matchUser2.id = :userId', { userId: query.userId });
     }
 
     return builder.getMany();

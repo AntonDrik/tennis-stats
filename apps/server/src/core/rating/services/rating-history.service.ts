@@ -19,6 +19,18 @@ class RatingHistoryService {
   //   return this.repository.executeQuery<IAvgRatingByDay[]>(query);
   // }
 
+  public getUserRatingHistory(userId: number, year: string) {
+    return this.repository.query(`WITH ranked_messages AS (SELECT r.date, r.rating,
+                                                                  ROW_NUMBER() OVER (PARTITION BY DATE_FORMAT(r.date, '%Y%m%d') ORDER BY r.id DESC) AS rn
+                                                           FROM rating_history as r
+                                                                  LEFT JOIN \`tennis-stats\`.user u on u.id = r.userId
+                                                           WHERE u.id = ${userId}
+                                                             AND YEAR(r.date) = ${year})
+                                  SELECT *
+                                  FROM ranked_messages
+                                  WHERE rn = 1;`);
+  }
+
   public async getDailyRatingDiff(user: User): Promise<string> {
     const prevDayRecord = await this.repository.findPrevDayRating(user.id).catch(() => null);
 

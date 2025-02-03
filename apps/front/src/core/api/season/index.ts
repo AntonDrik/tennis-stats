@@ -1,3 +1,4 @@
+export { default as useGetSeasonsWithStatsQuery } from './useGetSeasonsWithStatsQuery';
 export { default as useGetSeasonsQuery } from './useGetSeasonsQuery';
 export { default as useCreateSeasonMutation } from './useCreateSeasonMutation';
 export { default as useExtendSeasonMutation } from './useExtendSeasonMutation';

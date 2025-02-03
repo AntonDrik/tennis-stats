@@ -9,8 +9,7 @@ export { default as GameSetScoreDto } from './lib/game-set/game-set-score.dto';
 
 export { default as LoginDto } from './lib/auth/login.dto';
 export { default as RegistrationDto } from './lib/auth/registration.dto';
-
-export { default as GetPairStatisticQuery } from './lib/statistics/get-pair-statistic.query';
+export { default as ChangePasswordDto } from './lib/auth/change-password.dto';
 
 export { default as UpsertTournamentDto } from './lib/tournament/upsert-tournament.dto';
 export { default as GetTournamentsQuery } from './lib/tournament/get-tournaments.query';
@@ -23,3 +22,7 @@ export { default as SwapUserDto } from './lib/match/swap-user.dto';
 
 export { default as ExtendSeasonDto } from './lib/season/extend-season.dto';
 export { default as CreateSeasonDto } from './lib/season/create-season.dto';
+export { default as GetSeasonsQuery } from './lib/season/get-seasons.query';
+
+export { default as ChangeRatingDto } from './lib/user/change-rating.dto';
+export { default as GetRatingHistoryQuery } from './lib/user/get-rating-history.query';

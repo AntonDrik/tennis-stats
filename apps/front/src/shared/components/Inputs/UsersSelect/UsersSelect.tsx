@@ -1,7 +1,7 @@
 import { IUser, IUserWithRatingDiff } from '@tennis-stats/types';
 import { Select as RadixSelect, Spinner, Text } from '@radix-ui/themes';
 import React, { useMemo, useState } from 'react';
-import { useUsersQuery } from '../../../../core/api';
+import { useGetUsersQuery } from '../../../../core/api';
 import Select from '../../Select/Select';
 
 interface IProps {
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 function UsersSelect(props: IProps) {
-  const { data: allUsers, isLoading } = useUsersQuery();
+  const { data: allUsers, isLoading } = useGetUsersQuery();
 
   const [selectedUserId, setSelectedUserId] = useState<string>();
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);

@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateSeasonDto, ExtendSeasonDto } from '@tennis-stats/dto';
+import { CreateSeasonDto, ExtendSeasonDto, GetSeasonsQuery } from '@tennis-stats/dto';
 import { toZonedTime } from 'date-fns-tz';
 import { Season, Tournament } from '@tennis-stats/entities';
 import { allSynchronously, clientTimezone } from '@tennis-stats/helpers';
@@ -21,7 +21,19 @@ class SeasonsService {
     private tournamentsRepository: TournamentsRepository
   ) {}
 
-  public async getSeasons(): Promise<ISeasonWithStats[]> {
+  public async getSeasons(query: GetSeasonsQuery): Promise<Season[]> {
+    const builder = this.seasonsRepository.createQueryBuilder();
+
+    if (query.year) {
+      builder
+        .where('YEAR(startDate) = :year', { year: query.year })
+        .andWhere('YEAR(endDate) = :year', { year: query.year });
+    }
+
+    return builder.getMany();
+  }
+
+  public async getSeasonsWithStats(): Promise<ISeasonWithStats[]> {
     const allSeasons = await this.seasonsRepository.find({ order: { id: 'DESC' } });
 
     return allSynchronously(

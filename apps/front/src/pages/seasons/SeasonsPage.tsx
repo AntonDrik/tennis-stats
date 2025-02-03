@@ -2,7 +2,7 @@ import { Flex, Heading, IconButton } from '@radix-ui/themes';
 import { ESeasonStatus } from '@tennis-stats/types';
 import { Accordion } from 'radix-ui';
 import React, { useMemo } from 'react';
-import { useGetSeasonsQuery } from '../../core/api';
+import { useGetSeasonsWithStatsQuery } from '../../core/api';
 import { Page, Spinner, useModal } from '../../shared/components';
 import { useUserPermissions } from '../../shared/hooks';
 import useMediaQuery from '../../shared/hooks/useMediaQuery';
@@ -13,7 +13,7 @@ import CreateSeasonModal from './modals/CreateSeasonModal/CreateSeasonModal';
 import './styles.scss';
 
 function SeasonsPage() {
-  const seasons = useGetSeasonsQuery();
+  const seasons = useGetSeasonsWithStatsQuery();
 
   const modal = useModal();
   const permissions = useUserPermissions();

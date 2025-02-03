@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
 import { parse } from 'date-fns/parse';
 import { set } from 'date-fns/set';
-import { IsTogetherOnly } from '../common/is-together-only';
+import { IsTogetherOnly } from '../custom-decorators/is-together-only';
 import { IsDateGreaterThan } from '../custom-decorators/is-date-greater';
 
 class CreateSeasonDto {

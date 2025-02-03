@@ -4,7 +4,7 @@ import { meAtom } from '../../core/store';
 
 interface IPermissions {
   has: (permissions: EPermission[]) => boolean;
-  canCreateUser: boolean;
+  canCrudUser: boolean;
   canCrudTournament: boolean;
   canCrudSeasons: boolean;
 }
@@ -20,7 +20,7 @@ function useUserPermissions(): IPermissions {
 
   return {
     has,
-    canCreateUser: permissions.has(EPermission.CREATE_USER),
+    canCrudUser: permissions.has(EPermission.USERS_CRUD),
     canCrudTournament: permissions.has(EPermission.TOURNAMENT_CRUD),
     canCrudSeasons: permissions.has(EPermission.SEASONS_CRUD),
   };

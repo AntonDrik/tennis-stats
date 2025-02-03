@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { LoginDto, RegistrationDto } from '@tennis-stats/dto';
-import { IAuthResponse, IUser } from '@tennis-stats/types';
+import { Body, Controller, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
+import { ChangePasswordDto, IdDto, LoginDto, RegistrationDto } from '@tennis-stats/dto';
+import { EPermission, IAuthResponse, IUser } from '@tennis-stats/types';
 import { Request, Response } from 'express';
 import AuthService from './auth.service';
-import { CurrentUser, Public } from './decorators';
+import { CurrentUser, Permissions, Public } from './decorators';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
 
 @Controller('auth')
@@ -23,6 +23,17 @@ class AuthController {
   @Post('/registration')
   registration(@Body() dto: RegistrationDto) {
     return this.authService.registration(dto);
+  }
+
+  @Put('/change-password')
+  changePassword(@Body() dto: ChangePasswordDto) {
+    return this.authService.changePassword(dto);
+  }
+
+  @Permissions([EPermission.USERS_CRUD])
+  @Post('/reset-password')
+  resetPassword(@Body() dto: IdDto) {
+    return this.authService.resetPassword(dto.id);
   }
 
   @Public()

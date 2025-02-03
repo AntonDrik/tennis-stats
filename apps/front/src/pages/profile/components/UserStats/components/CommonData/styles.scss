@@ -1,0 +1,47 @@
+.common-data {
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  .callout-root {
+    position: relative;
+    display: block;
+    overflow: hidden;
+
+    width: 500px;
+    height: 96px;
+
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .card-root {
+    width: 500px;
+
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .data-list {
+    display: flex;
+    flex-direction: column;
+
+
+    &__item {
+      display: flex;
+      gap: var(--space-3);
+    }
+
+    &__title {
+      flex: 1;
+    }
+
+    &__value {
+      flex: 1;
+    }
+  }
+}
+
+

@@ -1,6 +1,6 @@
 import { IUser } from '@tennis-stats/types';
 import { useMemo } from 'react';
-import { useUsersQuery } from '../../../../../core/api';
+import { useGetUsersQuery } from '../../../../../core/api';
 
 interface IExtendedUsers {
   allList: IUser[];
@@ -9,7 +9,7 @@ interface IExtendedUsers {
 }
 
 function useExtendedUsers(joinedUsers: IUser[]): IExtendedUsers {
-  const users = useUsersQuery();
+  const users = useGetUsersQuery();
 
   return useMemo(() => {
     if (!users.data) {

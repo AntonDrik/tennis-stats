@@ -6,7 +6,7 @@ import { useLogoutMutation } from '../../../../../../core/api';
 import { meAtom } from '../../../../../../core/store';
 import { appearanceAtom } from '../../../../../../core/store/appearance.store';
 import { appRoutes } from '../../../../../../routes/routes.constant';
-import { DarkIcon, ExitIcon, SunIcon } from '../../../../../../shared/svg-icons';
+import { DarkIcon, ExitIcon, PersonIcon, SunIcon } from '../../../../../../shared/svg-icons';
 
 const dict = {
   light: 'Темная тема',
@@ -22,7 +22,7 @@ function AvatarAndMenu() {
   const [appearance, setAppearance] = useAtom(appearanceAtom);
 
   const gotoProfile = () => {
-    // navigate(appRoutes.PROFILE(me?.id));
+    navigate(appRoutes.PROFILE(me.id));
   };
 
   const changeAppearance = () => {
@@ -47,10 +47,10 @@ function AvatarAndMenu() {
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content align={'end'}>
-        {/*<DropdownMenu.Item disabled onClick={gotoProfile}>*/}
-        {/*  <PersonIcon />*/}
-        {/*  Профиль*/}
-        {/*</DropdownMenu.Item>*/}
+        <DropdownMenu.Item onClick={gotoProfile}>
+          <PersonIcon />
+          Профиль
+        </DropdownMenu.Item>
 
         <DropdownMenu.Item onClick={changeAppearance}>
           {appearance === 'dark' ? <SunIcon /> : <DarkIcon />}

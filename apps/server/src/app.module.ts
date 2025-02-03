@@ -9,19 +9,17 @@ import { UsersModule } from './core/users';
 import { MatchModule } from './core/match';
 import { AuthModule } from './auth';
 import { SeasonsModule } from './core/seasons';
-import { ProfileModule } from './core/users/modules/profile';
 
 @Module({
   imports: [
     EnvConfigModule,
     SqliteProviderModule,
     SeederModule,
-    UsersModule,
-    ProfileModule,
     TournamentsModule,
     MatchModule,
     AuthModule,
     SeasonsModule,
+    UsersModule,
 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'front'),

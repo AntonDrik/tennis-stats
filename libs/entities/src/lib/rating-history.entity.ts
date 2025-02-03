@@ -20,6 +20,6 @@ export class RatingHistory extends BaseEntity implements IRatingHistory {
   @Column('varchar', { nullable: true })
   visual: string;
 
-  @ManyToOne(() => Match, { cascade: true })
+  @ManyToOne(() => Match, { cascade: true, onDelete: 'CASCADE' })
   match: Match;
 }

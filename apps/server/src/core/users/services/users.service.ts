@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePlayoffDto } from '@tennis-stats/dto';
+import { ChangeRatingDto, CreatePlayoffDto } from '@tennis-stats/dto';
 import { Player, User } from '@tennis-stats/entities';
 import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { RatingHistoryService } from '../../rating';
@@ -51,6 +51,14 @@ class UsersService {
 
   public getSystemUser() {
     return this.repository.findByNickname('Халява');
+  }
+
+  public async changeRating(dto: ChangeRatingDto): Promise<void> {
+    await this.repository.update({ id: dto.userId }, { rating: dto.newRating });
+  }
+
+  public getUserRatingHistory(userId: number, year: string) {
+    return this.ratingHistoryService.getUserRatingHistory(userId, year);
   }
 
   /**

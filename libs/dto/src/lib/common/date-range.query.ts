@@ -2,7 +2,7 @@ import { dbDateFormat } from '@tennis-stats/helpers';
 import { IsISO8601, IsOptional } from 'class-validator';
 import { format } from 'date-fns/format';
 import { parseISO } from 'date-fns/parseISO';
-import { IsTogetherOnly } from './is-together-only';
+import { IsTogetherOnly } from '../custom-decorators/is-together-only';
 
 class DateRangeQuery {
   // UTC date format. Fill this field using zonedTimeToUtc(new Date(), 'Asia/Dubai').toISOString()

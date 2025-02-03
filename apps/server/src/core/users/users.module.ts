@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission, Player, User, UserAuth } from '@tennis-stats/entities';
-import { UsersRepository, UsersAuthRepository } from '../../repositories';
+import { UsersRepository, UsersAuthRepository, TournamentsRepository } from '../../repositories';
 import { RatingModule } from '../rating';
 import UsersController from './controllers/users.controller';
+import UserStatsService from './services/user-stats.service';
 import UsersService from './services/users.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Player, UserAuth, Permission]), RatingModule],
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository, UsersAuthRepository],
+  providers: [
+    UsersService,
+    UserStatsService,
+    UsersRepository,
+    UsersAuthRepository,
+    TournamentsRepository,
+  ],
   exports: [UsersService],
 })
 class UsersModule {}

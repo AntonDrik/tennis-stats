@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { User } from '@tennis-stats/entities';
-import { DataSource, Equal, In } from 'typeorm';
+import { DataSource, Equal, FindOneOptions, In } from 'typeorm';
 import { UserNotFoundException } from '../common/exceptions';
 import { BaseRepository } from '../common/utils';
 
@@ -19,8 +19,15 @@ class UsersRepository extends BaseRepository<User> {
     });
   }
 
-  public async findById(id: number, exception?: HttpException): Promise<User> {
-    const user = await this.findOneBy({ id: Equal(Number(id)) });
+  public async findById(
+    id: number,
+    findOptions?: FindOneOptions<User>,
+    exception?: HttpException
+  ): Promise<User> {
+    const user = await this.findOne({
+      where: { ...findOptions?.where, id: Equal(Number(id)) },
+      ...findOptions,
+    });
 
     if (!user) {
       throw exception ?? new UserNotFoundException(id);

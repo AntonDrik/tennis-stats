@@ -3,7 +3,7 @@ import { IUserWithRatingDiff } from '@tennis-stats/types';
 import { useAtomValue } from 'jotai';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUsersQuery } from '../../core/api';
+import { useGetUsersQuery } from '../../core/api';
 import { meAtom } from '../../core/store';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner, useModal } from '../../shared/components';
@@ -19,7 +19,7 @@ const cellStyle: { style: React.CSSProperties } = {
 export default function UsersPage() {
   const me = useAtomValue(meAtom);
 
-  const { data: usersList, isLoading } = useUsersQuery();
+  const { data: usersList, isLoading } = useGetUsersQuery();
 
   const modal = useModal();
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export default function UsersPage() {
         >
           <Heading size={'7'}>Пользователи</Heading>
 
-          {permissions.canCreateUser && (
+          {permissions.canCrudUser && (
             <IconButton color={'green'} onClick={handleNewUserClick}>
               <PlusIcon />
             </IconButton>
@@ -90,6 +90,7 @@ export default function UsersPage() {
                 return (
                   <Table.Row
                     key={user.id}
+                    onClick={() => handleRowClick(user)}
                     style={{
                       backgroundColor: me.id === user.id ? 'var(--indigo-3)' : 'inherit',
                     }}

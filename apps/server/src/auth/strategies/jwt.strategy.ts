@@ -19,6 +19,7 @@ export default class JwtStrategy extends PassportStrategy(Strategy) {
   validate(payload: ITokenPayload) {
     return this.usersRepository.findById(
       payload.userId,
+      {},
       new UnauthorizedException('Ошибка авторизации')
     );
   }

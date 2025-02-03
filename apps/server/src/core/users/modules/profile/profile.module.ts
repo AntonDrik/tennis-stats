@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common/decorators';
 import { MatchModule } from '../../../match';
 
-import ProfileController from './profile.controller';
-import ProfileService from './profile.service';
+import ProfileController from './controllers/profile.controller';
+import ProfileService from './services/profile.service';
 
 @Module({
   imports: [MatchModule],

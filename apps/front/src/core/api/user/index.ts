@@ -1,2 +1,4 @@
-export { default as useUsersQuery } from './useUsersQuery';
-export { default as useUserQuery } from './useUserQuery';
+export { default as useGetUsersQuery } from './useGetUsersQuery';
+export { default as useGetUserQuery } from './useGetUserQuery';
+export { default as useGetUserRatingHistoryQuery } from './useGetUserRatingHistoryQuery';
+export { default as useChangeUserRatingMutation } from './useChangeUserRatingMutation';

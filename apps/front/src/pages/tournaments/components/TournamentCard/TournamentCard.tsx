@@ -19,8 +19,7 @@ function TournamentCard(props: IProps) {
   const navigate = useNavigate();
   const permissions = useUserPermissions();
 
-  const showMenu =
-    permissions.canCrudTournament && props.tournament.status !== ETournamentStatus.FINISHED;
+  const showMenu = permissions.canCrudTournament;
 
   const navigateToTournament = useCallback(() => {
     if (props.tournament.status === ETournamentStatus.REGISTRATION) {
