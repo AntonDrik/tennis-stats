@@ -43,10 +43,19 @@ class GetTournamentsQuery {
   @IsPositive()
   seasonId?: number;
 
+  /**
+   * !! Будут выбраны только матчи пользователя.
+   */
   @IsOptional()
   @IsPositive()
-  @IsTogetherOnly('withMatches')
   userId?: number;
+
+  /**
+   * !! Будут выбраны все матчи
+   */
+  @IsOptional()
+  @IsPositive()
+  registeredUserId?: number;
 }
 
 export default GetTournamentsQuery;

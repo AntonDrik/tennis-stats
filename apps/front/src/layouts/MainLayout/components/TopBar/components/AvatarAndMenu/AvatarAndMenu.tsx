@@ -1,5 +1,6 @@
 import { Avatar, Text, DropdownMenu } from '@radix-ui/themes';
 import { useAtom, useAtomValue } from 'jotai';
+import { useSetAtom } from 'jotai/index';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../../../../../../core/api';
@@ -7,6 +8,7 @@ import { meAtom } from '../../../../../../core/store';
 import { appearanceAtom } from '../../../../../../core/store/appearance.store';
 import { appRoutes } from '../../../../../../routes/routes.constant';
 import { DarkIcon, ExitIcon, PersonIcon, SunIcon } from '../../../../../../shared/svg-icons';
+import { updateMainLayoutAtom } from '../../../../MainLayout.state';
 
 const dict = {
   light: 'Темная тема',
@@ -20,8 +22,11 @@ function AvatarAndMenu() {
 
   const me = useAtomValue(meAtom);
   const [appearance, setAppearance] = useAtom(appearanceAtom);
+  const updateMainLayoutState = useSetAtom(updateMainLayoutAtom);
 
   const gotoProfile = () => {
+    updateMainLayoutState({ isOpenedMenu: false });
+
     navigate(appRoutes.PROFILE(me.id));
   };
 

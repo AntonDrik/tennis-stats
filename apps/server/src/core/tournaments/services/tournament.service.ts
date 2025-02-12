@@ -107,7 +107,7 @@ class TournamentService {
     checkStatus(tournament, [ETournamentStatus.ACTIVE]);
 
     await this.dataSource.transaction(async (manager) => {
-      await this.leaderboardService.saveLeaderboard(tournament, manager);
+      await this.leaderboardService.savePlayoffLeaderboard(tournament, manager);
 
       if (tournament.handleRating) {
         await this.ratingService.calculateAndSaveRating(tournament, manager);

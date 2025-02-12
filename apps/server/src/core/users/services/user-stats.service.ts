@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IGameSet, IMatch, ITour, ITournament, IUserCommonStats } from '@tennis-stats/types';
+import { Tournament } from '@tennis-stats/entities';
+import { IGameSet, IMatch, ITour, IUserCommonStats, TPlacesStats } from '@tennis-stats/types';
 import { TournamentsRepository } from '../../../repositories';
+import { LeaderboardService } from '../../leaderboard';
 
 interface ITournamentExtractedData {
   tours: ITour[];
@@ -10,13 +12,13 @@ interface ITournamentExtractedData {
 
 @Injectable()
 class UserStatsService {
-  constructor(private tournamentsRepository: TournamentsRepository) {}
+  constructor(
+    private tournamentsRepository: TournamentsRepository,
+    private leaderboardService: LeaderboardService
+  ) {}
 
   public async getCommonStats(userId: number): Promise<IUserCommonStats> {
-    const allUserTournaments = await this.tournamentsRepository.findTournamentsByQuery({
-      userId,
-      withMatches: true,
-    });
+    const allUserTournaments = await this.tournamentsRepository.findTournamentsByQuery({ userId });
 
     const { tours, matches, gameSets } = this.extractData(allUserTournaments);
 
@@ -26,6 +28,7 @@ class UserStatsService {
       playedTournamentsCount: allUserTournaments.length,
       playedMatchesCount: matches.length,
       playedPlayoffsCount: this.getPlayoffsCount(tours),
+      placesStats: await this.getPlacesStats(userId),
     };
   }
 
@@ -68,7 +71,30 @@ class UserStatsService {
     return this.tournamentsRepository.count();
   }
 
-  private extractData(userTournaments: ITournament[]): ITournamentExtractedData {
+  private async getPlacesStats(userId: number): Promise<TPlacesStats> {
+    const tournaments = await this.tournamentsRepository.findTournamentsByQuery({
+      registeredUserId: userId,
+      withMatches: true,
+    });
+
+    return tournaments.reduce((acc, curr) => {
+      const leaderboard = this.leaderboardService.getPlayoffLeaderboard(curr);
+
+      let place = leaderboard.findIndex((item) => item.user.id === userId);
+
+      if (place === -1) {
+        return acc;
+      }
+
+      place += 1;
+
+      acc[place] = (acc[place] || 0) + 1;
+
+      return acc;
+    }, {} as TPlacesStats);
+  }
+
+  private extractData(userTournaments: Tournament[]): ITournamentExtractedData {
     const initial: ITournamentExtractedData = { tours: [], matches: [], gameSets: [] };
 
     return userTournaments.reduce((acc, curr) => {

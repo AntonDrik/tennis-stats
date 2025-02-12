@@ -1,0 +1,30 @@
+.common-data {
+  width: 100%;
+  display: flex;
+
+  @media only screen and (max-width: 1280px) {
+    flex-direction: column;
+  }
+
+  .card-root {
+    width: 50%;
+
+    @media only screen and (max-width: 1280px) {
+      width: 100%;
+    }
+  }
+}
+
+.spinner-container {
+  width: 100%;
+  height: 250px;
+  position: relative;
+  border-radius: var(--radius-3);
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--gray-a2);
+}

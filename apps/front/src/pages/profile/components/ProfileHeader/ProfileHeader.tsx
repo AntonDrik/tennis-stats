@@ -10,9 +10,7 @@ interface IProps {
 function ProfileHeader(props: IProps): JSX.Element {
   return (
     <Flex align={'center'} justify={'center'} gap={'3'}>
-      <Heading align={'center'} mb={'2'}>
-        {props.user.nickname}
-      </Heading>
+      <Heading align={'center'}>{props.user.nickname}</Heading>
 
       <Flex align={'center'} gap={'1'}>
         <Badge size={'2'} color={'grass'}>

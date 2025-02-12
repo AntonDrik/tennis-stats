@@ -61,7 +61,7 @@ class SwissTournamentService {
   }
 
   private getPairsByLeaderboard(tournament: Tournament): IPair[] {
-    const { toursLeaderboard } = this.leaderboardService.getLeaderboard(tournament);
+    const { toursLeaderboard } = this.leaderboardService.getFullLeaderboard(tournament);
     const users = toursLeaderboard.map((item) => item.user) as User[];
 
     if (users.length % 2 !== 0) {

@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { UpsertTournamentDto, GetTournamentsQuery } from '@tennis-stats/dto';
 import { Tournament } from '@tennis-stats/entities';
 import { ETournamentStatus } from '@tennis-stats/types';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
+import { BaseRepository } from '../common/utils';
 
 @Injectable()
-class TournamentsRepository extends Repository<Tournament> {
+class TournamentsRepository extends BaseRepository<Tournament> {
   constructor(dataSource: DataSource) {
-    super(Tournament, dataSource.createEntityManager());
+    super(Tournament, dataSource);
   }
 
   public findTournamentsByQuery(query: GetTournamentsQuery): Promise<Tournament[]> {
@@ -16,7 +17,9 @@ class TournamentsRepository extends Repository<Tournament> {
       'season'
     );
 
-    if (query.withMatches) {
+    const whereFn = this.createWhereFn(builder);
+
+    if (query.withMatches || Number.isFinite(query.userId)) {
       builder
         .leftJoinAndSelect('tournament.tours', 'tours')
         .leftJoinAndSelect('tours.matches', 'matches')
@@ -29,18 +32,18 @@ class TournamentsRepository extends Repository<Tournament> {
         .leftJoinAndSelect('player2.user', 'user2');
     }
 
+    if (query.withJoinedUsers || Number.isFinite(query.registeredUserId)) {
+      builder.leftJoinAndSelect('tournament.registeredUsers', 'registeredUsers');
+    }
+
     if (query.withLeaderboard) {
       builder
         .leftJoinAndSelect('tournament.leaderboard', 'leaderboard')
         .leftJoinAndSelect('leaderboard.user', 'leaderboardUser');
     }
 
-    if (query.withJoinedUsers) {
-      builder.leftJoinAndSelect('tournament.registeredUsers', 'registeredUsers');
-    }
-
     if (Number.isFinite(query.id)) {
-      builder.where('tournament.id = :id', { id: query.id });
+      whereFn('tournament.id = :id', { id: query.id });
     }
 
     if (query.sortByDate) {
@@ -48,15 +51,19 @@ class TournamentsRepository extends Repository<Tournament> {
     }
 
     if (query.status) {
-      builder.where('tournament.status IN(:...status)', { status: query.status });
+      whereFn('tournament.status IN(:...status)', { status: query.status });
     }
 
     if (Number.isFinite(query.seasonId)) {
-      builder.where('season.id = :seasonId', { seasonId: query.seasonId });
+      whereFn('season.id = :seasonId', { seasonId: query.seasonId });
     }
 
-    if (Number.isFinite(query.userId) && query.withMatches) {
-      builder.where('matchUser1.id = :userId OR matchUser2.id = :userId', { userId: query.userId });
+    if (Number.isFinite(query.userId)) {
+      whereFn('matchUser1.id = :userId OR matchUser2.id = :userId', { userId: query.userId });
+    }
+
+    if (Number.isFinite(query.registeredUserId)) {
+      whereFn('registeredUsers.id = :userId', { userId: query.registeredUserId });
     }
 
     return builder.getMany();

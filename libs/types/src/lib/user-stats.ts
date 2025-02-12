@@ -1,11 +1,16 @@
 import { TPlayOffStage } from './tour';
 
+type TPlayedPlayoffsStats = Record<TPlayOffStage, number>;
+
+type TPlacesStats = Record<number, number>;
+
 interface IUserCommonStats {
   winPercent: number;
   allTournamentsCount: number;
   playedTournamentsCount: number;
   playedMatchesCount: number;
-  playedPlayoffsCount: Record<TPlayOffStage, number>;
+  playedPlayoffsCount: TPlayedPlayoffsStats;
+  placesStats: TPlacesStats;
 }
 
-export { IUserCommonStats };
+export { IUserCommonStats, TPlayedPlayoffsStats, TPlacesStats };

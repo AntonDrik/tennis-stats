@@ -1,0 +1,23 @@
+.chart-container {
+  position: relative;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+
+.line {
+  stroke-dasharray: 520;
+  stroke-dashoffset: 0;
+  animation: dash 3s linear;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 520;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

@@ -1,7 +1,6 @@
 import { IMatch } from './match';
 import { IUser } from './user';
 
-
 interface IRatingHistory {
   id: number;
   rating: number;
@@ -11,15 +10,19 @@ interface IRatingHistory {
 }
 
 interface IAvgRatingByDay {
-  formattedDate: string,
-  rating: number,
-  userId: number,
-  userFirstName: string,
-  userLastName: string,
-  userColor: string
+  formattedDate: string;
+  rating: number;
+  userId: number;
+  userFirstName: string;
+  userLastName: string;
+  userColor: string;
 }
 
-export {
-  IRatingHistory,
-  IAvgRatingByDay
-};
+interface IRawUserRatingHistory {
+  id: number;
+  rating: number;
+  date: Date;
+  tournamentID: number;
+}
+
+export { IRatingHistory, IRawUserRatingHistory, IAvgRatingByDay };

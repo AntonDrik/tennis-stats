@@ -1,4 +1,4 @@
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository, SelectQueryBuilder } from 'typeorm';
 import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 
@@ -24,6 +24,20 @@ class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
     }
 
     return this.dataSource.transaction(fn);
+  }
+
+  public createWhereFn<T extends ObjectLiteral>(builder: SelectQueryBuilder<T>) {
+    let andWhere = false;
+
+    return (...args: Parameters<typeof builder.where>) => {
+      if (!andWhere) {
+        builder.where(...args);
+      } else {
+        builder.andWhere(...args);
+      }
+
+      andWhere = true;
+    };
   }
 }
 

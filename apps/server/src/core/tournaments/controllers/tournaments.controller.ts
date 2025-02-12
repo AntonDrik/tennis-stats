@@ -46,15 +46,12 @@ class TournamentsController {
 
   @Get('/:id/leaderboard')
   getLeaderboard(@TournamentById() tournament: Tournament) {
-    return this.leaderboardService.getLeaderboard(tournament);
+    return this.leaderboardService.getFullLeaderboard(tournament);
   }
 
   @Post('/:id/start')
   @Permissions([EPermission.TOURNAMENT_CRUD])
-  startTournament(
-    @TournamentById() tournament: Tournament,
-    @Body() dto: StartTournamentDto
-  ) {
+  startTournament(@TournamentById() tournament: Tournament, @Body() dto: StartTournamentDto) {
     return this.tournamentsService.startTournament(tournament, dto);
   }
 
@@ -66,10 +63,7 @@ class TournamentsController {
 
   @Put('/:id/edit')
   @Permissions([EPermission.TOURNAMENT_CRUD])
-  editOpenedTournament(
-    @TournamentById() tournament: Tournament,
-    @Body() dto: UpsertTournamentDto
-  ) {
+  editOpenedTournament(@TournamentById() tournament: Tournament, @Body() dto: UpsertTournamentDto) {
     return this.tournamentsService.editTournament(tournament, dto);
   }
 

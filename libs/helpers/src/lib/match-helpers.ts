@@ -12,6 +12,7 @@ class MatchHelpers<T extends IMatch> {
     const isWinnerUser1 = totalScore.user1 > totalScore.user2;
 
     if (totalScore.user1 === totalScore.user2) {
+      console.log(this.match);
       return null;
     }
 

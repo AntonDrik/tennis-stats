@@ -6,11 +6,13 @@ import { EntityManager } from 'typeorm';
 import { LeaderboardItem } from '../helpers/LeaderboardItem';
 import LeaderboardRepository from '../../../repositories/leaderboard.repository';
 
+type TPlayoffLeaderboard = ILeaderboard['playoffLeaderboard'];
+
 @Injectable()
 class LeaderboardService {
   constructor(private repository: LeaderboardRepository) {}
 
-  public getLeaderboard(tournament: Tournament): ILeaderboard {
+  public getFullLeaderboard(tournament: Tournament): ILeaderboard {
     const matches = this.getValidTournamentMatches(tournament);
 
     const tourMatches = matches.filter((match) => !match.isPlayoff);
@@ -25,8 +27,15 @@ class LeaderboardService {
     return { toursLeaderboard, playoffLeaderboard };
   }
 
-  public async saveLeaderboard(tournament: Tournament, manager: EntityManager) {
-    const { playoffLeaderboard } = this.getLeaderboard(tournament);
+  public getPlayoffLeaderboard(tournament: Tournament): TPlayoffLeaderboard {
+    const matches = this.getValidTournamentMatches(tournament);
+    const playoffMatches = matches.filter((match) => match.isPlayoff);
+
+    return this.composeTable(playoffMatches).sort(byStats);
+  }
+
+  public async savePlayoffLeaderboard(tournament: Tournament, manager: EntityManager) {
+    const { playoffLeaderboard } = this.getFullLeaderboard(tournament);
 
     if (!playoffLeaderboard.length) {
       return;
@@ -39,7 +48,7 @@ class LeaderboardService {
     await manager.save(entities);
   }
 
-  private composeTable(matches: Match[]) {
+  private composeTable(matches: Match[]): ILeaderboardItem[] {
     const collection = new Map<number, LeaderboardItem>();
 
     matches.forEach((match) => {

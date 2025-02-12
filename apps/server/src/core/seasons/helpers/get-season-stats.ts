@@ -19,7 +19,7 @@ export default function getSeasonStats(tournaments: Tournament[]): ISeasonStats 
 
   return {
     tournamentsCount: tournaments.length,
-    usersData: mapToArray(collection).sort(byVisitsAndWins),
+    usersData: mapToArray(collection).sort(byWinsAndVisits),
   };
 }
 
@@ -63,6 +63,6 @@ function setTournamentStatsToCollection(
     });
 }
 
-const byVisitsAndWins = (a: ISeasonUserStat, b: ISeasonUserStat) => {
-  return b.tournamentsCount - a.tournamentsCount || b.matchWinCount - a.matchWinCount;
+const byWinsAndVisits = (a: ISeasonUserStat, b: ISeasonUserStat) => {
+  return b.matchWinCount - a.matchWinCount || b.tournamentsCount - a.tournamentsCount;
 };

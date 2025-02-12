@@ -1,0 +1,11 @@
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--gray-5);
+  border-radius: var(--radius-2);
+  padding: var(--spacing-2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
