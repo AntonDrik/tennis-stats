@@ -1,2 +1,2 @@
 export * from './me.store';
-export * from './tour-page.state';
+export * from './tournament-page.state';

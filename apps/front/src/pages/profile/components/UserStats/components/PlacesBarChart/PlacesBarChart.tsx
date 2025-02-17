@@ -47,6 +47,18 @@ function PlacesBarChart(props: IProps) {
                 height={axes.yScale(0) - axes.yScale(item.value)}
                 width={BAR_WIDTH}
               ></rect>
+
+              <text
+                x={(axes.xScale(item.key) ?? 0) + BAR_WIDTH / 2}
+                y={axes.yScale(item.value) - 8}
+                opacity={0.3}
+                fontSize={12}
+                textAnchor={'middle'}
+                dominantBaseline={'middle'}
+                pointerEvents={'none'}
+              >
+                {item.value}
+              </text>
             </g>
           ))}
 

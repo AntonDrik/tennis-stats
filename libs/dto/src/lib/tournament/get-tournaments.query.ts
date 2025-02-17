@@ -50,6 +50,11 @@ class GetTournamentsQuery {
   @IsPositive()
   userId?: number;
 
+  @IsOptional()
+  @IsPositive()
+  @IsTogetherOnly('userId')
+  opponentId?: number;
+
   /**
    * !! Будут выбраны все матчи
    */

@@ -5,7 +5,7 @@ import { useGetLeaderboardQuery } from '../../../../core/api';
 import { Spinner } from '../../../../shared/components';
 import { DialogCloseButton } from '../../../../shared/components/Modals';
 import { Leaderboard } from '../../../../shared/components/Tournament';
-import { leaderboardTabAtom } from './LeaderboardModal.state';
+import { leaderboardTabAtom } from '../../states/leaderboard-modal.state';
 
 interface IProps {
   tournamentId: number;
@@ -36,10 +36,7 @@ function LeaderboardModal(props: IProps) {
         <Box pt="3">
           <Tabs.Content value="tours">
             <Flex mr={'-3'}>
-              <ScrollArea
-                scrollbars="vertical"
-                style={{ maxHeight: 'calc(100vh - 200px)' }}
-              >
+              <ScrollArea scrollbars="vertical" style={{ maxHeight: 'calc(100vh - 200px)' }}>
                 <Box pr={'3'}>
                   {leaderboard.data && (
                     <Leaderboard leaderboardItems={leaderboard.data.toursLeaderboard} />
@@ -51,10 +48,7 @@ function LeaderboardModal(props: IProps) {
 
           <Tabs.Content value="playoff">
             <Flex mr={'-3'}>
-              <ScrollArea
-                scrollbars="vertical"
-                style={{ maxHeight: 'calc(100vh - 200px)' }}
-              >
+              <ScrollArea scrollbars="vertical" style={{ maxHeight: 'calc(100vh - 200px)' }}>
                 <Box pr={'3'}>
                   {leaderboard.data && (
                     <Leaderboard leaderboardItems={leaderboard.data.playoffLeaderboard} />

@@ -1,6 +1,7 @@
+import { IUser } from '@tennis-stats/types';
 import React, { useState } from 'react';
 import { Box, Tabs, Text } from '@radix-ui/themes';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useGetUserQuery } from '../../core/api';
 import { appRoutes } from '../../routes/routes.constant';
 import { Page, Spinner } from '../../shared/components';
@@ -15,11 +16,16 @@ type IRouteParams = {
 
 function ProfilePage() {
   const params = useParams<IRouteParams>();
+  const navigate = useNavigate();
 
   const user = useGetUserQuery(params?.id);
   const tabsList = useProfileTabs(user.data);
 
   const [activeTab, setActiveTab] = useState<string>('Статистика');
+
+  const handleUserChange = (user: IUser) => {
+    navigate(appRoutes.PROFILE(user.id));
+  };
 
   if (user.isLoading) {
     return <Spinner page />;
@@ -31,7 +37,7 @@ function ProfilePage() {
 
   return (
     <Page title={`Профиль | ${user.data.nickname}`}>
-      <ProfileHeader user={user.data} />
+      <ProfileHeader user={user.data} onUserChange={handleUserChange} />
 
       <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <Tabs.List>

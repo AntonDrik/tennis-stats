@@ -70,9 +70,9 @@ export class Match extends BaseEntity implements IMatch {
       }
     });
 
-    const scoreNotEqual = this.totalScore.user1 !== this.totalScore.user2;
+    const scoreEqual = this.helpers.isScoreEqual();
 
-    this.isFinished = gameSets.every((gameSet) => gameSet.isFinished);
+    this.isFinished = gameSets.every((gameSet) => gameSet.isFinished) && !scoreEqual;
 
     this.isFictive = this.user1?.nickname === 'Халява' || this.user2?.nickname === 'Халява';
   }

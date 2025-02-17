@@ -58,8 +58,17 @@ class TournamentsRepository extends BaseRepository<Tournament> {
       whereFn('season.id = :seasonId', { seasonId: query.seasonId });
     }
 
-    if (Number.isFinite(query.userId)) {
+    if (Number.isFinite(query.userId) && !Number.isFinite(query.opponentId)) {
       whereFn('matchUser1.id = :userId OR matchUser2.id = :userId', { userId: query.userId });
+    }
+
+    if (Number.isFinite(query.userId) && Number.isFinite(query.opponentId)) {
+      const params = { userId: query.userId, opponentId: query.opponentId };
+
+      whereFn('matchUser1.id = :userId AND matchUser2.id = :opponentId', params).orWhere(
+        'matchUser1.id = :opponentId AND matchUser2.id = :userId',
+        params
+      );
     }
 
     if (Number.isFinite(query.registeredUserId)) {

@@ -1,0 +1,12 @@
+.pairs-match-card {
+  &__title {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: fit-content;
+    cursor: pointer;
+  }
+
+  & .match-card {
+    border-top-left-radius: 0;
+  }
+}

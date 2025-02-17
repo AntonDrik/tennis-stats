@@ -30,7 +30,13 @@ class SwissTournamentService {
   }
 
   public createNewTour(tournament: Tournament, dto: CreateTourDto): Tour {
-    const pairs = this.getPairsByLeaderboard(tournament);
+    let pairs = [];
+
+    if (!tournament.tours.length) {
+      pairs = this.getPairsByRating(tournament.registeredUsers);
+    } else {
+      pairs = this.getPairsByLeaderboard(tournament);
+    }
 
     const matches = this.matchService.createMatches(pairs, dto.setsCount);
 

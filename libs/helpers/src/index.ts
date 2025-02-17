@@ -14,3 +14,4 @@ export { default as toFixedNumber } from './lib/to-fixed-number';
 export { default as TournamentHelpers } from './lib/tournament-helpers';
 export { default as MatchHelpers } from './lib/match-helpers';
 export { default as TourHelpers } from './lib/tour-helpers';
+export { default as isEmptyObject } from './lib/is-empty-object';

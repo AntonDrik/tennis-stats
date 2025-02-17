@@ -1,11 +1,11 @@
-import { IRawUserRatingHistory } from '@tennis-stats/types';
+import { IRawUserRatingHistoryItem } from '@tennis-stats/types';
 import { useMemo } from 'react';
 import { TAxes } from '../../../../../../../shared/components/Chart';
 
 function useLinePoints(
-  data: IRawUserRatingHistory[],
+  data: IRawUserRatingHistoryItem[],
   axes: TAxes<'timebased'>,
-  selected: IRawUserRatingHistory | undefined
+  selected: IRawUserRatingHistoryItem | undefined
 ) {
   const points = useMemo(() => {
     return data.map((item, index) => (

@@ -8,6 +8,7 @@ import Styled from '../../MatchCard.styles';
 interface IProps {
   match: IMatch;
   isPlayoffCard: boolean | undefined;
+  highlight?: boolean;
   onSetScoreClick: (gameSet: IGameSet) => void;
 }
 
@@ -31,23 +32,23 @@ function ScoreBlock(props: IProps) {
 
       <Flex direction={'column'}>
         <Styled.MatchScore $isWin={isPlayer1Winner}>
-          <Styled.TextMeduim weight={'medium'}>
-            {match.totalScore.user1}
-          </Styled.TextMeduim>
+          <Styled.TextMeduim weight={'medium'}>{match.totalScore.user1}</Styled.TextMeduim>
         </Styled.MatchScore>
 
         <Styled.Divider $isPlayoffCard={isPlayoffCard} />
 
         <Styled.MatchScore $isWin={isPlayer2Winner}>
-          <Styled.TextMeduim weight={'medium'}>
-            {match.totalScore.user2}
-          </Styled.TextMeduim>
+          <Styled.TextMeduim weight={'medium'}>{match.totalScore.user2}</Styled.TextMeduim>
         </Styled.MatchScore>
       </Flex>
 
       <Flex
         direction={'row'}
-        style={{ borderRight: isPlayoffCard ? '7px solid var(--sage-7)' : 'none' }}
+        style={{
+          borderRight: isPlayoffCard
+            ? `7px solid var(--${props.highlight ? 'orange-9' : 'sage-7'})`
+            : 'none',
+        }}
       >
         {match.gameSets.map((gameSet) => (
           <Styled.ScoreContainer
@@ -55,17 +56,13 @@ function ScoreBlock(props: IProps) {
             onClick={(e: MouseEvent) => handleSetScore(e, gameSet)}
           >
             <Styled.SetScore>
-              <Styled.TextMeduim weight={'medium'}>
-                {gameSet.player1?.score ?? 0}
-              </Styled.TextMeduim>
+              <Styled.TextMeduim weight={'medium'}>{gameSet.player1?.score ?? 0}</Styled.TextMeduim>
             </Styled.SetScore>
 
             <Styled.Divider $isPlayoffCard={isPlayoffCard} />
 
             <Styled.SetScore>
-              <Styled.TextMeduim weight={'medium'}>
-                {gameSet.player2?.score ?? 0}
-              </Styled.TextMeduim>
+              <Styled.TextMeduim weight={'medium'}>{gameSet.player2?.score ?? 0}</Styled.TextMeduim>
             </Styled.SetScore>
           </Styled.ScoreContainer>
         ))}

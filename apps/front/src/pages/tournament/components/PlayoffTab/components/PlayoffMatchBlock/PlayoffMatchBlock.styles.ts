@@ -20,6 +20,7 @@ const AfterLine = styled(Box)({
   width: 19,
   height: 2,
   backgroundColor: 'var(--sage-7)',
+  zIndex: -1,
 });
 
 const BeforeLine = styled(Box)({
@@ -37,6 +38,7 @@ const BeforeLine = styled(Box)({
 const AfterLineVertical = styled(Box)<{
   $roundNumber: number;
   $matchNumber: number;
+  $highlight: boolean;
 }>(
   {
     position: 'absolute',
@@ -44,9 +46,9 @@ const AfterLineVertical = styled(Box)<{
     width: 2,
     backgroundColor: 'var(--sage-7)',
   },
-  ({ $roundNumber, $matchNumber }) => ({
-    ...($matchNumber % 2 !== 0 ? { top: 45 } : {}),
-    ...($matchNumber % 2 === 0 ? { bottom: 45 } : {}),
+  ({ $roundNumber, $matchNumber, $highlight }) => ({
+    ...($matchNumber % 2 !== 0 ? { top: !$highlight ? 45 : 47 } : {}),
+    ...($matchNumber % 2 === 0 ? { bottom: !$highlight ? 45 : 47 } : {}),
     height: `calc(55px * ${
       $roundNumber % 2 === 0 ? $roundNumber * $roundNumber : $roundNumber * 2
     })`,

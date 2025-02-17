@@ -18,11 +18,27 @@ interface IAvgRatingByDay {
   userColor: string;
 }
 
-interface IRawUserRatingHistory {
+interface IRawUserRatingHistoryItem {
   id: number;
   rating: number;
   date: Date;
   tournamentID: number;
 }
 
-export { IRatingHistory, IRawUserRatingHistory, IAvgRatingByDay };
+interface IRawMinMaxUserRating {
+  min: number;
+  max: number;
+}
+
+interface IRawUserRatingHistory {
+  list: IRawUserRatingHistoryItem[];
+  minMaxRawData: IRawMinMaxUserRating;
+}
+
+export {
+  IRatingHistory,
+  IRawUserRatingHistory,
+  IRawMinMaxUserRating,
+  IRawUserRatingHistoryItem,
+  IAvgRatingByDay,
+};

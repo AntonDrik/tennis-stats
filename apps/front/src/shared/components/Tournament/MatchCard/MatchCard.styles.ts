@@ -1,7 +1,13 @@
 import { Text, Flex } from '@radix-ui/themes';
 import { styled } from 'styled-components';
 
-const Container = styled(Flex)<{ $isOpened: boolean }>(
+type TContainerProps = {
+  $isOpened: boolean;
+  $readOnly: boolean;
+  $highlight: boolean;
+};
+
+const Container = styled(Flex)<TContainerProps>(
   {
     display: 'flex',
     flexDirection: 'column',
@@ -9,15 +15,18 @@ const Container = styled(Flex)<{ $isOpened: boolean }>(
     backgroundColor: 'var(--sage-3)',
     borderRadius: 'var(--radius-3)',
     overflow: 'hidden',
-    cursor: 'pointer',
     transition: 'height .2s ease-in-out',
+  },
+  ({ $isOpened, $readOnly, $highlight }) => ({
+    height: $isOpened ? '160px' : '92px',
+    cursor: $readOnly ? 'default' : 'pointer',
+
+    border: $highlight ? '2px solid var(--orange-9)' : 'none',
+    boxSizing: $highlight ? 'content-box' : 'initial',
 
     '&:hover': {
-      backgroundColor: 'var(--sage-4)',
+      backgroundColor: $readOnly ? 'var(--sage-3)' : 'var(--sage-4)',
     },
-  },
-  ({ $isOpened }) => ({
-    height: $isOpened ? '160px' : '92px',
   })
 );
 

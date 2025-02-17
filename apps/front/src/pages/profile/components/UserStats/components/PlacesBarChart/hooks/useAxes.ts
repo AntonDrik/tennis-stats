@@ -13,7 +13,9 @@ function useAxes(
   const [_x, xMax] = d3.extent(data, (d) => Number(d.key));
 
   const domain = useMemo(() => {
-    return Array.from({ length: xMax ?? 0 }, (_, i) => i + 1).reverse();
+    const length = (xMax ?? 0) > 8 ? xMax ?? 0 : 8;
+
+    return Array.from({ length }, (_, i) => i + 1).reverse();
   }, [xMax]);
 
   const xScale = useMemo(() => {

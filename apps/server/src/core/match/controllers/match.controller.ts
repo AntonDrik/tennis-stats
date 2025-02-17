@@ -3,10 +3,7 @@ import { GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Match, User } from '@tennis-stats/entities';
 import { EPermission } from '@tennis-stats/types';
 import { CurrentUser, Permissions } from '../../../auth/decorators';
-import {
-  ForbiddenException,
-  UnableDeleteFinishedException,
-} from '../../../common/exceptions';
+import { ForbiddenException, UnableDeleteFinishedException } from '../../../common/exceptions';
 import { GameSetById } from '../decorators/game-set.decorator';
 import { MatchById } from '../decorators/match.decorator';
 import GameSetService from '../services/game-set.service';
@@ -14,10 +11,7 @@ import MatchService from '../services/match.service';
 
 @Controller('tournaments/:tournamentId/tours/:tourId/match')
 class MatchController {
-  constructor(
-    private matchService: MatchService,
-    private gameSetService: GameSetService
-  ) {}
+  constructor(private matchService: MatchService, private gameSetService: GameSetService) {}
 
   @Get('/:matchId/game-set/:setId')
   getGameSet(@GameSetById() gameSet: GameSet): GameSet {

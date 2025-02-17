@@ -8,6 +8,7 @@ interface IProps extends React.ComponentPropsWithoutRef<typeof RadixSelect.Root>
   label?: string;
   error?: IFieldErrors['error'];
   helperText?: IFieldErrors['helperText'] | string;
+  fullWidth?: boolean;
   children: ReactElement | ReactElement[];
 }
 
@@ -25,7 +26,7 @@ const Select = React.forwardRef<TElement, IProps>((props, forwardedRef) => {
   }, [props.helperText]);
 
   return (
-    <Flex direction={'column'} gap={'1'} width={'100%'}>
+    <Flex direction={'column'} gap={'1'} width={props.fullWidth ? '100%' : undefined}>
       {props.label && (
         <Text size="2" weight={'medium'}>
           {props.label}

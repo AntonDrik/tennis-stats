@@ -1,29 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Tournament } from '@tennis-stats/entities';
-import { IGameSet, IMatch, ITour, IUserCommonStats, TPlacesStats } from '@tennis-stats/types';
+import { ITour, IUserCommonStats, TPlacesStats, TPlayedPlayoffsStats } from '@tennis-stats/types';
 import { TournamentsRepository } from '../../../repositories';
 import { LeaderboardService } from '../../leaderboard';
-
-interface ITournamentExtractedData {
-  tours: ITour[];
-  matches: IMatch[];
-  gameSets: IGameSet[];
-}
+import UserStatsService from './stats.abstract.service';
 
 @Injectable()
-class UserStatsService {
+class UserCommonStatsService extends UserStatsService {
   constructor(
     private tournamentsRepository: TournamentsRepository,
     private leaderboardService: LeaderboardService
-  ) {}
+  ) {
+    super();
+  }
 
   public async getCommonStats(userId: number): Promise<IUserCommonStats> {
     const allUserTournaments = await this.tournamentsRepository.findTournamentsByQuery({ userId });
 
-    const { tours, matches, gameSets } = this.extractData(allUserTournaments);
+    const { tours, matches } = this.extractData(allUserTournaments);
 
     return {
-      winPercent: this.getWinPercent(gameSets, userId),
+      winPercent: this.getWinPercent(matches, userId),
       allTournamentsCount: await this.getAllTournamentsCount(),
       playedTournamentsCount: allUserTournaments.length,
       playedMatchesCount: matches.length,
@@ -32,7 +28,8 @@ class UserStatsService {
     };
   }
 
-  private getPlayoffsCount(tours: ITour[]) {
+  private getPlayoffsCount(tours: ITour[]): TPlayedPlayoffsStats | null {
+    let isEmptyStats = true;
     const stats: IUserCommonStats['playedPlayoffsCount'] = {
       '1/64': 0,
       '1/32': 0,
@@ -43,28 +40,18 @@ class UserStatsService {
       '1/1': 0,
     };
 
-    return tours.reduce((acc, curr) => {
+    const result = tours.reduce((acc, curr) => {
       if (!curr.playOffStage) {
         return acc;
       }
 
       acc[curr.playOffStage] += 1;
+      isEmptyStats = false;
+
       return acc;
     }, stats);
-  }
 
-  private getWinPercent(gameSets: IGameSet[], winnerId: number): number {
-    const winsCount = gameSets.reduce((acc, curr) => {
-      const { player1, player2 } = curr;
-
-      const activePlayer = player1.user.id === winnerId ? player1 : player2;
-
-      return acc + Number(activePlayer.isWinner);
-    }, 0);
-
-    const percent = (winsCount / gameSets.length) * 100;
-
-    return Number(percent.toFixed(2));
+    return isEmptyStats ? null : result;
   }
 
   private getAllTournamentsCount(): Promise<number> {
@@ -93,22 +80,6 @@ class UserStatsService {
       return acc;
     }, {} as TPlacesStats);
   }
-
-  private extractData(userTournaments: Tournament[]): ITournamentExtractedData {
-    const initial: ITournamentExtractedData = { tours: [], matches: [], gameSets: [] };
-
-    return userTournaments.reduce((acc, curr) => {
-      const tours = curr.tours;
-      const matches = tours.flatMap((tour) => tour.matches);
-      const gameSets = matches.flatMap((match) => match.gameSets);
-
-      acc.tours.push(...tours);
-      acc.matches.push(...matches);
-      acc.gameSets.push(...gameSets);
-
-      return acc;
-    }, initial);
-  }
 }
 
-export default UserStatsService;
+export default UserCommonStatsService;

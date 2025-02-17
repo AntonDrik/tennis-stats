@@ -1,4 +1,10 @@
-import { createParamDecorator, ExecutionContext, Injectable, PipeTransform } from '@nestjs/common';
+import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+  Injectable,
+  PipeTransform,
+} from '@nestjs/common';
 import { Tournament } from '@tennis-stats/entities';
 import { EntityManager, Equal } from 'typeorm';
 import { TournamentNotFoundException } from '../../../common/exceptions';
@@ -7,7 +13,11 @@ import { TournamentNotFoundException } from '../../../common/exceptions';
 class TournamentPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
-  async transform(value: number): Promise<Tournament | null> {
+  async transform(value: number | undefined): Promise<Tournament | null> {
+    if (value === undefined || value === -1) {
+      throw new BadRequestException('Неверный Tournament Id');
+    }
+
     const tournament = await this.entity.getRepository(Tournament).findOne({
       where: { id: Equal(value) },
       order: {

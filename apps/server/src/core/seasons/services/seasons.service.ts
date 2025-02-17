@@ -8,7 +8,7 @@ import { isBefore } from 'date-fns/isBefore';
 import { isEqual } from 'date-fns/isEqual';
 import { isWithinInterval } from 'date-fns/isWithinInterval';
 import { set } from 'date-fns/set';
-import { DateOutOfRangeException, UnableUpsertSeasonException } from '../../../common/exceptions';
+import { DateOutOfSeasonException, UnableUpsertSeasonException } from '../../../common/exceptions';
 import { TournamentsRepository } from '../../../repositories';
 import SeasonsRepository from '../../../repositories/seasons.repository';
 import getSeasonLeaderboard from '../helpers/get-season-leaderboard';
@@ -114,11 +114,11 @@ class SeasonsService {
       return tournament;
     }
 
-    const interval = { start: activeSeason.startDate, end: activeSeason.endDate };
+    const seasonRange = { start: activeSeason.startDate, end: activeSeason.endDate };
     const tournamentDate = toZonedTime(tournament.date, clientTimezone);
 
-    if (!isWithinInterval(tournamentDate, interval)) {
-      throw new DateOutOfRangeException();
+    if (!isWithinInterval(tournamentDate, seasonRange)) {
+      throw new DateOutOfSeasonException();
     }
 
     tournament.season = activeSeason;

@@ -5,7 +5,7 @@ import { getPlayoffStageInfo } from '@tennis-stats/helpers';
 import { ETournamentStatus, ETournamentType, ETourType, TPlayOffStage } from '@tennis-stats/types';
 import { IsOddUsersException } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
-import { MatchService } from '../../match';
+import { MatchService, PlayoffMatchService } from '../../match';
 import ToursRepository from '../../../repositories/tours.repository';
 import { UsersService } from '../../users';
 
@@ -13,6 +13,7 @@ import { UsersService } from '../../users';
 class PlayoffTournamentService {
   constructor(
     private matchService: MatchService,
+    private playoffMatchService: PlayoffMatchService,
     private usersService: UsersService,
     private toursRepository: ToursRepository
   ) {}
@@ -42,11 +43,11 @@ class PlayoffTournamentService {
     return entity;
   }
 
-  public async removePlayoff(tournament: Tournament) {
+  public removePlayoff(tournament: Tournament) {
     tournament.status = ETournamentStatus.ACTIVE;
     tournament.tours = tournament.tours.filter((tour) => tour.type === ETourType.SIMPLE);
 
-    await tournament.save();
+    return tournament.save();
   }
 
   private createFirstTour(activeUsers: User[], dto: CreatePlayoffDto) {
@@ -58,7 +59,7 @@ class PlayoffTournamentService {
 
   private createRestTours(setsCount: number, restStages: TPlayOffStage[]) {
     return restStages.map((stage) => {
-      const matches = this.matchService.createEmptyPlayoffStage(stage, setsCount);
+      const matches = this.playoffMatchService.createEmptyPlayoffMatch(stage, setsCount);
 
       return this.toursRepository.createPlayOffTourEntity(stage, matches);
     });

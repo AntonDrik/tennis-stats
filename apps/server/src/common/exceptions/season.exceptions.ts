@@ -10,7 +10,7 @@ export class UnableUpsertSeasonException extends HttpException {
   }
 }
 
-export class DateOutOfRangeException extends HttpException {
+export class DateOutOfSeasonException extends HttpException {
   constructor(options?: HttpExceptionOptions) {
     super(
       `Дата выходит за пределы активного сезона. Завершите текущий сезон и создайте новый`,

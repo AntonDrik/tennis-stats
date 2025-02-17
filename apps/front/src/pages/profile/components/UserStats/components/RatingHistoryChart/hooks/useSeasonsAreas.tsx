@@ -30,16 +30,16 @@ function useSeasonsAreas(
             fill={`var(${colors[index] ?? '--gray-a3'})`}
           ></rect>
 
-          <text
-            x={xScale(season.startDate) + width / 2}
-            y={11}
-            style={{ opacity: 0.3 }}
-            textAnchor={'middle'}
-            dominantBaseline={'middle'}
-            pointerEvents={'none'}
-          >
-            #{index + 1}
-          </text>
+          {/*<text*/}
+          {/*  x={xScale(season.startDate) + width / 2}*/}
+          {/*  y={11}*/}
+          {/*  style={{ opacity: 0.3 }}*/}
+          {/*  textAnchor={'middle'}*/}
+          {/*  dominantBaseline={'middle'}*/}
+          {/*  pointerEvents={'none'}*/}
+          {/*>*/}
+          {/*  #{index + 1}*/}
+          {/*</text>*/}
         </g>
       );
     });

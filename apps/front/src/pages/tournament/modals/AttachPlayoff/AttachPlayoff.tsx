@@ -96,7 +96,7 @@ function AttachPlayoff(props: IProps) {
           <TextField
             type={'number'}
             size={'3'}
-            label={'Кол-во сетов для матча'}
+            label={'Кол-во сетов в матче'}
             {...form.register('setsCount', { valueAsNumber: true })}
             {...getTextFieldError(form.formState.errors, 'setsCount')}
           />

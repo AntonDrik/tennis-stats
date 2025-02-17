@@ -5,7 +5,8 @@ import { UsersRepository, UsersAuthRepository, TournamentsRepository } from '../
 import { LeaderboardModule } from '../leaderboard';
 import { RatingModule } from '../rating';
 import UsersController from './controllers/users.controller';
-import UserStatsService from './services/user-stats.service';
+import UserCommonStatsService from './services/user-common-stats.service';
+import UserPairStatsService from './services/user-pair-stats.service';
 import UsersService from './services/users.service';
 
 @Module({
@@ -17,7 +18,8 @@ import UsersService from './services/users.service';
   controllers: [UsersController],
   providers: [
     UsersService,
-    UserStatsService,
+    UserCommonStatsService,
+    UserPairStatsService,
     UsersRepository,
     UsersAuthRepository,
     TournamentsRepository,

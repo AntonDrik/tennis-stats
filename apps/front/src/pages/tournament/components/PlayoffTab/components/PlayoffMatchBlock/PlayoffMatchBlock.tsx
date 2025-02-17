@@ -7,6 +7,7 @@ interface IProps {
   isFirst: boolean;
   isLast: boolean;
   match: IMatch;
+  highlight?: boolean;
 }
 
 function PlayoffMatchBlock(props: IProps) {
@@ -16,12 +17,13 @@ function PlayoffMatchBlock(props: IProps) {
     <Styled.GridBrick>
       {!props.isFirst && <Styled.BeforeLine />}
 
-      <MatchCard match={match} isPlayoffCard />
+      <MatchCard match={match} isPlayoffCard highlight={props.highlight} />
 
       {!props.isLast && <Styled.AfterLine />}
 
       {!props.isLast && (
         <Styled.AfterLineVertical
+          $highlight={Boolean(props.highlight)}
           $roundNumber={props.roundNumber}
           $matchNumber={props.match.number}
         />

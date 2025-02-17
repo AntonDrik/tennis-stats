@@ -1,8 +1,8 @@
-import { Box, Flex, Heading } from '@radix-ui/themes';
+import { Flex, Heading } from '@radix-ui/themes';
 import { getYear } from 'date-fns/getYear';
 import React, { useEffect, useState } from 'react';
 import { useGetSeasonsQuery, useGetUserRatingHistoryQuery } from '../../../../../../core/api';
-import { Spinner } from '../../../../../../shared/components';
+import ChartCard from '../../../../../../shared/components/Cards/ChartCard/ChartCard';
 import { ITabContentProps } from '../../../../types/tab-props';
 import RatingChart from './component/Chart/RatingChart';
 import YearSelect from './component/YearSelect/YearSelect';
@@ -15,11 +15,10 @@ function RatingHistoryChart(props: ITabContentProps) {
   const seasons = useGetSeasonsQuery({ year: selectedYear });
   const ratingHistory = useGetUserRatingHistoryQuery(props.user.id, selectedYear);
 
-  const ratingList = ratingHistory.data ?? [];
   const seasonsList = seasons.data ?? [];
 
-  const hasData = ratingList.length > 0;
-  const loading = ratingHistory.isLoading || seasons.isLoading;
+  const hasData = (ratingHistory.data?.list ?? []).length > 0;
+  const isLoading = ratingHistory.isLoading || seasons.isLoading;
 
   useEffect(() => {
     void ratingHistory.refetch();
@@ -27,32 +26,24 @@ function RatingHistoryChart(props: ITabContentProps) {
   }, [selectedYear]);
 
   return (
-    <Flex direction={'column'} gap={'2'}>
-      <Flex align={'center'} gap={'2'}>
-        <Heading size={'3'}>История рейтинга</Heading>
-        <YearSelect value={selectedYear} onChange={setSelectedYear} />
-      </Flex>
-
-      {loading && (
-        <Box className={'spinner-container'}>
-          <Spinner />
-        </Box>
-      )}
-
-      {hasData && (
+    <ChartCard
+      title={
+        <Flex align={'end'} gap={'2'}>
+          <Heading size={'3'}>История рейтинга</Heading>
+          <YearSelect value={selectedYear} onChange={setSelectedYear} />
+        </Flex>
+      }
+      isLoading={isLoading}
+      hasData={hasData}
+    >
+      {ratingHistory.data && (
         <RatingChart
-          ratingList={ratingList}
+          ratingData={ratingHistory.data}
           seasonsList={seasonsList}
           selectedYear={selectedYear}
         />
       )}
-
-      {!hasData && !loading && (
-        <Box className={'spinner-container'}>
-          <Heading>Нет данных</Heading>
-        </Box>
-      )}
-    </Flex>
+    </ChartCard>
   );
 }
 

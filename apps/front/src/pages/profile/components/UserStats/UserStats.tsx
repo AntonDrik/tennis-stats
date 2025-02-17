@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import React from 'react';
 import { Flex, SegmentedControl } from '@radix-ui/themes';
+import { profileStatsActiveTabAtom, TControl } from '../../states/active-tab.state';
 import { ITabContentProps } from '../../types/tab-props';
 
 import CommonTab from './containers/CommonTab/CommonTab';
-
-type TControl = 'common' | 'pairs';
+import PairsTab from './containers/PairsTab/PairsTab';
 
 function UserStats(props: ITabContentProps) {
-  const [selectedTab, setSelectedTab] = useState<TControl>('common');
+  const [activeTab, setActiveTab] = useAtom(profileStatsActiveTabAtom);
 
   const handleClickControl = (tab: TControl) => {
-    return () => setSelectedTab(tab);
+    return () => setActiveTab(tab);
   };
 
   return (
     <Flex direction="column">
-      <SegmentedControl.Root defaultValue={'common'} style={{ width: '100%' }}>
+      <SegmentedControl.Root value={activeTab} style={{ width: '100%' }}>
         <SegmentedControl.Item value="common" onClick={handleClickControl('common')}>
           Общая
         </SegmentedControl.Item>
@@ -26,7 +27,9 @@ function UserStats(props: ITabContentProps) {
       </SegmentedControl.Root>
 
       <Flex gap={'5'} mt={'4'} justify={'center'} direction={'column'}>
-        {selectedTab === 'common' && <CommonTab user={props.user} />}
+        {activeTab === 'common' && <CommonTab user={props.user} />}
+
+        {activeTab === 'pairs' && <PairsTab user={props.user} />}
       </Flex>
     </Flex>
   );

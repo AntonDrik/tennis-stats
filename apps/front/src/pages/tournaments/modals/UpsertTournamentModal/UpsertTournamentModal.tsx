@@ -121,6 +121,21 @@ function UpsertTournamentModal(props?: IProps) {
             />
           )}
 
+          {attachSeason && !isInvalidSeason && (
+            <Controller
+              name="seasonFinal"
+              control={form.control}
+              render={({ field: { value, onChange } }) => (
+                <Text as="label">
+                  <Flex gap="2">
+                    <Switch size="2" checked={value} onCheckedChange={onChange} />
+                    Финальный турнир сезона
+                  </Flex>
+                </Text>
+              )}
+            />
+          )}
+
           {attachSeason && isInvalidSeason && (
             <Callout.Root color="orange">
               <Callout.Icon>

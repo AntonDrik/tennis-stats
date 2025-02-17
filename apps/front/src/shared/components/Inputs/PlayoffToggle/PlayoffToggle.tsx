@@ -25,18 +25,23 @@ const PlayoffToggle = React.forwardRef<TElement, IProps>((props, forwardedRef) =
         onValueChange={props.onChange}
       >
         <SegmentedControl.Item value="1/8">
-          <Text>1/8 </Text>
+          <Flex direction={'column'}>
+            <Text mt={'-2'}>1/8 </Text>
 
-          <Text size={'1'} weight={'light'} style={{ lineHeight: '2px' }}>
-            (мин. 16 игроков)
-          </Text>
+            <Text size={'1'} weight={'light'} style={{ lineHeight: '2px' }}>
+              (мин. 16 игроков)
+            </Text>
+          </Flex>
         </SegmentedControl.Item>
 
         <SegmentedControl.Item value="1/4">
-          <Text>1/4 </Text>
-          <Text size={'1'} weight={'light'}>
-            (мин. 8 игроков)
-          </Text>
+          <Flex direction={'column'}>
+            <Text mt={'-2'}>1/4 </Text>
+
+            <Text size={'1'} weight={'light'} style={{ lineHeight: '2px' }}>
+              (мин. 8 игроков)
+            </Text>
+          </Flex>
         </SegmentedControl.Item>
       </SegmentedControl.Root>
     </Flex>

@@ -6,7 +6,7 @@ import axiosFetcher from '../axios/fetcher';
 
 function useGetUserQuery(id?: number | string) {
   return useQuery<IUser, AxiosError>(
-    [`get-user-${id ?? -1}`],
+    ['get-user', `get-user-${id ?? -1}`],
     () => axiosFetcher.get<IUser>(`/users/${id ?? -1}`),
     {
       onSuccess: (data) => {

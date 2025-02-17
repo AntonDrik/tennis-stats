@@ -1,21 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { GameSetScoreDto } from '@tennis-stats/dto';
 import { GameSet, Match, User } from '@tennis-stats/entities';
-import { createArray, getPlayoffStageInfo } from '@tennis-stats/helpers';
-import { EPermission, TPlayOffStage } from '@tennis-stats/types';
-import { DataSource, EntityManager, Equal } from 'typeorm';
+import { EPermission } from '@tennis-stats/types';
+import { DataSource, EntityManager } from 'typeorm';
 import { GameSetFinishedException, UnableReplaceUsersInMatch } from '../../../common/exceptions';
 import { IPair } from '../../../common/types';
 import { matchPermissions } from '../../../common/utils';
 import { UsersService } from '../../users';
 import GameSetService from './game-set.service';
+import PlayoffMatchService from './playoff-match.service';
 
 @Injectable()
 class MatchService {
   constructor(
     private dataSource: DataSource,
+    private usersService: UsersService,
     private gameSetService: GameSetService,
-    private usersService: UsersService
+    private playoffMatchService: PlayoffMatchService
   ) {}
 
   public isUserCanCrudMatch(user: User, match: Match): boolean {
@@ -45,22 +46,6 @@ class MatchService {
     });
   }
 
-  // TODO: Вынести в отдельный файл
-  public createEmptyPlayoffStage(stage: TPlayOffStage, setsCount: number): Match[] {
-    const stageInfo = getPlayoffStageInfo(stage);
-
-    return createArray(stageInfo.matchesCount).map((index) => {
-      const gameSets = this.gameSetService.createGameSets(setsCount);
-
-      const match = new Match();
-      match.number = index + 1;
-      match.isPlayoff = true;
-      match.gameSets = gameSets;
-
-      return match;
-    });
-  }
-
   public async finishGameSet(match: Match, gameSet: GameSet, dto: GameSetScoreDto): Promise<void> {
     if (gameSet.isFinished) {
       throw new GameSetFinishedException();
@@ -75,7 +60,13 @@ class MatchService {
         relations: ['tour'],
       });
 
-      if (!updatedMatch?.isFinished) {
+      if (!updatedMatch) {
+        return;
+      }
+
+      if (!updatedMatch?.isFinished && updatedMatch?.helpers.isScoreEqual()) {
+        await this.addGameSetToMatch(updatedMatch, manager);
+
         return;
       }
 
@@ -106,13 +97,15 @@ class MatchService {
     const winnerLooser = match.helpers.getWinnerLooser();
 
     if (!winnerLooser) {
-      await this.addGameSetToMatch(match, manager);
-
       return;
     }
 
     if (match.tour.playOffStage) {
-      await this.setWinnerToNextPlayoffStage(match, winnerLooser.winner, manager);
+      await this.playoffMatchService.setWinnerToNextPlayoffMatch(
+        match,
+        winnerLooser.winner,
+        manager
+      );
     }
 
     await manager.update(Match, { id: match.id }, { endDate: new Date() });
@@ -129,34 +122,6 @@ class MatchService {
     match.gameSets.push(gameSet);
 
     await manager.save(Match, match);
-  }
-
-  private async setWinnerToNextPlayoffStage(match: Match, winner: User, manager: EntityManager) {
-    const nextMatchId = match.helpers.getNextPlayoffStageMatchId();
-    const userNumber = match.number % 2 === 0 ? 2 : 1;
-
-    const nextMatch = await manager.findOne(Match, {
-      where: { id: Equal(nextMatchId) },
-      relations: ['gameSets'],
-    });
-
-    if (!nextMatch) {
-      return;
-    }
-
-    const player = this.usersService.createPlayer(winner);
-
-    const updatedGameSets = nextMatch.gameSets.map((gameSet) => {
-      return GameSet.create({
-        ...gameSet,
-        [`player${userNumber}`]: player,
-      });
-    });
-
-    nextMatch[`user${userNumber}`] = winner;
-    nextMatch.gameSets = updatedGameSets;
-
-    await manager.save(Match, nextMatch);
   }
 }
 

@@ -1,5 +1,5 @@
 import { Box, Flex, Heading } from '@radix-ui/themes';
-import { IRawUserRatingHistory, ISeason } from '@tennis-stats/types';
+import { IRawUserRatingHistory, IRawUserRatingHistoryItem, ISeason } from '@tennis-stats/types';
 import * as d3 from 'd3';
 import { format } from 'date-fns/format';
 import { ru } from 'date-fns/locale';
@@ -13,13 +13,14 @@ import {
 } from '../../../../../../../../shared/components/Chart';
 import useAxes from '../../hooks/useAxes';
 import useLinePoints from '../../hooks/useLinePoints';
+import useMinMaxLines from '../../hooks/useMinMaxLines';
 import useSeasonsAreas from '../../hooks/useSeasonsAreas';
 import RatingStarSvg from '../../../../../../../../shared/svg-icons/rating-star.svg';
 
 import '../../../../../../../../shared/components/Chart/styles.scss';
 
 interface IProps {
-  ratingList: IRawUserRatingHistory[];
+  ratingData: IRawUserRatingHistory;
   seasonsList: ISeason[];
   selectedYear: string;
 }
@@ -27,24 +28,26 @@ interface IProps {
 const PADDINGS = { top: 6, right: 0, left: 42, bottom: 30 };
 
 function RatingChart(props: IProps) {
-  const { ratingList, seasonsList, selectedYear } = props;
+  const { ratingData, seasonsList, selectedYear } = props;
+  const { list } = ratingData;
 
   const wrapperRef = useRef(null);
   const dimensions = useDimensions(wrapperRef, PADDINGS);
 
-  const axes = useAxes(ratingList, selectedYear, dimensions);
-  const tooltip = useTooltip(ratingList, axes, 'date');
+  const axes = useAxes(ratingData, selectedYear, dimensions);
+  const tooltip = useTooltip(list, axes, 'date');
 
+  const linePoints = useLinePoints(list, axes, tooltip.props?.data);
   const seasonsAreas = useSeasonsAreas(seasonsList, axes, dimensions);
-  const linePoints = useLinePoints(ratingList, axes, tooltip.props?.data);
+  const minMaxLines = useMinMaxLines(ratingData.minMaxRawData, axes, dimensions);
 
   const lineBuilder = d3
-    .line<IRawUserRatingHistory>()
+    .line<IRawUserRatingHistoryItem>()
     .x((d) => axes.xScale(d.date))
     .y((d) => axes.yScale(d.rating))
     .curve(d3.curveCatmullRom);
 
-  const linePath = lineBuilder(ratingList);
+  const linePath = lineBuilder(ratingData.list);
 
   if (!linePath) {
     return null;
@@ -65,9 +68,11 @@ function RatingChart(props: IProps) {
           transform={`translate(${[PADDINGS.left, PADDINGS.top].join(',')})`}
         >
           {seasonsAreas}
-          {linePoints}
+          {minMaxLines}
 
           <path d={linePath} stroke="var(--accent-10)" fill="none" strokeWidth={2} />
+
+          {linePoints}
 
           {tooltip.props && (
             <g>

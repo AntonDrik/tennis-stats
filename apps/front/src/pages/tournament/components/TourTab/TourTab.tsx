@@ -1,9 +1,10 @@
 import { Flex } from '@radix-ui/themes';
 import { ITour } from '@tennis-stats/types';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { updateTournamentStateAtom } from '../../../../core/store';
+import { highlightMatchAtom, updateTournamentStateAtom } from '../../../../core/store';
 import { MatchCard } from '../../../../shared/components/Tournament';
+import useScrollMatchIntoView from '../../hooks/useScrollMatchIntoView';
 
 interface IProps {
   tour: ITour;
@@ -11,6 +12,9 @@ interface IProps {
 
 function TourTab(props: IProps) {
   const updateTournamentState = useSetAtom(updateTournamentStateAtom);
+  const matchIdForHighlight = useAtomValue(highlightMatchAtom);
+
+  useScrollMatchIntoView(matchIdForHighlight);
 
   useEffect(() => {
     updateTournamentState({ selectedTour: props.tour });
@@ -19,7 +23,7 @@ function TourTab(props: IProps) {
   return (
     <Flex direction={'column'} height={'100%'} overflow={'auto'} gap={'2'}>
       {props.tour.matches.map((match) => (
-        <MatchCard key={match.id} match={match} />
+        <MatchCard key={match.id} match={match} highlight={matchIdForHighlight === match.id} />
       ))}
     </Flex>
   );

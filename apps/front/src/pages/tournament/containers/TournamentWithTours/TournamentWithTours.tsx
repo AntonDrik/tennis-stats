@@ -8,7 +8,7 @@ import PlayoffTab from '../../components/PlayoffTab/PlayoffTab';
 import TournamentTabs from '../../components/Tabs/Tabs';
 import TourTab from '../../components/TourTab/TourTab';
 import { useCanManageTournament } from '../../hooks';
-import useResetTabsState from '../../hooks/useResetTabsState';
+import useInitTabsState from '../../hooks/useInitTabsState';
 import { tournamentActiveTabAtom } from '../../states/active-tab.state';
 
 interface IProps {
@@ -38,13 +38,13 @@ function TournamentWithTours(props: IProps) {
     );
   }, [canManageTournament, tournament]);
 
-  useResetTabsState(tournament);
+  useInitTabsState(tournament);
 
   return (
     <>
       <TournamentHeader tournament={tournament} actions={actionsMenu} />
 
-      <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value)}>
+      <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
         <TournamentTabs tournamentId={tournament.id} tours={tournament.tours} />
 
         <Box pt={'3'}>

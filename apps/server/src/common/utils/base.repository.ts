@@ -31,12 +31,14 @@ class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
 
     return (...args: Parameters<typeof builder.where>) => {
       if (!andWhere) {
-        builder.where(...args);
+        return builder.where(...args);
       } else {
         builder.andWhere(...args);
       }
 
       andWhere = true;
+
+      return builder;
     };
   }
 }

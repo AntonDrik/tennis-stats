@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   createParamDecorator,
   ExecutionContext,
   Injectable,
@@ -12,10 +13,12 @@ import { GameSetNotFoundException } from '../../../common/exceptions';
 export class GameSetPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
-  async transform(value: number): Promise<GameSet | null> {
-    const gameSet = await this.entity
-      .getRepository(GameSet)
-      .findOneBy({ id: value });
+  async transform(value: number | undefined): Promise<GameSet | null> {
+    if (value === undefined || value === -1) {
+      throw new BadRequestException('Неверный SetId');
+    }
+
+    const gameSet = await this.entity.getRepository(GameSet).findOneBy({ id: value });
 
     if (!gameSet) {
       throw new GameSetNotFoundException();
@@ -25,11 +28,8 @@ export class GameSetPipe implements PipeTransform {
   }
 }
 
-const GameSetDecorator = createParamDecorator(
-  (param: string, ctx: ExecutionContext) => {
-    return ctx.switchToHttp().getRequest().params[param];
-  }
-);
+const GameSetDecorator = createParamDecorator((param: string, ctx: ExecutionContext) => {
+  return ctx.switchToHttp().getRequest().params[param];
+});
 
-export const GameSetById = (params = 'setId') =>
-  GameSetDecorator(params, GameSetPipe);
+export const GameSetById = (params = 'setId') => GameSetDecorator(params, GameSetPipe);

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import TournamentActionsMenu from '../../components/ActionsMenu/ActionsMenu';
 import TournamentHeader from '../../components/Header/Header';
 import PlayoffTab from '../../components/PlayoffTab/PlayoffTab';
-import { leaderboardTabAtom } from '../../modals/LeaderboardModal/LeaderboardModal.state';
+import { leaderboardTabAtom } from '../../states/leaderboard-modal.state';
 
 interface IProps {
   tournament: ITournament;

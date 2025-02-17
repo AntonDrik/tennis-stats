@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   createParamDecorator,
   ExecutionContext,
   Injectable,
@@ -13,6 +14,10 @@ export class TourPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
   async transform(value: number): Promise<Tour | null> {
+    if (value === undefined || value === -1) {
+      throw new BadRequestException('Неверный Tour Id');
+    }
+
     const tour = await this.entity.getRepository(Tour).findOneBy({ id: value });
 
     if (!tour) {
@@ -23,10 +28,8 @@ export class TourPipe implements PipeTransform {
   }
 }
 
-const TourDecorator = createParamDecorator(
-  (param: string, ctx: ExecutionContext) => {
-    return ctx.switchToHttp().getRequest().params[param];
-  }
-);
+const TourDecorator = createParamDecorator((param: string, ctx: ExecutionContext) => {
+  return ctx.switchToHttp().getRequest().params[param];
+});
 
 export const TourById = (params = 'tourId') => TourDecorator(params, TourPipe);

@@ -1,6 +1,9 @@
 import { ScrollArea } from '@radix-ui/themes';
 import { ETourType, ITour, ITournament } from '@tennis-stats/types';
-import { useMemo } from 'react';
+import { useAtomValue } from 'jotai/index';
+import { useMemo, useRef } from 'react';
+import { highlightMatchAtom } from '../../../../core/store';
+import useScrollMatchIntoView from '../../hooks/useScrollMatchIntoView';
 import PlayoffMatchBlock from './components/PlayoffMatchBlock/PlayoffMatchBlock';
 import Styled from './PlayoffTab.styles';
 
@@ -9,14 +12,18 @@ interface IProps {
 }
 
 function PlayoffTab(props: IProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const matchIdForHighlight = useAtomValue(highlightMatchAtom);
+
   const playoffTours = useMemo(() => {
-    return props.tournament.tours
-      .filter((tour) => tour.type === ETourType.PLAY_OFF)
-      .sort(byRound);
+    return props.tournament.tours.filter((tour) => tour.type === ETourType.PLAY_OFF).sort(byStage);
   }, [props.tournament.tours]);
 
+  useScrollMatchIntoView(matchIdForHighlight, containerRef);
+
   return (
-    <ScrollArea scrollbars="horizontal" style={{ maxWidth: '100%' }}>
+    <ScrollArea ref={containerRef} scrollbars="horizontal" style={{ maxWidth: '100%' }}>
       <Styled.Container>
         {playoffTours.map((tour, index) => (
           <Styled.Column
@@ -30,6 +37,7 @@ function PlayoffTab(props: IProps) {
                 roundNumber={index + 1}
                 isFirst={!index}
                 isLast={index === playoffTours.length - 1}
+                highlight={matchIdForHighlight === match.id}
               />
             ))}
           </Styled.Column>
@@ -41,7 +49,7 @@ function PlayoffTab(props: IProps) {
 
 export default PlayoffTab;
 
-function byRound(a: ITour, b: ITour) {
+function byStage(a: ITour, b: ITour) {
   const aRound = Number(a.playOffStage?.split('/')[1]);
   const bRound = Number(b.playOffStage?.split('/')[1]);
 

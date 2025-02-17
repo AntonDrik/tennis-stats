@@ -79,21 +79,6 @@ function StartTournamentModal(props: IProps) {
                 )}
               />
 
-              {props.tournament.season && (
-                <Controller
-                  name="seasonFinal"
-                  control={form.control}
-                  render={({ field: { value, onChange } }) => (
-                    <Text as="label">
-                      <Flex gap="2">
-                        <Switch size="2" checked={value} onCheckedChange={onChange} />
-                        Финальный турнир сезона
-                      </Flex>
-                    </Text>
-                  )}
-                />
-              )}
-
               <Controller
                 name={'tournamentType'}
                 control={form.control}

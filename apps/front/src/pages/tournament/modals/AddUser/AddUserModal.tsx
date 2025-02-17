@@ -50,8 +50,9 @@ function AddUserModal() {
 
       <Flex direction={'column'} mt={'1'} gap={'4'}>
         <UsersSelect
-          skipUsers={joinedUsers}
-          disableSkippedUsers
+          label={'Выберите нового пользователя'}
+          disableUsers={joinedUsers}
+          fullWidth
           onChange={(user) => setNewUserId(user.id)}
         />
 

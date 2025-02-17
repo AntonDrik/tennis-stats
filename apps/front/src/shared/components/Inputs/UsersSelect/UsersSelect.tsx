@@ -1,12 +1,14 @@
 import { IUser, IUserWithRatingDiff } from '@tennis-stats/types';
-import { Select as RadixSelect, Spinner, Text } from '@radix-ui/themes';
-import React, { useMemo, useState } from 'react';
+import { Select as RadixSelect, Text } from '@radix-ui/themes';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useGetUsersQuery } from '../../../../core/api';
 import Select from '../../Select/Select';
 
 interface IProps {
-  skipUsers?: IUser[];
-  disableSkippedUsers?: boolean;
+  label?: string;
+  selectedUser?: IUser;
+  disableUsers?: IUser[];
+  fullWidth?: boolean;
   onChange?: (users: IUserWithRatingDiff) => void;
 }
 
@@ -32,41 +34,41 @@ function UsersSelect(props: IProps) {
   };
 
   const isDisabledItem = (item: IUser) => {
-    if (!props.disableSkippedUsers || !props.skipUsers?.length) {
+    if (!props.disableUsers?.length) {
       return false;
     }
 
-    return Boolean(props.skipUsers.find((user) => user.id === item.id));
+    return Boolean(props.disableUsers.find((user) => user.id === item.id));
   };
 
-  const usersToDisplay = useMemo(() => {
-    if (props.disableSkippedUsers) {
-      return allUsers ?? [];
+  const usersToDisplay = useMemo(() => allUsers ?? [], [allUsers]);
+
+  useEffect(() => {
+    if (props.selectedUser) {
+      setSelectedUser(props.selectedUser);
+      setSelectedUserId(String(props.selectedUser.id));
     }
-
-    const skipIds = props.skipUsers?.map((user) => user?.id) ?? [];
-
-    return (allUsers ?? []).filter((user) => !skipIds.includes(user.id));
-  }, [allUsers, props.skipUsers, props.disableSkippedUsers]);
+  }, [props.selectedUser]);
 
   return (
     <Select
       value={selectedUserId}
-      label={'Выберите нового пользователя'}
+      label={props.label}
       size={'3'}
       disabled={isLoading}
+      fullWidth={props.fullWidth}
       onValueChange={handleChange}
     >
       <RadixSelect.Trigger>
-        {isLoading && <Spinner />}
         <Text>{selectedUser?.nickname}</Text>
       </RadixSelect.Trigger>
 
-      <RadixSelect.Content position="popper">
+      <RadixSelect.Content position="popper" autoFocus={false}>
         {usersToDisplay.map((user) => (
           <RadixSelect.Item
             key={`user-select-item-${user.id}`}
             value={String(user.id)}
+            autoFocus={false}
             disabled={isDisabledItem(user)}
           >
             {user.nickname}

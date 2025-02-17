@@ -5,13 +5,11 @@ import { useMemo } from 'react';
 import { IExtendedDimensions, TAxes } from '../../../../../../../shared/components/Chart';
 
 function useAxes(
-  data: IRawUserRatingHistory[],
+  data: IRawUserRatingHistory,
   year: string,
   dimensions: IExtendedDimensions
 ): TAxes<'timebased'> {
   const { boundsWidth, boundsHeight } = dimensions;
-
-  const [yMin, yMax] = d3.extent(data, (d) => d.rating);
 
   const xScale = useMemo(() => {
     const date = new Date(year);
@@ -23,12 +21,14 @@ function useAxes(
   }, [boundsWidth, year]);
 
   const yScale = useMemo(() => {
+    const { min, max } = data.minMaxRawData;
+
     return d3
       .scaleLinear()
-      .domain([(yMin || 0) - 2, (yMax || 0) + 2])
+      .domain([(min || 0) - 2, (max || 0) + 2])
       .nice()
       .range([boundsHeight, 0]);
-  }, [yMin, yMax, boundsHeight]);
+  }, [data.minMaxRawData, boundsHeight]);
 
   return { xScale, yScale };
 }

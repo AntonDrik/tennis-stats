@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Put, Query } from '@nestjs/common';
-import { ChangeRatingDto } from '@tennis-stats/dto';
+import { ChangeRatingDto, GetRatingHistoryQuery } from '@tennis-stats/dto';
 import { EPermission, IUser } from '@tennis-stats/types';
-import GetRatingHistoryQuery from '../../../../../../libs/dto/src/lib/user/get-rating-history.query';
 import { CurrentUser, Permissions } from '../../../auth/decorators';
 import { IdParam } from '../../../common/decorators';
 import UsersRepository from '../../../repositories/users.repository';
-import UserStatsService from '../services/user-stats.service';
+import UserCommonStatsService from '../services/user-common-stats.service';
+import UserPairStatsService from '../services/user-pair-stats.service';
 
 import UsersService from '../services/users.service';
 
@@ -13,7 +13,8 @@ import UsersService from '../services/users.service';
 class UsersController {
   constructor(
     private usersService: UsersService,
-    private userStatsService: UserStatsService,
+    private userStatsService: UserCommonStatsService,
+    private userPairStatsService: UserPairStatsService,
     private usersRepository: UsersRepository
   ) {}
 
@@ -30,6 +31,16 @@ class UsersController {
   @Get('/:id/common-stats')
   getCommonStats(@IdParam() userId: number) {
     return this.userStatsService.getCommonStats(userId);
+  }
+
+  @Get('/:id/pair-stats')
+  getPairStats(@IdParam() userId: number, @Query('opponentId') opponentId: number) {
+    return this.userPairStatsService.getPairStats(userId, opponentId);
+  }
+
+  @Get('/:id/opponents')
+  getOpponents(@IdParam() userId: number) {
+    return this.userPairStatsService.getOpponentsList(userId);
   }
 
   @Get('/:id/rating-history')

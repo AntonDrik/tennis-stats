@@ -59,9 +59,9 @@ class TournamentService {
       await this.seasonsService.attachActiveSeason(entity);
     }
 
-    await entity.save();
+    entity.seasonFinal = dto.seasonFinal ?? false;
 
-    return entity;
+    return entity.save();
   }
 
   /**
@@ -92,7 +92,6 @@ class TournamentService {
     }
 
     entity.handleRating = dto.handleRating;
-    entity.seasonFinal = dto.seasonFinal ?? false;
     entity.status = ETournamentStatus.ACTIVE;
 
     await entity.save();

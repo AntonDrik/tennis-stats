@@ -1,16 +1,42 @@
+import { IMatch } from './match';
 import { TPlayOffStage } from './tour';
+import { ITournament } from './tournament';
+import { IUser } from './user';
 
 type TPlayedPlayoffsStats = Record<TPlayOffStage, number>;
 
 type TPlacesStats = Record<number, number>;
 
+interface IExtendedPairMatch extends IMatch {
+  tournament: Pick<ITournament, 'id' | 'date'>;
+}
+
 interface IUserCommonStats {
-  winPercent: number;
+  winPercent: number | null;
   allTournamentsCount: number;
   playedTournamentsCount: number;
   playedMatchesCount: number;
-  playedPlayoffsCount: TPlayedPlayoffsStats;
+  playedPlayoffsCount: TPlayedPlayoffsStats | null;
   placesStats: TPlacesStats;
 }
 
-export { IUserCommonStats, TPlayedPlayoffsStats, TPlacesStats };
+interface IUserPairStats {
+  winPercent: number | null;
+  playedPlayoffsCount: number;
+  playedToursCount: number;
+  matches: IExtendedPairMatch[];
+}
+
+interface IOpponent {
+  user: IUser;
+  gamesCount: number;
+}
+
+export {
+  IUserCommonStats,
+  IUserPairStats,
+  TPlayedPlayoffsStats,
+  TPlacesStats,
+  IOpponent,
+  IExtendedPairMatch,
+};

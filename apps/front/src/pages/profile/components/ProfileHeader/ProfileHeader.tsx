@@ -1,16 +1,18 @@
-import { Badge, Box, Flex, Heading, Strong } from '@radix-ui/themes';
+import { Badge, Box, Flex, Strong } from '@radix-ui/themes';
 import { IUser } from '@tennis-stats/types';
+import UsersSelect from '../../../../shared/components/Inputs/UsersSelect/UsersSelect';
 
 import RatingStarSvg from '../../../../shared/svg-icons/rating-star.svg';
 
 interface IProps {
   user: IUser;
+  onUserChange: (user: IUser) => void;
 }
 
 function ProfileHeader(props: IProps): JSX.Element {
   return (
     <Flex align={'center'} justify={'center'} gap={'3'}>
-      <Heading align={'center'}>{props.user.nickname}</Heading>
+      <UsersSelect selectedUser={props.user} onChange={props.onUserChange} />
 
       <Flex align={'center'} gap={'1'}>
         <Badge size={'2'} color={'grass'}>

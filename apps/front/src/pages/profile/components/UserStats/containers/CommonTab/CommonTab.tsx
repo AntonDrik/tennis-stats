@@ -1,7 +1,8 @@
-import { Box, Flex, Heading } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
+import { isEmptyObject } from '@tennis-stats/helpers';
 import React from 'react';
 import { useUserCommonStatsQuery } from '../../../../../../core/api';
-import { Spinner } from '../../../../../../shared/components';
+import { ChartCard } from '../../../../../../shared/components';
 import { ITabContentProps } from '../../../../types/tab-props';
 import CommonData from '../../components/CommonData/CommonData';
 import PlacesBarChart from '../../components/PlacesBarChart/PlacesBarChart';
@@ -15,41 +16,31 @@ function CommonTab(props: ITabContentProps) {
 
   return (
     <Flex direction={'column'} gap={'5'}>
-      <Flex className={'common-data'} gap={'5'}>
-        <Flex direction={'column'} gap={'2'} className={'card-root'}>
-          <CommonData stats={commonStats.data} isLoading={commonStats.isLoading} />
-        </Flex>
-
-        <Flex direction={'column'} gap={'2'} className={'card-root'}>
-          <Heading size={'3'}>Количество игр в плей-офф</Heading>
-
-          {commonStats.isLoading && (
-            <Box className={'spinner-container'}>
-              <Spinner />
-            </Box>
-          )}
-
-          {commonStats.data && !commonStats.isLoading && (
-            <PlayoffsBarChart playoffsStats={commonStats.data.playedPlayoffsCount} />
-          )}
-        </Flex>
-      </Flex>
-
-      <Flex direction={'column'} gap={'2'} className={'card-root'}>
-        <Heading size={'3'}>Количество занятых мест</Heading>
-
-        {commonStats.isLoading && (
-          <Box className={'spinner-container'}>
-            <Spinner />
-          </Box>
-        )}
-
-        {commonStats.data && !commonStats.isLoading && (
-          <PlacesBarChart placesStats={commonStats.data.placesStats} />
-        )}
-      </Flex>
+      <CommonData stats={commonStats.data} isLoading={commonStats.isLoading} />
 
       <RatingHistoryChart user={props.user} />
+
+      <Flex className={'bar-charts-wrapper'} gap={'5'}>
+        <ChartCard
+          title={'Количество занятых мест'}
+          hasData={!isEmptyObject(commonStats.data?.placesStats)}
+          isLoading={commonStats.isLoading}
+          className={'card-root'}
+        >
+          {commonStats.data && <PlacesBarChart placesStats={commonStats.data.placesStats} />}
+        </ChartCard>
+
+        <ChartCard
+          title={'Количество игр в плей-офф'}
+          hasData={Boolean(commonStats.data?.playedPlayoffsCount)}
+          isLoading={commonStats.isLoading}
+          className={'card-root'}
+        >
+          {commonStats.data?.playedPlayoffsCount && (
+            <PlayoffsBarChart playoffsStats={commonStats.data.playedPlayoffsCount} />
+          )}
+        </ChartCard>
+      </Flex>
     </Flex>
   );
 }

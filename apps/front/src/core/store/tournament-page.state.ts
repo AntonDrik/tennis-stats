@@ -15,16 +15,15 @@ const tournamentAtom = atom<ITournamentState>({
   selectedGameSet: null,
 });
 
-const updateTournamentStateAtom = atom(
-  null,
-  (get, set, update: Partial<ITournamentState>) => {
-    const currentState = get(tournamentAtom);
+const highlightMatchAtom = atom<number | null>(null);
 
-    set(tournamentAtom, {
-      ...currentState,
-      ...update,
-    });
-  }
-);
+const updateTournamentStateAtom = atom(null, (get, set, update: Partial<ITournamentState>) => {
+  const currentState = get(tournamentAtom);
 
-export { tournamentAtom, updateTournamentStateAtom, ITournamentState };
+  set(tournamentAtom, {
+    ...currentState,
+    ...update,
+  });
+});
+
+export { tournamentAtom, highlightMatchAtom, updateTournamentStateAtom, ITournamentState };

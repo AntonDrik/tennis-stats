@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   createParamDecorator,
   ExecutionContext,
   Injectable,
@@ -12,10 +13,12 @@ import { MatchNotFoundException } from '../../../common/exceptions';
 export class MatchPipe implements PipeTransform {
   constructor(private entity: EntityManager) {}
 
-  async transform(value: number): Promise<Match | null> {
-    const match = await this.entity
-      .getRepository(Match)
-      .findOneBy({ id: value });
+  async transform(value: number | undefined): Promise<Match | null> {
+    if (value === undefined || value === -1) {
+      throw new BadRequestException('Неверный MatchId');
+    }
+
+    const match = await this.entity.getRepository(Match).findOneBy({ id: value });
 
     if (!match) {
       throw new MatchNotFoundException();
@@ -25,11 +28,8 @@ export class MatchPipe implements PipeTransform {
   }
 }
 
-const MatchDecorator = createParamDecorator(
-  (param: string, ctx: ExecutionContext) => {
-    return ctx.switchToHttp().getRequest().params[param];
-  }
-);
+const MatchDecorator = createParamDecorator((param: string, ctx: ExecutionContext) => {
+  return ctx.switchToHttp().getRequest().params[param];
+});
 
-export const MatchById = (params = 'matchId') =>
-  MatchDecorator(params, MatchPipe);
+export const MatchById = (params = 'matchId') => MatchDecorator(params, MatchPipe);

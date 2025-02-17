@@ -1,13 +1,6 @@
 import { ETournamentType } from '@tennis-stats/types';
 import { Transform, Type } from 'class-transformer';
-import {
-  IsBoolean,
-  IsIn,
-  IsNotEmptyObject,
-  IsOptional,
-  ValidateIf,
-  ValidateNested,
-} from 'class-validator';
+import { IsBoolean, IsIn, IsNotEmptyObject, ValidateIf, ValidateNested } from 'class-validator';
 import { CreateTourDto } from '../../index';
 import PlayoffStartOptionsDto from './playoff-start-options.dto';
 
@@ -24,11 +17,6 @@ class StartTournamentDto extends CreateTourDto {
   @ValidateNested()
   @Type(() => PlayoffStartOptionsDto)
   playoffOptions?: PlayoffStartOptionsDto;
-
-  @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value || value === 'true')
-  seasonFinal?: boolean;
 }
 
 export default StartTournamentDto;

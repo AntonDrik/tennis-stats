@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, Max, Min } from 'class-validator';
+import { IsBoolean, IsOptional, Max, Min } from 'class-validator';
+import { IsTogetherOnly } from '../custom-decorators/is-together-only';
 
 class UpsertTournamentDto {
   @Max(32, { message: 'Максимум 32 игроков' })
@@ -9,6 +10,12 @@ class UpsertTournamentDto {
   @IsBoolean()
   @Transform(({ value }) => value || value === 'true')
   attachSeason: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value || value === 'true')
+  @IsTogetherOnly<UpsertTournamentDto>('attachSeason')
+  seasonFinal?: boolean;
 }
 
 export default UpsertTournamentDto;

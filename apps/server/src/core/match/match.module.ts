@@ -6,12 +6,19 @@ import { UsersModule } from '../users';
 import MatchController from './controllers/match.controller';
 import GameSetService from './services/game-set.service';
 import MatchService from './services/match.service';
+import PlayoffMatchService from './services/playoff-match.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Match, GameSet]), UsersModule],
   controllers: [MatchController],
-  providers: [MatchService, GameSetService, MatchRepository, GameSetRepository],
-  exports: [MatchService],
+  providers: [
+    MatchService,
+    PlayoffMatchService,
+    GameSetService,
+    MatchRepository,
+    GameSetRepository,
+  ],
+  exports: [MatchService, PlayoffMatchService],
 })
 class MatchModule {}
 

@@ -13,10 +13,14 @@ import Styled from './MatchCard.styles';
 
 interface IProps {
   match: IMatch;
+  readOnly?: boolean;
+  highlight?: boolean;
   isPlayoffCard?: boolean;
 }
 
-function MatchCard({ match, isPlayoffCard }: IProps) {
+function MatchCard(props: IProps) {
+  const { match, isPlayoffCard, readOnly, highlight } = props;
+
   const tournamentState = useAtomValue(tournamentAtom);
   const updateTournamentState = useSetAtom(updateTournamentStateAtom);
 
@@ -30,7 +34,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
   const isCanOpenSettings = tournamentState.selectedMatch?.id === match.id;
 
   const selectCard = () => {
-    if (isPlayoffCard || !canManageTournament) {
+    if (isPlayoffCard || !canManageTournament || readOnly) {
       return;
     }
 
@@ -40,7 +44,7 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
 
   const setScore = useCallback(
     (gameSet: IGameSet) => {
-      if (isEmptyMatch || !canChangeGameSet) {
+      if (isEmptyMatch || !canChangeGameSet || readOnly) {
         return;
       }
 
@@ -59,19 +63,20 @@ function MatchCard({ match, isPlayoffCard }: IProps) {
 
   return (
     <Styled.Container
+      id={`match-card-${match.id}`}
       $isOpened={isCanOpenSettings && isSettingsOpened}
+      $readOnly={Boolean(readOnly)}
+      $highlight={Boolean(highlight)}
+      className={'match-card'}
       onClick={selectCard}
     >
       <Styled.Row>
-        <MatchUsernameBlock
-          user1={match.user1}
-          user2={match.user2}
-          isPlayoffCard={isPlayoffCard}
-        />
+        <MatchUsernameBlock user1={match.user1} user2={match.user2} isPlayoffCard={isPlayoffCard} />
 
         <ScoreBlock
           match={match}
           isPlayoffCard={isPlayoffCard}
+          highlight={highlight}
           onSetScoreClick={setScore}
         />
       </Styled.Row>
